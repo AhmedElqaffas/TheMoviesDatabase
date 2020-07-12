@@ -1,9 +1,13 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
+import com.example.moviesretrofit.*
+import com.example.moviesretrofit.main.fragments.FindMultiMediaFragment
+import com.example.moviesretrofit.main.fragments.MoviesFragment
+import com.example.moviesretrofit.main.fragments.SeriesFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -26,10 +30,15 @@ class MainActivity : AppCompatActivity(){
 
 
     private fun setViewPagerAdapter() {
-        val fragmentsList = listOf(MoviesFragment(),
+        val fragmentsList = listOf(
+            MoviesFragment(),
             SeriesFragment(),
             FindMultiMediaFragment() as Fragment)
-        viewPager.adapter = ViewPagerAdapter(fragmentsList,supportFragmentManager, lifecycle)
+        viewPager.adapter = ViewPagerAdapter(
+            fragmentsList,
+            supportFragmentManager,
+            lifecycle
+        )
     }
 
     private fun linkViewPagerAndBottomNavigation() {

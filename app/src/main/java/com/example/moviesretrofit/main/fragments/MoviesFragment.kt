@@ -1,10 +1,11 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.main.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.moviesretrofit.R
 
 class MoviesFragment : Fragment(){
 
@@ -26,14 +27,24 @@ class MoviesFragment : Fragment(){
     }
 
     private fun setPopularMoviesFragment() {
-        val popularMoviesFragmentInstance = MultiMediaRecyclerFragment.newInstance(1, MultiMediaRecyclerFragment.MOVIE)
-        childFragmentManager.beginTransaction().replace(R.id.popularMoviesContainer, popularMoviesFragmentInstance,
+        val popularMoviesFragmentInstance =
+            MultiMediaRecyclerFragment.newInstance(
+                1,
+                MultiMediaRecyclerFragment.MOVIE
+            )
+        childFragmentManager.beginTransaction().replace(
+            R.id.popularMoviesContainer, popularMoviesFragmentInstance,
             "popular movies").commit()
     }
 
     private fun setTopRatedMovies(){
-        val topRatedMoviesFragmentInstance = MultiMediaRecyclerFragment.newInstance(2, MultiMediaRecyclerFragment.MOVIE)
-        childFragmentManager.beginTransaction().replace(R.id.topRatedMoviesContainer, topRatedMoviesFragmentInstance,
+        val topRatedMoviesFragmentInstance =
+            MultiMediaRecyclerFragment.newInstance(
+                2,
+                MultiMediaRecyclerFragment.MOVIE
+            )
+        childFragmentManager.beginTransaction().replace(
+            R.id.topRatedMoviesContainer, topRatedMoviesFragmentInstance,
             "top rated movies").commit()
     }
 }

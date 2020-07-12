@@ -1,9 +1,11 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.recyclersAdapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviesretrofit.R
+import com.example.moviesretrofit.models.Cast
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_cast.view.*
 
@@ -31,12 +33,12 @@ class CastRecyclerAdapter(private val castList: List<Cast>):
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CastRecyclerAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context).inflate(R.layout.item_cast, parent, false)
         return ViewHolder(inflater)
     }
 
-    override fun onBindViewHolder(holder: CastRecyclerAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindCastData(castList[position])
     }
 

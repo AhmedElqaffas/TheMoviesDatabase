@@ -1,6 +1,5 @@
-package com.example.moviesretrofit.networking
+package com.example.moviesretrofit.models
 
-import com.example.moviesretrofit.MultiMedia
 import com.google.gson.annotations.SerializedName
 
 data class MultiMediaResponse(val page: Int, val results: List<MultiMedia>,

@@ -10,8 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MultiMediaDetailsActivity"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".mediaDetails.MultiMediaDetailsActivity"></activity>
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

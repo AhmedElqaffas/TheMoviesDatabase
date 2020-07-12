@@ -1,15 +1,18 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.recyclersAdapters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.moviesretrofit.R
+import com.example.moviesretrofit.models.MultiMedia
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_media.view.*
 
 
 class MultiMediaRecyclerAdapter(private val recyclerType: Int,
-                                private val interactionListener: MultiMediaRecyclerInteraction)
+                                private val interactionListener: MultiMediaRecyclerInteraction
+)
     : RecyclerView.Adapter<MultiMediaRecyclerAdapter.ViewHolder>() {
 
     object Type{
@@ -80,6 +83,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
     fun overwriteList(newList: List<MultiMedia>?){
         multiMediaList.clear()
         newList?.let { multiMediaList = it as MutableList<MultiMedia>}
+        notifyDataSetChanged()
     }
 
     interface MultiMediaRecyclerInteraction{

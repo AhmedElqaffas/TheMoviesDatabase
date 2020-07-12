@@ -1,4 +1,4 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.main.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,19 +6,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.moviesretrofit.datarepositories.*
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import com.example.moviesretrofit.mediaDetails.MultiMediaDetailsActivity
+import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
+import com.example.moviesretrofit.R
+import com.example.moviesretrofit.main.MainViewModel
+import com.example.moviesretrofit.models.MultiMedia
+import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
 
 class MultiMediaRecyclerFragment : Fragment(),
-    MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction,
-    MultiMediaRequestsListener {
-
+    MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction{
 
     private var page = 1
     private var totalPages = 0
 
-    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(
-        MultiMediaRecyclerAdapter.Type.BROWSE, this)
+    private var multiMediaRecyclerAdapter =
+        MultiMediaRecyclerAdapter(
+            MultiMediaRecyclerAdapter.Type.BROWSE,
+            this
+        )
+
+    private val mainViewModel: MainViewModel by viewModels()
 
     private lateinit var inflated: View
 
@@ -27,7 +38,8 @@ class MultiMediaRecyclerFragment : Fragment(),
         const val MOVIE = 1
         const val SERIES = 2
 
-        fun newInstance(getMoviesBasedOn: Int, mediaType: Int) = MultiMediaRecyclerFragment().apply {
+        fun newInstance(getMoviesBasedOn: Int, mediaType: Int) = MultiMediaRecyclerFragment()
+            .apply {
             arguments = Bundle().apply {
                 putInt("Sort Type", getMoviesBasedOn)
                 putInt("Media Type", mediaType)
@@ -68,23 +80,38 @@ class MultiMediaRecyclerFragment : Fragment(),
     }
 
     private fun makePopularMoviesRequest() {
-        PopularMoviesRepository.popularMoviesRequestsListener = this
-        PopularMoviesRepository.makePopularMoviesRequest(page)
+        val popularMoviesLiveData = mainViewModel.getPopularMovies(page)
+        createDataObserverIfNotExists(popularMoviesLiveData)
     }
 
     private fun makeRatedMoviesRequest() {
-        RatedMoviesRepository.ratedMoviesRequestsListener = this
-        RatedMoviesRepository.makeRatedMoviesRequest(page)
+        val ratedMoviesLiveData = mainViewModel.getRatedMovies(page)
+        createDataObserverIfNotExists(ratedMoviesLiveData)
     }
 
     private fun makePopularSeriesRequest() {
-        PopularSeriesRepository.popularSeriesRequestsListener = this
-        PopularSeriesRepository.makePopularSeriesRequest(page)
+        val popularSeriesLiveData = mainViewModel.getPopularSeries(page)
+        createDataObserverIfNotExists(popularSeriesLiveData)
     }
 
     private fun makeRatedSeriesRequest() {
-        RatedSeriesRepository.ratedSeriesRequestsListener = this
-        RatedSeriesRepository.makeRatedSeriesRequest(page)
+        val ratedSeriesLiveData = mainViewModel.getRatedSeries(page)
+        createDataObserverIfNotExists(ratedSeriesLiveData)
+    }
+
+    private fun createDataObserverIfNotExists(liveData: LiveData<MultiMediaRepositoryResponse>){
+        if(!liveData.hasActiveObservers()){
+            liveData.observe(viewLifecycleOwner, Observer {
+                extractObservedItems(it)
+                hideShimmerEffect()
+            })
+        }
+    }
+
+    private fun extractObservedItems(response: MultiMediaRepositoryResponse){
+        addNewPageItemsToRecyclerView(response.multimediaList.toMutableList())
+        page = response.currentPage
+        totalPages = response.totalPages
     }
 
     private fun addNewPageItemsToRecyclerView(mediaList: MutableList<MultiMedia>) {
@@ -96,7 +123,7 @@ class MultiMediaRecyclerFragment : Fragment(),
         multiMediaShimmerContainer?.visibility = View.GONE
     }
 
-    override fun onEndOfMultiMediaPage() {
+    override fun onEndOfMultiMediaPage(){
         getNextPageMovies()
     }
 
@@ -111,20 +138,13 @@ class MultiMediaRecyclerFragment : Fragment(),
         val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         if(arguments?.getInt("Media Type") == MOVIE)
-            intent.putExtra("Media Type", MOVIE )
+            intent.putExtra("Media Type",
+                MOVIE
+            )
         else
-            intent.putExtra("Media Type", SERIES )
+            intent.putExtra("Media Type",
+                SERIES
+            )
         startActivity(intent)
-    }
-
-    override fun responseLoaded(mediaList: List<MultiMedia>, totalPages: Int) {
-        this.totalPages = totalPages
-
-        addNewPageItemsToRecyclerView(mediaList.toMutableList())
-        hideShimmerEffect()
-    }
-
-    override fun updateCurrentPage(currentPage: Int){
-        this.page = currentPage
     }
 }

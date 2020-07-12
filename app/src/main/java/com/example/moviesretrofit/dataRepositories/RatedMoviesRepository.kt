@@ -1,57 +1,58 @@
-package com.example.moviesretrofit.datarepositories
+package com.example.moviesretrofit.dataRepositories
 
 import android.util.Log
-import com.example.moviesretrofit.MultiMedia
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.moviesretrofit.models.MultiMedia
+import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.networking.MultiMediaResponse
+import com.example.moviesretrofit.models.MultiMediaResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-object PopularMoviesRepository{
+object RatedMoviesRepository{
 
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
 
     private var multiMediaAPI: MultiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
-    lateinit var popularMoviesRequestsListener: MultiMediaRequestsListener
 
-    private val popularMovies = mutableListOf<MultiMedia>()
+    private var ratedMovies = mutableListOf<MultiMedia>()
     private var currentPage = 1
-    private var popularMoviesTotalPages = 0
+    private var ratedMoviesTotalPages = 0
 
-    fun makePopularMoviesRequest(page: Int){
+    private val ratedMoviesResponseLiveData: MutableLiveData<MultiMediaRepositoryResponse> = MutableLiveData()
+
+    fun makeRatedMoviesRequest(page: Int): LiveData<MultiMediaRepositoryResponse>{
         if(page == 1) {
             sendCachedOrNetworkData()
-            popularMoviesRequestsListener.updateCurrentPage(currentPage)
         }
 
         else{
-            updateCurrentPage(page)
-            sendNetworkData(page)
+            returnNetworkData(page)
         }
+
+        return ratedMoviesResponseLiveData
     }
 
     private fun sendCachedOrNetworkData(){
-        if (popularMovies.isEmpty())
-            sendNetworkData(1)
+        if (ratedMovies.isEmpty())
+            returnNetworkData(1)
         else
-            sendCachedData()
+            returnCachedData()
     }
 
-    private fun sendNetworkData(page: Int){
-        multiMediaAPI.getPopularMovies(key, page)
+    private fun returnNetworkData(page: Int){
+        multiMediaAPI.getHighRatedMovies(key, page)
             .apply { enqueueCallback(this) }
     }
 
-    private fun sendCachedData(){
-        popularMoviesRequestsListener.responseLoaded(popularMovies, popularMoviesTotalPages)
+    private fun returnCachedData(){
+        ratedMoviesResponseLiveData.postValue(
+            MultiMediaRepositoryResponse(ratedMovies, currentPage, ratedMoviesTotalPages)
+        )
     }
-
-    private fun updateCurrentPage(page: Int){
-        currentPage = page
-    }
-
 
     private fun enqueueCallback(call: Call<MultiMediaResponse>) {
         call.enqueue(object: Callback<MultiMediaResponse> {
@@ -60,7 +61,9 @@ object PopularMoviesRepository{
                                     response: Response<MultiMediaResponse>
             ) {
                 response.body()?.let {
-                    popularMoviesRequestsListener.responseLoaded(it.results, it.totalPages)
+                    ratedMoviesResponseLiveData.postValue(
+                        MultiMediaRepositoryResponse(it.results, it.page, it.totalPages)
+                    )
                     updateRepository(it)
                 }
             }
@@ -72,16 +75,20 @@ object PopularMoviesRepository{
     }
 
     private fun updateRepository(response: MultiMediaResponse){
+        updateCurrentPage(response.page)
         appendResultItemsToList(response.results)
         saveTotalNumberOfPages(response.totalPages)
     }
 
+    private fun updateCurrentPage(page: Int){
+        currentPage = page
+    }
+
     private fun appendResultItemsToList(results: List<MultiMedia>) {
-        popularMovies.addAll(results)
+        ratedMovies.addAll(results)
     }
 
     private fun saveTotalNumberOfPages(totalPages: Int){
-        popularMoviesTotalPages = totalPages
+        ratedMoviesTotalPages = totalPages
     }
-
 }

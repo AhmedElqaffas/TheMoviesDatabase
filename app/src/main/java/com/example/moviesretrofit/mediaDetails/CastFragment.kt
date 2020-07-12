@@ -1,4 +1,4 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.mediaDetails
 
 import android.os.Bundle
 import android.util.Log
@@ -6,8 +6,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.moviesretrofit.R
+import com.example.moviesretrofit.models.Cast
+import com.example.moviesretrofit.models.CastResponse
+import com.example.moviesretrofit.models.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
+import com.example.moviesretrofit.recyclersAdapters.CastRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_cast.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,7 +26,8 @@ class CastFragment : Fragment() {
         const val MOVIE = 1
         const val SERIES = 2
 
-        fun newInstance(multiMedia: MultiMedia, mediaType: Int) = CastFragment().apply {
+        fun newInstance(multiMedia: MultiMedia, mediaType: Int) = CastFragment()
+            .apply {
             arguments = Bundle().apply {
                 putSerializable("media", multiMedia)
                 putInt("media type", mediaType)
@@ -82,7 +88,8 @@ class CastFragment : Fragment() {
     }
 
     private fun setRecyclerAdapterList(cast: List<Cast>){
-        val castRecyclerAdapter = CastRecyclerAdapter(cast)
+        val castRecyclerAdapter =
+            CastRecyclerAdapter(cast)
         castRecycler?.adapter = castRecyclerAdapter
     }
 }

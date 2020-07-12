@@ -1,57 +1,58 @@
-package com.example.moviesretrofit.datarepositories
+package com.example.moviesretrofit.dataRepositories
 
 import android.util.Log
-import com.example.moviesretrofit.MultiMedia
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.example.moviesretrofit.models.MultiMedia
+import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.networking.MultiMediaResponse
+import com.example.moviesretrofit.models.MultiMediaResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-object PopularSeriesRepository{
+object RatedSeriesRepository{
 
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
 
     private var multiMediaAPI: MultiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
-    lateinit var popularSeriesRequestsListener: MultiMediaRequestsListener
 
-    private var popularSeries = mutableListOf<MultiMedia>()
+    private var ratedSeries = mutableListOf<MultiMedia>()
     private var currentPage = 1
-    private var popularSeriesTotalPages = 0
+    private var ratedSeriesTotalPages = 0
 
-    fun makePopularSeriesRequest(page: Int){
+    private val ratedSeriesResponseLiveData: MutableLiveData<MultiMediaRepositoryResponse> = MutableLiveData()
+
+    fun makeRatedSeriesRequest(page: Int): LiveData<MultiMediaRepositoryResponse>{
         if(page == 1) {
             sendCachedOrNetworkData()
-            popularSeriesRequestsListener.updateCurrentPage(currentPage)
         }
 
         else{
-            updateCurrentPage(page)
-            sendNetworkData(page)
+            returnNetworkData(page)
         }
+
+        return ratedSeriesResponseLiveData
     }
 
     private fun sendCachedOrNetworkData(){
-        if (popularSeries.isEmpty())
-            sendNetworkData(1)
+        if (ratedSeries.isEmpty())
+            returnNetworkData(1)
         else
-            sendCachedData()
+            returnCachedData()
     }
 
-    private fun sendNetworkData(page: Int){
-        multiMediaAPI.getPopularSeries(key, page)
+    private fun returnNetworkData(page: Int){
+        multiMediaAPI.getHighRatedSeries(key, page)
             .apply {enqueueCallback(this) }
     }
 
-    private fun sendCachedData(){
-        popularSeriesRequestsListener.responseLoaded(popularSeries, popularSeriesTotalPages)
+    private fun returnCachedData(){
+        ratedSeriesResponseLiveData.postValue(
+            MultiMediaRepositoryResponse(ratedSeries, currentPage, ratedSeriesTotalPages)
+        )
     }
-
-    private fun updateCurrentPage(page: Int){
-        currentPage = page
-    }
-
 
     private fun enqueueCallback(call: Call<MultiMediaResponse>) {
         call.enqueue(object: Callback<MultiMediaResponse> {
@@ -60,7 +61,9 @@ object PopularSeriesRepository{
                                     response: Response<MultiMediaResponse>
             ) {
                 response.body()?.let {
-                    popularSeriesRequestsListener.responseLoaded(it.results, it.totalPages)
+                    ratedSeriesResponseLiveData.postValue(
+                        MultiMediaRepositoryResponse(it.results, it.page, it.totalPages)
+                    )
                     updateRepository(it)
                 }
             }
@@ -72,16 +75,22 @@ object PopularSeriesRepository{
     }
 
     private fun updateRepository(response: MultiMediaResponse){
+        updateCurrentPage(response.page)
         appendResultItemsToList(response.results)
         saveTotalNumberOfPages(response.totalPages)
     }
 
+    private fun updateCurrentPage(page: Int){
+        currentPage = page
+    }
+
+
     private fun appendResultItemsToList(results: List<MultiMedia>) {
-        popularSeries.addAll(results)
+        ratedSeries.addAll(results)
     }
 
     private fun saveTotalNumberOfPages(totalPages: Int){
-        popularSeriesTotalPages = totalPages
+        ratedSeriesTotalPages = totalPages
     }
 
 }

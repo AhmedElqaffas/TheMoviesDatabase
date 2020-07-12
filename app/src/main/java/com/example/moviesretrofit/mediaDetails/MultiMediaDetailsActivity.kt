@@ -1,4 +1,4 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.mediaDetails
 
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import com.example.moviesretrofit.R
+import com.example.moviesretrofit.helpers.ImageZooming
+import com.example.moviesretrofit.models.MultiMedia
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
@@ -95,8 +98,13 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
     }
 
     private fun showCastFragment(){
-        val castFragmentInstance = CastFragment.newInstance(multiMedia, multiMediaType)
-        supportFragmentManager.beginTransaction().replace(R.id.castFragmentFrame,
+        val castFragmentInstance =
+            CastFragment.newInstance(
+                multiMedia,
+                multiMediaType
+            )
+        supportFragmentManager.beginTransaction().replace(
+            R.id.castFragmentFrame,
             castFragmentInstance,"cast fragment")
             .commit()
     }

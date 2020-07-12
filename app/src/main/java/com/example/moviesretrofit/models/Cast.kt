@@ -1,4 +1,4 @@
-package com.example.moviesretrofit
+package com.example.moviesretrofit.models
 
 import com.google.gson.annotations.SerializedName
 
