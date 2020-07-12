@@ -13,7 +13,6 @@ class MoviesRecyclerAdapter(private val moviesList: MutableList<Movie>,
     : RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        //private val movieName = itemView.movieName
         private val moviePoster = itemView.movieImage
 
         fun bindMovieData(movie: Movie){

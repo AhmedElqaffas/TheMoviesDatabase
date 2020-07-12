@@ -1,7 +1,10 @@
 package com.example.moviesretrofit
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.res.ResourcesCompat
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import kotlin.math.roundToInt
@@ -45,7 +48,19 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun setMovieRating(){
         movieRating.text = movie.rating.toString()
-        ratingProgressBar.progress = (movie.rating * 10f).roundToInt()
+        setProgressBarBasedOnRating((movie.rating * 10f).roundToInt())
+    }
+
+    private fun setProgressBarBasedOnRating(rating: Int) {
+        ratingProgressBar.progress = rating
+        when(rating){
+            in 0 until 60 ->
+                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+            in 60 until 75 ->
+                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF9800"))
+            else ->
+                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#00FF00"))
+        }
     }
 
     private fun setMovieName(){
