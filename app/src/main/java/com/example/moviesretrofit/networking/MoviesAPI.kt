@@ -14,4 +14,11 @@ interface MoviesAPI {
     @GET("/3/movie/top_rated")
     fun getHighRatedMovies(@Query("api_key") key: String,
                            @Query("page") page: Int): Call<PopularMoviesResponse>
+
+    @GET("/3/search/movie")
+    fun findMovieByName(@Query("api_key") key: String,
+                        @Query("page") page: Int,
+                        @Query("query") name: String,
+                        @Query("language") language: String = "en-US",
+                        @Query("include_adult") adult: Boolean = true): Call<PopularMoviesResponse>
 }

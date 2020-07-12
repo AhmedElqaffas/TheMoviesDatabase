@@ -2,6 +2,8 @@ package com.example.moviesretrofit
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,9 +27,9 @@ class MainActivity : AppCompatActivity(){
 
 
     private fun setViewPagerAdapter() {
-        val fragmentsList = listOf(PopularMoviesFragment(1),
-            PopularMoviesFragment(2),
-            FindMovieFragment())
+        val fragmentsList = listOf(PopularMoviesFragment.newInstance(1) as Fragment,
+            PopularMoviesFragment.newInstance(2) as Fragment,
+            FindMovieFragment() as Fragment)
         viewPager.adapter = ViewPagerAdapter(fragmentsList,supportFragmentManager, lifecycle)
     }
 
@@ -48,12 +50,14 @@ class MainActivity : AppCompatActivity(){
     private fun setupBottomNavigationChangeListener() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.popular -> {
+                R.id.popular ->
                     viewPager.setCurrentItem(0, true)
-                }
-                R.id.rating -> {
+
+                R.id.rating ->
                     viewPager.setCurrentItem(1, true)
-                }
+
+                R.id.search ->
+                    viewPager.setCurrentItem(2,true)
             }
             true
         }

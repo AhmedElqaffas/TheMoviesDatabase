@@ -15,8 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PopularMoviesFragment(private val getMoviesBasedOn: Int) : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInteraction  {
-
+class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInteraction  {
 
     private val key = "097aa1909532e2d795f4f414cf4bc13f"
     private var page = 1
@@ -26,6 +25,15 @@ class PopularMoviesFragment(private val getMoviesBasedOn: Int) : Fragment(),Movi
     private val moviesRecyclerAdapter = MoviesRecyclerAdapter(moviesList, this)
 
     private lateinit var inflated: View
+
+    companion object {
+
+        fun newInstance(getMoviesBasedOn: Int) = PopularMoviesFragment().apply {
+            arguments = Bundle().apply {
+                putInt("List Type", getMoviesBasedOn)
+            }
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         inflated = inflater.inflate(R.layout.fragment_movies_recycler, container, false)
@@ -53,7 +61,7 @@ class PopularMoviesFragment(private val getMoviesBasedOn: Int) : Fragment(),Movi
     }
 
     private fun makeMoviesRequest(){
-        if(getMoviesBasedOn == 1){
+        if( arguments?.getInt("List Type") == 1){
             makePopularMoviesRequest()
         }
         else{

@@ -8,7 +8,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_movie.view.*
 
 
-class MoviesRecyclerAdapter(private val moviesList: MutableList<Movie>,
+class MoviesRecyclerAdapter(private var moviesList: MutableList<Movie>,
                             private val interactionListener: MoviesRecyclerInteraction)
     : RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder>() {
 
@@ -58,6 +58,11 @@ class MoviesRecyclerAdapter(private val moviesList: MutableList<Movie>,
     fun appendToList(extraList: List<Movie>?){
         extraList?.let{moviesList.addAll(it)}
         notifyDataSetChanged()
+    }
+
+    fun overwriteList(newList: List<Movie>?){
+        moviesList.clear()
+        newList?.let { moviesList = it as MutableList<Movie>}
     }
 
     interface MoviesRecyclerInteraction{
