@@ -1,78 +1,61 @@
 package com.example.moviesretrofit
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import com.example.moviesretrofit.networking.MoviesAPI
-import com.example.moviesretrofit.networking.PopularMoviesResponse
-import com.example.moviesretrofit.networking.RetrofitClient
+import androidx.viewpager2.widget.ViewPager2
 import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class MainActivity : AppCompatActivity(), MoviesRecyclerAdapter.MoviesRecyclerInteraction {
 
-    private val key = "097aa1909532e2d795f4f414cf4bc13f"
-    private var page = 1
+/**
+ * THIS MAY BE A LITTLE ADVANCED. A MORE SIMPLE EXAMPLE TO STUDY IS AT THIS PROJECT FIRST COMMIT
+ * NAMED: "Initial app". REFER TO IT IF YOU HAVE DIFFICULTY STUDYING THIS EXAMPLE.
+ * STAY STRONG, FUTURE ME.
+ * SINCERELY, PAST YOU
+ */
+class MainActivity : AppCompatActivity(){
 
-    private lateinit var moviesAPI: MoviesAPI
-    private var moviesList = mutableListOf<Movie>()
-    private val moviesRecyclerAdapter = MoviesRecyclerAdapter(moviesList, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initializeRecyclerViewAdapter()
-        getInstanceOfRetrofitInterface()
-        makeMoviesRequest()
+        setViewPagerAdapter()
+        linkViewPagerAndBottomNavigation()
     }
 
-    private fun initializeRecyclerViewAdapter(){
-        moviesRecycler.adapter = moviesRecyclerAdapter
+
+    private fun setViewPagerAdapter() {
+        val fragmentsList = listOf(PopularMoviesFragment(1),
+            PopularMoviesFragment(2),
+            FindMovieFragment())
+        viewPager.adapter = ViewPagerAdapter(fragmentsList,supportFragmentManager, lifecycle)
     }
 
-    /* We can't instantiate an interface, so we create a class implementing this interface and get
-   an object from it
-    */
-    private fun getInstanceOfRetrofitInterface(){
-        moviesAPI = RetrofitClient.getRetrofitClient().create(MoviesAPI::class.java)
+    private fun linkViewPagerAndBottomNavigation() {
+        setViewPagerChangeListener()
+        setupBottomNavigationChangeListener()
     }
 
-    private fun makeMoviesRequest(){
-        moviesAPI.getPopularMovies(key, page)
-            .enqueue(object: Callback<PopularMoviesResponse>{
+    private fun setViewPagerChangeListener() {
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                bottomNavigationView.menu.getItem(position).isChecked = true
+            }
+        })
+    }
 
-                override fun onResponse(call: Call<PopularMoviesResponse>,
-                                        response: Response<PopularMoviesResponse>) {
-
-                        addNewPageItemsToRecyclerView(response)
+    private fun setupBottomNavigationChangeListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.popular -> {
+                    viewPager.setCurrentItem(0, true)
                 }
-
-                override fun onFailure(call: Call<PopularMoviesResponse>, t: Throwable) {
-                    Log.e("Movies error", "Couldn't get popular movies list")
+                R.id.rating -> {
+                    viewPager.setCurrentItem(1, true)
                 }
-            })
-    }
-
-    private fun addNewPageItemsToRecyclerView(response: Response<PopularMoviesResponse>) {
-        moviesRecyclerAdapter.appendToList(response.body()?.results)
-    }
-
-    override fun onEndOfMoviesPage() {
-        getNextPageMovies()
-    }
-
-    private fun getNextPageMovies(){
-        page++
-        makeMoviesRequest()
-    }
-
-    override fun onItemClicked(movie: Movie) {
-        val intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra("movie", movie)
-        startActivity(intent)
+            }
+            true
+        }
     }
 }

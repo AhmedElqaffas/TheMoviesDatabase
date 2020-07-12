@@ -1,9 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MovieDetailsActivity">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:background="#000000">
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MovieDetailsActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageView
+            android:id="@+id/movieCover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/moviePoster"
+            android:layout_width="150dp"
+            android:layout_height="250dp"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="100dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:foreground="@drawable/image_border"/>
+
+        <ProgressBar
+            android:id="@+id/ratingProgressBar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="@id/moviePoster"
+            app:layout_constraintLeft_toLeftOf="@id/moviePoster"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="140dp"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:indeterminate="false"
+            android:max="100"
+            android:progress="100"
+            android:background="@drawable/progressbar_background"
+            android:progressDrawable="@drawable/fixed_circular_progress_bar"/>
+
+        <TextView
+            android:id="@+id/movieRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="@id/ratingProgressBar"
+            app:layout_constraintRight_toRightOf="@id/ratingProgressBar"
+            app:layout_constraintLeft_toLeftOf="@id/ratingProgressBar"
+            app:layout_constraintBottom_toBottomOf="@id/ratingProgressBar"
+            android:text="10.0"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:elevation="10dp"
+            android:translationZ="10dp"/>
+
+        <TextView
+            android:id="@+id/movieName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/moviePoster"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginTop="20dp"
+            tools:text="This Should Hold Movie Name"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textAlignment="center"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/overviewWord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Overview"
+            app:layout_constraintTop_toBottomOf="@+id/movieName"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="45dp"
+            style="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="#A5A2A2"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:elevation="2dp"/>
+
+        <TextView
+            android:id="@+id/movieOverview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/movieName"
+            android:layout_marginTop="65dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:background="@drawable/overview_background"
+            android:padding="15dp"
+            android:layout_marginHorizontal="8dp"
+            tools:text="This Should Hold Movie Overview" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

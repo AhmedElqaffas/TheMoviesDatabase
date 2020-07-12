@@ -13,12 +13,11 @@ class MoviesRecyclerAdapter(private val moviesList: MutableList<Movie>,
     : RecyclerView.Adapter<MoviesRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        private val movieName = itemView.movieName
+        //private val movieName = itemView.movieName
         private val moviePoster = itemView.movieImage
 
         fun bindMovieData(movie: Movie){
             setClickListener(movie)
-            setItemTitle(movie)
             setItemImage(movie)
         }
 
@@ -28,13 +27,9 @@ class MoviesRecyclerAdapter(private val moviesList: MutableList<Movie>,
             }
         }
 
-        private fun setItemTitle(movie: Movie){
-            movieName.text = movie.title
-        }
-
         private fun setItemImage(movie: Movie) {
             Picasso.get()
-                .load("https://image.tmdb.org/t/p/original${movie.poster}")
+                .load("https://image.tmdb.org/t/p/w200${movie.poster}")
                 .fit()
                 .placeholder(R.drawable.loading_movie_image)
                 .into(moviePoster)

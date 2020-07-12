@@ -11,4 +11,7 @@ interface MoviesAPI {
     fun getPopularMovies(@Query("api_key") key: String,
                          @Query("page") page: Int): Call<PopularMoviesResponse>
 
+    @GET("/3/movie/top_rated")
+    fun getHighRatedMovies(@Query("api_key") key: String,
+                           @Query("page") page: Int): Call<PopularMoviesResponse>
 }
