@@ -19,6 +19,7 @@ class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInt
 
     private val key = "097aa1909532e2d795f4f414cf4bc13f"
     private var page = 1
+    private var totalPages = 0
 
     private lateinit var moviesAPI: MoviesAPI
     private var moviesList = mutableListOf<Movie>()
@@ -43,7 +44,6 @@ class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInt
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Log.i("Fragment", "Recreated")
         initializeRecyclerViewAdapter()
         getInstanceOfRetrofitInterface()
         makeMoviesRequest()
@@ -86,6 +86,7 @@ class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInt
                                     response: Response<PopularMoviesResponse>
             ) {
 
+                response.body()?.let{totalPages = it.totalPages}
                 addNewPageItemsToRecyclerView(response)
             }
 
@@ -104,8 +105,10 @@ class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInt
     }
 
     private fun getNextPageMovies(){
-        page++
-        makeMoviesRequest()
+        if(page < totalPages){
+            page++
+            makeMoviesRequest()
+        }
     }
 
     override fun onItemClicked(movie: Movie) {

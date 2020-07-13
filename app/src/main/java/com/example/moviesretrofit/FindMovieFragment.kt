@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.widget.addTextChangedListener
 import com.example.moviesretrofit.networking.MoviesAPI
 import com.example.moviesretrofit.networking.PopularMoviesResponse
 import com.example.moviesretrofit.networking.RetrofitClient
@@ -23,6 +22,7 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
 
     private val key = "097aa1909532e2d795f4f414cf4bc13f"
     private var page = 1
+    private var totalPages = 0
 
     private lateinit var moviesAPI: MoviesAPI
     private var moviesList = mutableListOf<Movie>()
@@ -73,10 +73,12 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
                                     response: Response<PopularMoviesResponse>
             ) {
                 if(searchTextChanged){
+                    response.body()?.let{totalPages = it.totalPages}
                     page = 1
                     moviesRecyclerAdapter.overwriteList(response.body()?.results)
                 }
                 else{
+                    response.body()?.let{totalPages = it.totalPages}
                     moviesRecyclerAdapter.appendToList(response.body()?.results)
                 }
                 moviesRecyclerAdapter.notifyDataSetChanged()
@@ -91,15 +93,12 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
     private fun setSearchBarChangeListener(){
         searchBar.addTextChangedListener( object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
-                Log.i("search changed", "after")
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                Log.i("search changed", "before")
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.i("search changed", "on")
                 searchTextChanged = true
                 makeMoviesRequest()
             }
@@ -108,9 +107,11 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
     }
 
     private fun getNextPageMovies(){
-        page++
-        searchTextChanged = false
-        makeMoviesRequest()
+        if(page < totalPages) {
+            page++
+            searchTextChanged = false
+            makeMoviesRequest()
+        }
     }
 
     override fun onItemClicked(movie: Movie) {

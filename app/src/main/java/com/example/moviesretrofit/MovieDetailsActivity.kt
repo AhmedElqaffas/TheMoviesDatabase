@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
+import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 class MovieDetailsActivity : AppCompatActivity() {
@@ -18,6 +19,7 @@ class MovieDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_movie_details)
         getClickedMovie()
         setMovieDetails()
+
     }
 
     private fun getClickedMovie(){
@@ -28,8 +30,10 @@ class MovieDetailsActivity : AppCompatActivity() {
         setMovieCover()
         setMoviePoster()
         setMovieRating()
+        setMovieVoteCount()
         setMovieName()
         setMovieOverview()
+        showCastFragment()
     }
 
     private fun setMovieCover(){
@@ -51,6 +55,14 @@ class MovieDetailsActivity : AppCompatActivity() {
         setProgressBarBasedOnRating((movie.rating * 10f).roundToInt())
     }
 
+    private fun setMovieVoteCount(){
+        voteCount.text = "${addSeparatorsToNumber(movie.totalVotes)} Votes"
+    }
+
+    private fun addSeparatorsToNumber(number: Int): String{
+        return NumberFormat.getNumberInstance().format(number)
+    }
+
     private fun setProgressBarBasedOnRating(rating: Int) {
         ratingProgressBar.progress = rating
         when(rating){
@@ -69,5 +81,12 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun setMovieOverview(){
         movieOverview.text = movie.overview
+    }
+
+    private fun showCastFragment(){
+        val castFragmentInstance = CastFragment.newInstance(movie)
+        supportFragmentManager.beginTransaction().replace(R.id.castFragmentFrame,
+            castFragmentInstance,"cast fragment")
+            .commit()
     }
 }
