@@ -23,7 +23,7 @@ class PopularMoviesFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInt
 
     private lateinit var moviesAPI: MoviesAPI
     private var moviesList = mutableListOf<Movie>()
-    private val moviesRecyclerAdapter = MoviesRecyclerAdapter(moviesList, this)
+    private var moviesRecyclerAdapter = MoviesRecyclerAdapter(moviesList, this)
 
     private lateinit var inflated: View
 

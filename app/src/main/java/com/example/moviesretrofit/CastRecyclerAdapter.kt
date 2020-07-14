@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_cast.view.*
-import kotlin.math.PI
+
 
 class CastRecyclerAdapter(private val castList: List<Cast>):
     RecyclerView.Adapter<CastRecyclerAdapter.ViewHolder>() {
@@ -41,9 +41,5 @@ class CastRecyclerAdapter(private val castList: List<Cast>):
 
     override fun getItemCount(): Int {
         return castList.size
-    }
-
-    fun setList(castList: List<Cast>){
-
     }
 }

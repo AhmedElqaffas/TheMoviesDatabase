@@ -1,8 +1,11 @@
 package com.example.moviesretrofit
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_movie.view.*
@@ -33,6 +36,7 @@ class MoviesRecyclerAdapter(private var moviesList: MutableList<Movie>,
                 .placeholder(R.drawable.loading_movie_image)
                 .into(moviePoster)
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -69,4 +73,5 @@ class MoviesRecyclerAdapter(private var moviesList: MutableList<Movie>,
         fun onEndOfMoviesPage()
         fun onItemClicked(movie: Movie)
     }
+
 }

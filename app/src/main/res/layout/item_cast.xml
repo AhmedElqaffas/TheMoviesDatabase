@@ -21,12 +21,14 @@
         app:layout_constraintLeft_toLeftOf="@id/castImage"
         app:layout_constraintRight_toRightOf="@id/castImage"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="40dp"
         android:background="@drawable/edit_text_curved"
         android:backgroundTint="#FF000000"
         tools:text="Jason Statham"
         android:textAlignment="center"
         android:textSize="18sp"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:paddingBottom="10dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
