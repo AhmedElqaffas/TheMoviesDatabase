@@ -9,13 +9,25 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MovieDetailsActivity">
+        tools:context=".MultiMediaDetailsActivity"
+        android:id="@+id/container">
+
+    <FrameLayout
+        android:id="@+id/topButtonsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:elevation="5dp"/>
 
         <ImageView
             android:id="@+id/movieCover"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="zoomImage"
+            android:scaleType="fitXY"
+            android:alpha="0.7" />
 
         <ImageView
             android:id="@+id/moviePoster"
@@ -25,7 +37,10 @@
             android:layout_marginTop="100dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:foreground="@drawable/image_border"/>
+            android:foreground="@drawable/image_border"
+            android:onClick="zoomImage"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"/>
 
         <ProgressBar
             android:id="@+id/ratingProgressBar"
@@ -54,9 +69,7 @@
             android:text="10.0"
             android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:elevation="10dp"
-            android:translationZ="10dp"/>
+            android:textColor="#FFFFFF"/>
 
         <TextView
             android:id="@+id/voteCount"
@@ -150,7 +163,6 @@
             app:layout_constraintWidth_percent="0.95"
             app:layout_constraintHorizontal_bias="0"
             android:layout_marginTop="15dp"/>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

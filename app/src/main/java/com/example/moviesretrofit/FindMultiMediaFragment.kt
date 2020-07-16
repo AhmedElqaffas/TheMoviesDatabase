@@ -127,7 +127,7 @@ class FindMultiMediaFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMediaRe
     }
 
     override fun onItemClicked(multiMedia: MultiMedia) {
-        val intent = Intent(activity, MovieDetailsActivity::class.java)
+        val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         if(multiMedia.mediaType == "movie")
             intent.putExtra("Media Type", MultiMediaRecyclerFragment.MOVIE )

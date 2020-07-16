@@ -111,6 +111,8 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
 
                 response.body()?.let{totalPages = it.totalPages}
                 addNewPageItemsToRecyclerView(response)
+                multiMediaShimmerContainer?.stopShimmer()
+                multiMediaShimmerContainer?.visibility = View.GONE
             }
 
             override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
@@ -135,7 +137,7 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
     }
 
     override fun onItemClicked(multiMedia: MultiMedia) {
-        val intent = Intent(activity, MovieDetailsActivity::class.java)
+        val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         if(arguments?.getInt("Media Type") == MOVIE)
             intent.putExtra("Media Type", MOVIE )

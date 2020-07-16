@@ -1,15 +1,20 @@
 package com.example.moviesretrofit
 
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageView
+import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
-class MovieDetailsActivity : AppCompatActivity() {
+class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private lateinit var multiMedia: MultiMedia
     private var multiMediaType: Int = 0
@@ -28,6 +33,7 @@ class MovieDetailsActivity : AppCompatActivity() {
     }
 
     private fun setMovieDetails(){
+        showTopFragment()
         setMediaCover()
         setMediaPoster()
         setMediaRating()
@@ -37,18 +43,24 @@ class MovieDetailsActivity : AppCompatActivity() {
         showCastFragment()
     }
 
+    private fun showTopFragment(){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.topButtonsContainer, BackButtonFragment(), "topFragment")
+            .commit()
+    }
+
     private fun setMediaCover(){
         Picasso.get()
             .load("https://image.tmdb.org/t/p/original${multiMedia.cover}")
-            .fit()
             .into(movieCover)
     }
 
     private fun setMediaPoster(){
         Picasso.get()
-            .load("https://image.tmdb.org/t/p/w200${multiMedia.poster}")
-            .fit()
+            .load("https://image.tmdb.org/t/p/original${multiMedia.poster}")
+            .placeholder(R.drawable.loading_movie_image)
             .into(moviePoster)
+
     }
 
     private fun setMediaRating(){
@@ -90,4 +102,9 @@ class MovieDetailsActivity : AppCompatActivity() {
             castFragmentInstance,"cast fragment")
             .commit()
     }
+
+    fun zoomImage(view: View){
+        ImageZooming.zoomImage(view as ImageView, this)
+    }
+
 }
