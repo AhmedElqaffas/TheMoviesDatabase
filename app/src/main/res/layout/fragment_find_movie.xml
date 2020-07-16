@@ -24,12 +24,14 @@
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:drawablePadding="5dp"/>
 
-    <include
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/multiMediaRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="20dp"
-        layout="@layout/fragment_movies_recycler"/>
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

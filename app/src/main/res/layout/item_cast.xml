@@ -22,13 +22,14 @@
         app:layout_constraintRight_toRightOf="@id/castImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="45dp"
         android:background="@drawable/edit_text_curved"
         android:backgroundTint="#FF000000"
         tools:text="Jason Statham"
         android:textAlignment="center"
         android:textSize="18sp"
         android:textColor="#FFFFFF"
-        android:paddingBottom="10dp"/>
+        android:paddingBottom="10dp"
+        android:elevation="35dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

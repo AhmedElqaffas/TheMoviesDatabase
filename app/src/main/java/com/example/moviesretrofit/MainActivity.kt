@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity(){
 
 
     private fun setViewPagerAdapter() {
-        val fragmentsList = listOf(PopularMoviesFragment.newInstance(1) as Fragment,
-            PopularMoviesFragment.newInstance(2) as Fragment,
-            FindMovieFragment() as Fragment)
+        val fragmentsList = listOf(MoviesFragment(),
+            SeriesFragment(),
+            FindMultiMediaFragment() as Fragment)
         viewPager.adapter = ViewPagerAdapter(fragmentsList,supportFragmentManager, lifecycle)
     }
 
@@ -49,12 +49,10 @@ class MainActivity : AppCompatActivity(){
     private fun setupBottomNavigationChangeListener() {
         bottomNavigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.popular ->
+                R.id.movies ->
                     viewPager.setCurrentItem(0, true)
-
-                R.id.rating ->
+                R.id.series ->
                     viewPager.setCurrentItem(1, true)
-
                 R.id.search ->
                     viewPager.setCurrentItem(2,true)
             }

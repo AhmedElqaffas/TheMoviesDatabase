@@ -2,17 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#000000">
+    tools:context=".MultiMediaRecyclerFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/moviesRecycler"
+        android:id="@+id/multiMediaRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        android:nestedScrollingEnabled="true"
-        tools:listitem="@layout/item_movie" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        tools:listitem="@layout/item_media" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

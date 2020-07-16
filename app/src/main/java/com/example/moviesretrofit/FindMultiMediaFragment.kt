@@ -9,24 +9,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.moviesretrofit.networking.MoviesAPI
-import com.example.moviesretrofit.networking.PopularMoviesResponse
+import com.example.moviesretrofit.networking.MultiMediaAPI
+import com.example.moviesretrofit.networking.MultiMediaResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.android.synthetic.main.fragment_find_movie.*
-import kotlinx.android.synthetic.main.fragment_movies_recycler.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInteraction {
+class FindMultiMediaFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
 
     private val key = "097aa1909532e2d795f4f414cf4bc13f"
     private var page = 1
     private var totalPages = 0
 
-    private lateinit var moviesAPI: MoviesAPI
-    private var moviesList = mutableListOf<Movie>()
-    private var moviesRecyclerAdapter = MoviesRecyclerAdapter(moviesList, this)
+    private lateinit var multiMediaAPI: MultiMediaAPI
+    private var mediaList = mutableListOf<MultiMedia>()
+    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(mediaList,
+        MultiMediaRecyclerAdapter.Type.SEARCH , this)
 
     private lateinit var inflated: View
     private var searchTextChanged = true
@@ -46,44 +45,46 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
     }
 
     private fun initializeRecyclerViewAdapter(){
-        moviesRecycler.adapter = moviesRecyclerAdapter
+        multiMediaRecycler.adapter = multiMediaRecyclerAdapter
     }
 
     /* We can't instantiate an interface, so we create a class implementing this interface and get
        an object from it
     */
     private fun getInstanceOfRetrofitInterface(){
-        moviesAPI = RetrofitClient.getRetrofitClient().create(MoviesAPI::class.java)
+        multiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
     }
 
-    override fun onEndOfMoviesPage() {
+    override fun onEndOfMultiMediaPage() {
         getNextPageMovies()
     }
 
     private fun makeMoviesRequest(){
-        moviesAPI.findMovieByName(key, page, searchBar.text.toString())
+        multiMediaAPI.findMediaByName(key, page, searchBar.text.toString())
             .apply { enqueueCallback(this) }
     }
 
-    private fun enqueueCallback(call: Call<PopularMoviesResponse>) {
-        call.enqueue(object: Callback<PopularMoviesResponse> {
+    private fun enqueueCallback(call: Call<MultiMediaResponse>) {
+        call.enqueue(object: Callback<MultiMediaResponse> {
 
-            override fun onResponse(call: Call<PopularMoviesResponse>,
-                                    response: Response<PopularMoviesResponse>
+            override fun onResponse(call: Call<MultiMediaResponse>,
+                                    response: Response<MultiMediaResponse>
             ) {
                 if(searchTextChanged){
                     response.body()?.let{totalPages = it.totalPages}
                     page = 1
-                    moviesRecyclerAdapter.overwriteList(response.body()?.results)
+                    val itemsList = removePeopleEntriesFromResponse(response.body())
+                    multiMediaRecyclerAdapter.overwriteList(itemsList)
                 }
                 else{
                     response.body()?.let{totalPages = it.totalPages}
-                    moviesRecyclerAdapter.appendToList(response.body()?.results)
+                    val itemsList = removePeopleEntriesFromResponse(response.body())
+                    multiMediaRecyclerAdapter.appendToList(itemsList)
                 }
-                moviesRecyclerAdapter.notifyDataSetChanged()
+                multiMediaRecyclerAdapter.notifyDataSetChanged()
             }
 
-            override fun onFailure(call: Call<PopularMoviesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list")
             }
         })
@@ -105,6 +106,18 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
         })
     }
 
+    private fun removePeopleEntriesFromResponse(body: MultiMediaResponse?): MutableList<MultiMedia>{
+        val entriesList = mutableListOf<MultiMedia>()
+        body?.let {
+            for(entry in body.results){
+                if(entry.mediaType != "person"){
+                    entriesList.add(entry)
+                }
+            }
+        }
+        return entriesList
+    }
+
     private fun getNextPageMovies(){
         if(page < totalPages) {
             page++
@@ -113,9 +126,13 @@ class FindMovieFragment : Fragment(),MoviesRecyclerAdapter.MoviesRecyclerInterac
         }
     }
 
-    override fun onItemClicked(movie: Movie) {
+    override fun onItemClicked(multiMedia: MultiMedia) {
         val intent = Intent(activity, MovieDetailsActivity::class.java)
-        intent.putExtra("movie", movie)
+        intent.putExtra("media", multiMedia)
+        if(multiMedia.mediaType == "movie")
+            intent.putExtra("Media Type", MultiMediaRecyclerFragment.MOVIE )
+        else
+            intent.putExtra("Media Type", MultiMediaRecyclerFragment.SERIES )
         startActivity(intent)
     }
 }

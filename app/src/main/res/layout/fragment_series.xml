@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollView">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000">
+
+        <TextView
+            android:id="@+id/titleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/courgette"
+            android:text="TV Shows"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/popularSeriesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleText"
+            android:layout_marginTop="250dp"
+            android:layout_marginStart="20dp"
+            android:text="Popular"
+            android:textSize="25sp"
+            android:textColor="#FFFFFF"
+            android:drawableStart="@drawable/ic_baseline_group_24"
+            android:drawablePadding="8dp"
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:id="@+id/popularSeriesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/popularSeriesText"
+            android:layout_marginTop="20dp"/>
+
+        <TextView
+            android:id="@+id/topRatedSeriesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/popularSeriesContainer"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="20dp"
+            android:text="Top Rated"
+            android:textSize="25sp"
+            android:textColor="#FFFFFF"
+            android:drawableStart="@drawable/ic_baseline_star_24"
+            android:drawablePadding="8dp"
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:id="@+id/topRatedSeriesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/topRatedSeriesText"
+            android:layout_marginTop="20dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

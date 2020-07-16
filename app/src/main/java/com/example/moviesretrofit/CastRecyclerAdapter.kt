@@ -22,6 +22,7 @@ class CastRecyclerAdapter(private val castList: List<Cast>):
             Picasso.get()
                 .load("https://image.tmdb.org/t/p/w200$path")
                 .fit()
+                .placeholder(R.drawable.ic_baseline_person_24)
                 .into(itemView.castImage)
         }
 

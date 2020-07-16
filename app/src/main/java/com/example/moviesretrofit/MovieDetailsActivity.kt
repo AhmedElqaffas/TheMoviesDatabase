@@ -11,7 +11,8 @@ import kotlin.math.roundToInt
 
 class MovieDetailsActivity : AppCompatActivity() {
 
-    private lateinit var movie: Movie
+    private lateinit var multiMedia: MultiMedia
+    private var multiMediaType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,40 +23,41 @@ class MovieDetailsActivity : AppCompatActivity() {
     }
 
     private fun getClickedMovie(){
-        movie = intent.getSerializableExtra("movie") as Movie
+        multiMedia = intent.getSerializableExtra("media") as MultiMedia
+        multiMediaType = intent.getIntExtra("Media Type",1)
     }
 
     private fun setMovieDetails(){
-        setMovieCover()
-        setMoviePoster()
-        setMovieRating()
-        setMovieVoteCount()
-        setMovieName()
-        setMovieOverview()
+        setMediaCover()
+        setMediaPoster()
+        setMediaRating()
+        setMediaVoteCount()
+        setMediaName()
+        setMediaOverview()
         showCastFragment()
     }
 
-    private fun setMovieCover(){
+    private fun setMediaCover(){
         Picasso.get()
-            .load("https://image.tmdb.org/t/p/original${movie.cover}")
+            .load("https://image.tmdb.org/t/p/original${multiMedia.cover}")
             .fit()
             .into(movieCover)
     }
 
-    private fun setMoviePoster(){
+    private fun setMediaPoster(){
         Picasso.get()
-            .load("https://image.tmdb.org/t/p/w200${movie.poster}")
+            .load("https://image.tmdb.org/t/p/w200${multiMedia.poster}")
             .fit()
             .into(moviePoster)
     }
 
-    private fun setMovieRating(){
-        movieRating.text = movie.rating.toString()
-        setProgressBarBasedOnRating((movie.rating * 10f).roundToInt())
+    private fun setMediaRating(){
+        movieRating.text = multiMedia.rating.toString()
+        setProgressBarBasedOnRating((multiMedia.rating * 10f).roundToInt())
     }
 
-    private fun setMovieVoteCount(){
-        voteCount.text = "${addSeparatorsToNumber(movie.totalVotes)} Votes"
+    private fun setMediaVoteCount(){
+        voteCount.text = "${addSeparatorsToNumber(multiMedia.totalVotes)} Votes"
     }
 
     private fun addSeparatorsToNumber(number: Int): String{
@@ -74,16 +76,16 @@ class MovieDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setMovieName(){
-        movieName.text = movie.title
+    private fun setMediaName(){
+        movieName.text = multiMedia.title
     }
 
-    private fun setMovieOverview(){
-        movieOverview.text = movie.overview
+    private fun setMediaOverview(){
+        movieOverview.text = multiMedia.overview
     }
 
     private fun showCastFragment(){
-        val castFragmentInstance = CastFragment.newInstance(movie)
+        val castFragmentInstance = CastFragment.newInstance(multiMedia, multiMediaType)
         supportFragmentManager.beginTransaction().replace(R.id.castFragmentFrame,
             castFragmentInstance,"cast fragment")
             .commit()
