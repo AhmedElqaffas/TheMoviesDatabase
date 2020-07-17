@@ -111,8 +111,7 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
 
                 response.body()?.let{totalPages = it.totalPages}
                 addNewPageItemsToRecyclerView(response)
-                multiMediaShimmerContainer?.stopShimmer()
-                multiMediaShimmerContainer?.visibility = View.GONE
+                hideShimmerEffect()
             }
 
             override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
@@ -123,6 +122,11 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
 
     private fun addNewPageItemsToRecyclerView(response: Response<MultiMediaResponse>) {
         multiMediaRecyclerAdapter.appendToList(response.body()?.results)
+    }
+
+    private fun hideShimmerEffect(){
+        multiMediaShimmerContainer?.stopShimmer()
+        multiMediaShimmerContainer?.visibility = View.GONE
     }
 
     override fun onEndOfMultiMediaPage() {

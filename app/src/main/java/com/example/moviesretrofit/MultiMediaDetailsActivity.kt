@@ -106,5 +106,4 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
     fun zoomImage(view: View){
         ImageZooming.zoomImage(view as ImageView, this)
     }
-
 }

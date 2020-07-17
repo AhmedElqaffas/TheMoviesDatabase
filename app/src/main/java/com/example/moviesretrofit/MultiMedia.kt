@@ -3,7 +3,7 @@ package com.example.moviesretrofit
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-data class MultiMedia(val title: String,
+data class MultiMedia(@SerializedName("name", alternate = ["title"]) val title: String,
                       val id: Int,
                       @SerializedName("vote_count") val totalVotes: Int,
                       @SerializedName("poster_path") val poster: String,
