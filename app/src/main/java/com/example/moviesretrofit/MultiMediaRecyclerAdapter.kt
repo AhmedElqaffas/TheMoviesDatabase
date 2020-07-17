@@ -8,8 +8,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_media.view.*
 
 
-class MultiMediaRecyclerAdapter(private var multiMediaList: MutableList<MultiMedia>,
-                                private val recyclerType: Int,
+class MultiMediaRecyclerAdapter(private val recyclerType: Int,
                                 private val interactionListener: MultiMediaRecyclerInteraction)
     : RecyclerView.Adapter<MultiMediaRecyclerAdapter.ViewHolder>() {
 
@@ -17,6 +16,8 @@ class MultiMediaRecyclerAdapter(private var multiMediaList: MutableList<MultiMed
         const val BROWSE = 1
         const val SEARCH = 2
     }
+
+    private var multiMediaList = mutableListOf<MultiMedia>()
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val poster = itemView.mediaImage

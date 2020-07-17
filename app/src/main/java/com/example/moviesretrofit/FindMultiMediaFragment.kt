@@ -23,8 +23,7 @@ class FindMultiMediaFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMediaRe
     private var totalPages = 0
 
     private lateinit var multiMediaAPI: MultiMediaAPI
-    private var mediaList = mutableListOf<MultiMedia>()
-    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(mediaList,
+    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(
         MultiMediaRecyclerAdapter.Type.SEARCH , this)
 
     private lateinit var inflated: View

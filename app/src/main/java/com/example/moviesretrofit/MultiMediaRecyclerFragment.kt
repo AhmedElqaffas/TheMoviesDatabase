@@ -2,30 +2,22 @@ package com.example.moviesretrofit
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.networking.MultiMediaResponse
-import com.example.moviesretrofit.networking.RetrofitClient
+import com.example.moviesretrofit.datarepositories.*
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
+class MultiMediaRecyclerFragment : Fragment(),
+    MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction,
+    MultiMediaRequestsListener {
 
 
-class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction  {
-
-
-    private val key = "097aa1909532e2d795f4f414cf4bc13f"
     private var page = 1
     private var totalPages = 0
 
-    private lateinit var multiMediaAPI: MultiMediaAPI
-    private var multiMediaList = mutableListOf<MultiMedia>()
-    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(multiMediaList,
+    private var multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(
         MultiMediaRecyclerAdapter.Type.BROWSE, this)
 
     private lateinit var inflated: View
@@ -52,22 +44,15 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
         super.onActivityCreated(savedInstanceState)
 
         initializeRecyclerViewAdapter()
-        getInstanceOfRetrofitInterface()
-        makeMoviesRequest()
+        makeRequest()
     }
 
     private fun initializeRecyclerViewAdapter(){
         multiMediaRecycler.adapter = multiMediaRecyclerAdapter
     }
 
-    /* We can't instantiate an interface, so we create a class implementing this interface and get
-   an object from it
-    */
-    private fun getInstanceOfRetrofitInterface(){
-        multiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
-    }
 
-    private fun makeMoviesRequest(){
+    private fun makeRequest(){
         if( arguments?.getInt("Sort Type") == 1){
             if(arguments?.getInt("Media Type") == MOVIE)
                 makePopularMoviesRequest()
@@ -76,52 +61,34 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
         }
         else{
             if(arguments?.getInt("Media Type") == MOVIE)
-                makeRatedMoviesRequest()
+               makeRatedMoviesRequest()
             else
                 makeRatedSeriesRequest()
         }
     }
 
     private fun makePopularMoviesRequest() {
-        multiMediaAPI.getPopularMovies(key, page)
-            .apply { enqueueCallback(this) }
+        PopularMoviesRepository.popularMoviesRequestsListener = this
+        PopularMoviesRepository.makePopularMoviesRequest(page)
     }
 
     private fun makeRatedMoviesRequest() {
-        multiMediaAPI.getHighRatedMovies(key, page)
-            .apply { enqueueCallback(this) }
+        RatedMoviesRepository.ratedMoviesRequestsListener = this
+        RatedMoviesRepository.makeRatedMoviesRequest(page)
     }
 
     private fun makePopularSeriesRequest() {
-        multiMediaAPI.getPopularSeries(key, page)
-            .apply { enqueueCallback(this) }
+        PopularSeriesRepository.popularSeriesRequestsListener = this
+        PopularSeriesRepository.makePopularSeriesRequest(page)
     }
 
     private fun makeRatedSeriesRequest() {
-        multiMediaAPI.getHighRatedSeries(key, page)
-            .apply { enqueueCallback(this) }
+        RatedSeriesRepository.ratedSeriesRequestsListener = this
+        RatedSeriesRepository.makeRatedSeriesRequest(page)
     }
 
-    private fun enqueueCallback(call: Call<MultiMediaResponse>) {
-        call.enqueue(object: Callback<MultiMediaResponse> {
-
-            override fun onResponse(call: Call<MultiMediaResponse>,
-                                    response: Response<MultiMediaResponse>
-            ) {
-
-                response.body()?.let{totalPages = it.totalPages}
-                addNewPageItemsToRecyclerView(response)
-                hideShimmerEffect()
-            }
-
-            override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
-                Log.e("Movies error", "Couldn't get movies list")
-            }
-        })
-    }
-
-    private fun addNewPageItemsToRecyclerView(response: Response<MultiMediaResponse>) {
-        multiMediaRecyclerAdapter.appendToList(response.body()?.results)
+    private fun addNewPageItemsToRecyclerView(mediaList: MutableList<MultiMedia>) {
+        multiMediaRecyclerAdapter.appendToList(mediaList)
     }
 
     private fun hideShimmerEffect(){
@@ -136,7 +103,7 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
     private fun getNextPageMovies(){
         if(page < totalPages){
             page++
-            makeMoviesRequest()
+            makeRequest()
         }
     }
 
@@ -148,5 +115,16 @@ class MultiMediaRecyclerFragment : Fragment(),MultiMediaRecyclerAdapter.MultiMed
         else
             intent.putExtra("Media Type", SERIES )
         startActivity(intent)
+    }
+
+    override fun responseLoaded(mediaList: List<MultiMedia>, totalPages: Int) {
+        this.totalPages = totalPages
+
+        addNewPageItemsToRecyclerView(mediaList.toMutableList())
+        hideShimmerEffect()
+    }
+
+    override fun updateCurrentPage(currentPage: Int){
+        this.page = currentPage
     }
 }
