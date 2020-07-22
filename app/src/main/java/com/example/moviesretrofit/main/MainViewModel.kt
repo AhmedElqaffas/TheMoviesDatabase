@@ -6,8 +6,7 @@ import com.example.moviesretrofit.dataRepositories.PopularMoviesRepository
 import com.example.moviesretrofit.dataRepositories.PopularSeriesRepository
 import com.example.moviesretrofit.dataRepositories.RatedMoviesRepository
 import com.example.moviesretrofit.dataRepositories.RatedSeriesRepository
-import com.example.moviesretrofit.models.MultiMedia
-import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 
 
 class MainViewModel: ViewModel() {

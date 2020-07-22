@@ -15,8 +15,8 @@ import com.example.moviesretrofit.mediaDetails.MultiMediaDetailsActivity
 import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.FindMultiMediaViewModel
-import com.example.moviesretrofit.models.MultiMedia
-import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 import kotlinx.android.synthetic.main.fragment_find_movie.*
 class FindMultiMediaFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
@@ -54,7 +54,6 @@ class FindMultiMediaFragment : Fragment(),
     }
 
     private fun makeMoviesRequest(){
-        println("FRAGMENT:  $page")
         val foundMediaLiveData = findMediaViewModel.findMediaByName(page, searchBar.text.toString(), searchTextChanged)
         createDataObserverIfNotExists(foundMediaLiveData)
     }

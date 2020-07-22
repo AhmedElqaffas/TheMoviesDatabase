@@ -1,6 +1,6 @@
 package com.example.moviesretrofit.dataRepositories
 
-import com.example.moviesretrofit.models.MultiMedia
+import com.example.moviesretrofit.dataClasses.MultiMedia
 
 interface MultiMediaRequestsListener{
     fun responseLoaded(mediaList: List<MultiMedia>, totalPages: Int)

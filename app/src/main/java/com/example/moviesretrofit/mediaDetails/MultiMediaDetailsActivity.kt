@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.ImageView
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.helpers.ImageZooming
-import com.example.moviesretrofit.models.MultiMedia
+import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*

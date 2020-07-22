@@ -3,10 +3,10 @@ package com.example.moviesretrofit.dataRepositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviesretrofit.models.MultiMedia
-import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.models.MultiMediaResponse
+import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback

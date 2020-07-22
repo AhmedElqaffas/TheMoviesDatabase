@@ -1,7 +1,7 @@
 package com.example.moviesretrofit.networking
 
-import com.example.moviesretrofit.models.CastResponse
-import com.example.moviesretrofit.models.MultiMediaResponse
+import com.example.moviesretrofit.dataClasses.CreditsResponse
+import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -26,7 +26,7 @@ interface MultiMediaAPI {
 
     @GET("/3/movie/{movie_id}/credits")
     fun getMovieCast(@Path("movie_id") id: Int,
-                     @Query("api_key") key: String): Call<CastResponse>
+                     @Query("api_key") key: String): Call<CreditsResponse>
 
     @GET("/3/tv/popular")
     fun getPopularSeries(@Query("api_key") key: String,
@@ -38,5 +38,5 @@ interface MultiMediaAPI {
 
     @GET("/3/tv/{tv_id}/credits")
     fun getSeriesCast(@Path("tv_id") id: Int,
-                     @Query("api_key") key: String): Call<CastResponse>
+                     @Query("api_key") key: String): Call<CreditsResponse>
 }

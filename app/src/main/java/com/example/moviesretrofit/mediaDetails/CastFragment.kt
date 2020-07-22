@@ -1,22 +1,17 @@
 package com.example.moviesretrofit.mediaDetails
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.example.moviesretrofit.R
-import com.example.moviesretrofit.models.Cast
-import com.example.moviesretrofit.models.CastResponse
-import com.example.moviesretrofit.models.MultiMedia
-import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.networking.RetrofitClient
+import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.dataClasses.Person
 import com.example.moviesretrofit.recyclersAdapters.CastRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_cast.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class CastFragment : Fragment() {
@@ -35,59 +30,30 @@ class CastFragment : Fragment() {
         }
     }
 
-    private val key = "097aa1909532e2d795f4f414cf4bc13f"
-    private lateinit var multiMediaAPI: MultiMediaAPI
+
     private lateinit var multiMedia: MultiMedia
     private var multiMediaType: Int? = 0
+    private val mediaDetailsViewModel: MediaDetailsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_cast, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         multiMedia = arguments?.getSerializable("media") as MultiMedia
         multiMediaType = arguments?.getInt("media type")
-        getInstanceOfRetrofitInterface()
         makeCastRequest()
     }
 
-    private fun getInstanceOfRetrofitInterface(){
-        multiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
-    }
-
     private fun makeCastRequest(){
-        if(multiMediaType == MOVIE)
-            makeMoviesCastRequest()
-        else
-            makeSeriesCastRequest()
+        mediaDetailsViewModel.getMultimediaCredits(multiMedia.id, multiMediaType!!)
+            .observe(viewLifecycleOwner, Observer{
+                setRecyclerAdapterList(mediaDetailsViewModel.appendCastAndCrewLists(it))
+            })
     }
 
-    private fun makeMoviesCastRequest(){
-        multiMediaAPI.getMovieCast(multiMedia.id, key)
-            .apply {enqueueCallback(this)}
-    }
-
-    private fun makeSeriesCastRequest() {
-        multiMediaAPI.getSeriesCast(multiMedia.id, key)
-            .apply {enqueueCallback(this)}
-    }
-
-    private fun enqueueCallback(call: Call<CastResponse>) {
-        call.enqueue(object: Callback<CastResponse> {
-
-            override fun onResponse(call: Call<CastResponse>, response: Response<CastResponse>) {
-                response.body()?.let { setRecyclerAdapterList(it.cast) }
-            }
-
-            override fun onFailure(call: Call<CastResponse>, t: Throwable) {
-                Log.i("Cast Fragment", "Retrofit Call Failed")
-            }
-
-        })
-    }
-
-    private fun setRecyclerAdapterList(cast: List<Cast>){
+    private fun setRecyclerAdapterList(cast: List<Person>){
         val castRecyclerAdapter =
             CastRecyclerAdapter(cast)
         castRecycler?.adapter = castRecyclerAdapter

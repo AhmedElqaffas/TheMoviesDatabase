@@ -13,8 +13,8 @@ import com.example.moviesretrofit.mediaDetails.MultiMediaDetailsActivity
 import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.MainViewModel
-import com.example.moviesretrofit.models.MultiMedia
-import com.example.moviesretrofit.models.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
 
 class MultiMediaRecyclerFragment : Fragment(),

@@ -5,19 +5,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesretrofit.R
-import com.example.moviesretrofit.models.Cast
+import com.example.moviesretrofit.dataClasses.Person
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_cast.view.*
 
 
-class CastRecyclerAdapter(private val castList: List<Cast>):
+class CastRecyclerAdapter(private val castCrewList: List<Person>):
     RecyclerView.Adapter<CastRecyclerAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
 
-        fun bindCastData(cast: Cast) {
-            setImage(cast.image)
-            setName(cast.name)
+        fun bindCastData(person: Person) {
+            setImage(person.image)
+            setName(person.name)
         }
 
         private fun setImage(path: String){
@@ -39,10 +39,10 @@ class CastRecyclerAdapter(private val castList: List<Cast>):
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindCastData(castList[position])
+        holder.bindCastData(castCrewList[position])
     }
 
     override fun getItemCount(): Int {
-        return castList.size
+        return castCrewList.size
     }
 }
