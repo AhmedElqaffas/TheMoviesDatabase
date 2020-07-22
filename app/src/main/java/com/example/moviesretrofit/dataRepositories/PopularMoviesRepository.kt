@@ -49,9 +49,8 @@ object PopularMoviesRepository{
     }
 
     private fun returnCachedData(){
-        popularMoviesResponseLiveData.postValue(
+        popularMoviesResponseLiveData.value =
             MultiMediaRepositoryResponse(popularMovies, currentPage, popularMoviesTotalPages)
-        )
     }
 
     private fun enqueueCallback(call: Call<MultiMediaResponse>) {

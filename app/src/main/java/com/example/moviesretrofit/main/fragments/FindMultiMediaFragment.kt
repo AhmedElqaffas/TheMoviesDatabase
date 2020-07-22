@@ -67,20 +67,10 @@ class FindMultiMediaFragment : Fragment(),
     }
 
     private fun extractObservedItems(response: MultiMediaRepositoryResponse){
-        val itemsList = removePeopleEntriesFromResponse(response.multimediaList)
+        val itemsList = findMediaViewModel.removePeopleEntriesFromResponse(response.multimediaList)
         overwriteOrAppendToRecycler(itemsList)
         page = response.currentPage
         totalPages = response.totalPages
-    }
-
-    private fun removePeopleEntriesFromResponse(foundMediaList: List<MultiMedia>): MutableList<MultiMedia>{
-        val entriesList = mutableListOf<MultiMedia>()
-        for(entry in foundMediaList){
-            if(entry.mediaType != "person"){
-                entriesList.add(entry)
-            }
-        }
-        return entriesList
     }
 
     private fun overwriteOrAppendToRecycler(mediaList: List<MultiMedia>){
