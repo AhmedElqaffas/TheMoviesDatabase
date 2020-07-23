@@ -20,8 +20,8 @@ object CastFragmentModel {
     private lateinit var credits: CreditsResponse
 
     fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<CreditsResponse>{
+        creditsLiveData.value = null
         returnCachedOrNetworkData(id, multimediaType)
-
         return creditsLiveData
     }
 

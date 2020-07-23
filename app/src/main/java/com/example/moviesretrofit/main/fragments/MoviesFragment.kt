@@ -18,7 +18,8 @@ class MoviesFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setMoviesFragments()
+        if(savedInstanceState == null)
+            setMoviesFragments()
     }
 
     private fun setMoviesFragments() {

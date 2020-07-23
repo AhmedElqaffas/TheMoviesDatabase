@@ -15,7 +15,8 @@ class SeriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setSeriesFragments()
+        if(savedInstanceState == null)
+            setSeriesFragments()
     }
 
     private fun setSeriesFragments() {

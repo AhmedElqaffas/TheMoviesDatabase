@@ -25,6 +25,7 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_movie_details)
         getClickedMovie()
         setMovieDetails()
+        showCastFragmentIfNoSavedInstance(savedInstanceState)
 
     }
 
@@ -41,7 +42,6 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
         setMediaVoteCount()
         setMediaName()
         setMediaOverview()
-        showCastFragment()
     }
 
     private fun showTopFragment(){
@@ -95,6 +95,11 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private fun setMediaOverview(){
         movieOverview.text = multiMedia.overview
+    }
+
+    private fun showCastFragmentIfNoSavedInstance(savedInstanceState: Bundle?){
+        if(savedInstanceState == null)
+            showCastFragment()
     }
 
     private fun showCastFragment(){

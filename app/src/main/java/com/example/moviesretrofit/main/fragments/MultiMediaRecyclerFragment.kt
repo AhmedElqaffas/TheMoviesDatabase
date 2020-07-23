@@ -15,6 +15,7 @@ import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.MainViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.testActivity
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
 
 class MultiMediaRecyclerFragment : Fragment(),
@@ -138,13 +139,10 @@ class MultiMediaRecyclerFragment : Fragment(),
         val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         if(arguments?.getInt("Media Type") == MOVIE)
-            intent.putExtra("Media Type",
-                MOVIE
-            )
+            intent.putExtra("Media Type", MOVIE)
         else
-            intent.putExtra("Media Type",
-                SERIES
-            )
+            intent.putExtra("Media Type", SERIES)
+        //val intent = Intent(activity, testActivity::class.java)
         startActivity(intent)
     }
 }

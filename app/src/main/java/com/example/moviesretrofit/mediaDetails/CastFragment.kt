@@ -1,11 +1,13 @@
 package com.example.moviesretrofit.mediaDetails
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.dataClasses.MultiMedia
@@ -14,7 +16,7 @@ import com.example.moviesretrofit.recyclersAdapters.CastRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_cast.*
 
 
-class CastFragment : Fragment() {
+class CastFragment : Fragment(){
 
     companion object {
 
@@ -49,13 +51,13 @@ class CastFragment : Fragment() {
     private fun makeCastRequest(){
         mediaDetailsViewModel.getMultimediaCredits(multiMedia.id, multiMediaType!!)
             .observe(viewLifecycleOwner, Observer{
-                setRecyclerAdapterList(mediaDetailsViewModel.appendCastAndCrewLists(it))
+                it?.let {
+                    setRecyclerAdapterList(mediaDetailsViewModel.appendCastAndCrewLists(it))
+                }
             })
     }
 
     private fun setRecyclerAdapterList(cast: List<Person>){
-        val castRecyclerAdapter =
-            CastRecyclerAdapter(cast)
-        castRecycler?.adapter = castRecyclerAdapter
+        castRecycler?.adapter = CastRecyclerAdapter(cast)
     }
 }
