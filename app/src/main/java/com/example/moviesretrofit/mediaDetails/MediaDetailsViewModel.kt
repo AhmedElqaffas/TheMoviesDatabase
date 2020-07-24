@@ -7,14 +7,7 @@ import com.example.moviesretrofit.dataClasses.Person
 
 class MediaDetailsViewModel: ViewModel() {
 
-    fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<CreditsResponse>{
+    fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<List<Person>>{
         return CastFragmentModel.getMultimediaCredits(id, multimediaType)
-    }
-
-    fun appendCastAndCrewLists(creditsResponse: CreditsResponse): List<Person> {
-        val combinedList = mutableListOf<Person>()
-        combinedList.addAll(creditsResponse.cast)
-        combinedList.addAll(creditsResponse.crew)
-        return combinedList.toList()
     }
 }

@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.networking.RetrofitClient
@@ -22,9 +21,9 @@ object PopularMoviesRepository{
     private var currentPage = 1
     private var popularMoviesTotalPages = 0
 
-    private val popularMoviesResponseLiveData: MutableLiveData<MultiMediaRepositoryResponse> = MutableLiveData()
+    private val popularMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
 
-    fun makePopularMoviesRequest(page: Int): LiveData<MultiMediaRepositoryResponse> {
+    fun makePopularMoviesRequest(page: Int): LiveData<MultiMediaResponse> {
         if(page == 1) {
             sendCachedOrNetworkData()
         }
@@ -50,7 +49,7 @@ object PopularMoviesRepository{
 
     private fun returnCachedData(){
         popularMoviesResponseLiveData.value =
-            MultiMediaRepositoryResponse(popularMovies, currentPage, popularMoviesTotalPages)
+            MultiMediaResponse(currentPage, popularMovies, popularMoviesTotalPages)
     }
 
     private fun enqueueCallback(call: Call<MultiMediaResponse>) {
@@ -61,7 +60,7 @@ object PopularMoviesRepository{
             ) {
                 response.body()?.let {
                     popularMoviesResponseLiveData.postValue(
-                        MultiMediaRepositoryResponse(it.results, it.page, it.totalPages)
+                        MultiMediaResponse(it.page, it.results, it.totalPages)
                     )
                     updateRepository(it)
                 }

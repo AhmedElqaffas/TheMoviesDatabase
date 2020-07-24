@@ -25,14 +25,17 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         private val poster = itemView.mediaImage
 
+        init{
+            setClickListener()
+        }
+
         fun bindMovieData(multiMedia: MultiMedia){
-            setClickListener(multiMedia)
             setItemImage(multiMedia)
         }
 
-        private fun setClickListener(multiMedia: MultiMedia){
+        private fun setClickListener(){
             itemView.setOnClickListener{
-                interactionListener.onItemClicked(multiMedia)
+                interactionListener.onItemClicked(multiMediaList[layoutPosition])
             }
         }
 

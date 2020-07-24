@@ -16,7 +16,7 @@ import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.FindMultiMediaViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
+import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import kotlinx.android.synthetic.main.fragment_find_movie.*
 class FindMultiMediaFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
@@ -58,7 +58,7 @@ class FindMultiMediaFragment : Fragment(),
         createDataObserverIfNotExists(foundMediaLiveData)
     }
 
-    private fun createDataObserverIfNotExists(liveData: LiveData<MultiMediaRepositoryResponse>){
+    private fun createDataObserverIfNotExists(liveData: LiveData<MultiMediaResponse>){
         if(!liveData.hasActiveObservers()){
             liveData.observe(viewLifecycleOwner, Observer {
                 extractObservedItems(it)
@@ -66,10 +66,9 @@ class FindMultiMediaFragment : Fragment(),
         }
     }
 
-    private fun extractObservedItems(response: MultiMediaRepositoryResponse){
-        val itemsList = findMediaViewModel.removePeopleEntriesFromResponse(response.multimediaList)
-        overwriteOrAppendToRecycler(itemsList)
-        page = response.currentPage
+    private fun extractObservedItems(response: MultiMediaResponse){
+        overwriteOrAppendToRecycler(response.results)
+        page = response.page
         totalPages = response.totalPages
     }
 

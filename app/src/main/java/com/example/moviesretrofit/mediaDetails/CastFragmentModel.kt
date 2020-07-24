@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.CreditsResponse
+import com.example.moviesretrofit.dataClasses.Person
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
@@ -15,11 +16,11 @@ object CastFragmentModel {
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
     private val multiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
 
-    private val creditsLiveData: MutableLiveData<CreditsResponse> = MutableLiveData()
+    private lateinit var creditsList: List<Person>
+    private val creditsLiveData: MutableLiveData<List<Person>> = MutableLiveData()
     private var currentId = 0
-    private lateinit var credits: CreditsResponse
 
-    fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<CreditsResponse>{
+    fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<List<Person>>{
         creditsLiveData.value = null
         returnCachedOrNetworkData(id, multimediaType)
         return creditsLiveData
@@ -40,7 +41,7 @@ object CastFragmentModel {
     }
 
     private fun sendCachedData(){
-        creditsLiveData.postValue(credits)
+        creditsLiveData.postValue(creditsList)
     }
 
     private fun sendNetworkData(id: Int, multimediaType: Int){
@@ -62,7 +63,7 @@ object CastFragmentModel {
         call.enqueue(object: Callback<CreditsResponse>{
             override fun onResponse(call: Call<CreditsResponse>, response: Response<CreditsResponse>) {
                 response.body()?.let {
-                    creditsLiveData.postValue(it)
+                    creditsLiveData.postValue(it.appendCastAndCrewLists())
                     updateRepository(it)
                 }
             }
@@ -79,7 +80,7 @@ object CastFragmentModel {
     }
 
     private fun updateCachedCredits(response: CreditsResponse){
-        credits = response
+        creditsList = response.appendCastAndCrewLists()
     }
 
 }

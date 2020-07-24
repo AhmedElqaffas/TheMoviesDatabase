@@ -52,7 +52,7 @@ class CastFragment : Fragment(){
         mediaDetailsViewModel.getMultimediaCredits(multiMedia.id, multiMediaType!!)
             .observe(viewLifecycleOwner, Observer{
                 it?.let {
-                    setRecyclerAdapterList(mediaDetailsViewModel.appendCastAndCrewLists(it))
+                    setRecyclerAdapterList(it)
                 }
             })
     }

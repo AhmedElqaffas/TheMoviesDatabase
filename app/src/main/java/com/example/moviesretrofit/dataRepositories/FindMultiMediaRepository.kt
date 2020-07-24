@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaRepositoryResponse
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
@@ -21,10 +20,10 @@ object FindMultiMediaRepository {
     private var currentPage = 1
     private var foundMediaTotalPages = 0
     private var foundMedia = mutableListOf<MultiMedia>()
-    private val foundMediaResponseLiveData: MutableLiveData<MultiMediaRepositoryResponse> =
+    private val foundMediaResponseLiveData: MutableLiveData<MultiMediaResponse> =
         MutableLiveData()
 
-    fun findMediaByName(page: Int, name: String, searchTextChanged: Boolean): LiveData<MultiMediaRepositoryResponse> {
+    fun findMediaByName(page: Int, name: String, searchTextChanged: Boolean): LiveData<MultiMediaResponse> {
         if(page == 1) {
             sendCachedOrNetworkData(name, searchTextChanged)
         }
@@ -49,12 +48,11 @@ object FindMultiMediaRepository {
 
     private fun returnCachedData(){
         foundMediaResponseLiveData.postValue(
-            MultiMediaRepositoryResponse(foundMedia, currentPage, foundMediaTotalPages)
+            MultiMediaResponse(currentPage, foundMedia,foundMediaTotalPages)
         )
     }
 
     private fun returnNetworkData(page: Int, name: String){
-        println("PAGE IS $page    NAME IS $name")
         multiMediaAPI.findMediaByName(key, page, name)
             .apply { enqueueCallback(this) }
     }
@@ -66,10 +64,11 @@ object FindMultiMediaRepository {
                                     response: Response<MultiMediaResponse>) {
 
                 response.body()?.let {
+                    val listWithoutPeopleEntries = it.filterPeopleEntriesFromResponse()
                     foundMediaResponseLiveData.postValue(
-                        MultiMediaRepositoryResponse(it.results, it.page, it.totalPages)
+                        listWithoutPeopleEntries
                     )
-                    updateRepository(it)
+                    updateRepository(listWithoutPeopleEntries)
                 }
             }
 
@@ -95,16 +94,13 @@ object FindMultiMediaRepository {
         // or already have entries but we want to overwrite them with the new search results
         // Either way, we will overwrite the foundMedia list contents
         if(currentPage == 1){
-            overwriteListContent(results)
+            clearPreviousListContent()
         }
-       // else{
             foundMedia.addAll(results)
-        //}
     }
 
-    private fun overwriteListContent(results: List<MultiMedia>){
+    private fun clearPreviousListContent(){
         foundMedia.removeAll {true}
-        //foundMedia = results.toMutableList()
     }
 
     private fun saveTotalNumberOfPages(totalPages: Int){
