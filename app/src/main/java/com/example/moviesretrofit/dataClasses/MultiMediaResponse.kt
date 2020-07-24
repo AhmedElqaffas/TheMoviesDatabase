@@ -2,8 +2,9 @@ package com.example.moviesretrofit.dataClasses
 
 import com.google.gson.annotations.SerializedName
 
-open class MultiMediaResponse(val page: Int, val results: List<MultiMedia>,
-                              @SerializedName("total_pages") val totalPages: Int){
+open class MultiMediaResponse(@Transient open val page: Int,
+                              @Transient open val results: List<MultiMedia>,
+                              @Transient open val totalPages: Int){
 
     fun filterPeopleEntriesFromResponse(): MultiMediaResponse{
         val entriesList = mutableListOf<MultiMedia>()

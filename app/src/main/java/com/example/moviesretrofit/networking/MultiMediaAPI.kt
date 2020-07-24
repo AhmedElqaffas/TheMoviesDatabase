@@ -21,7 +21,7 @@ interface MultiMediaAPI {
                         @Query("page") page: Int,
                         @Query("query") name: String,
                         @Query("language") language: String = "en-US",
-                        @Query("include_adult") adult: Boolean = true): Call<MultiMediaResponse>
+                        @Query("include_adult") adult: Boolean = true): Call<HybridResponse>
 
     @GET("/3/movie/{movie_id}/credits")
     fun getMovieCast(@Path("movie_id") id: Int,

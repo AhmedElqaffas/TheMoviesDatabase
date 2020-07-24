@@ -3,6 +3,7 @@ package com.example.moviesretrofit.dataRepositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.moviesretrofit.dataClasses.HybridResponse
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
@@ -47,9 +48,11 @@ object FindMultiMediaRepository {
     }
 
     private fun returnCachedData(){
-        foundMediaResponseLiveData.postValue(
+        for(value in foundMedia){
+            println(value.title)
+        }
+        foundMediaResponseLiveData.value =
             MultiMediaResponse(currentPage, foundMedia,foundMediaTotalPages)
-        )
     }
 
     private fun returnNetworkData(page: Int, name: String){
@@ -57,11 +60,11 @@ object FindMultiMediaRepository {
             .apply { enqueueCallback(this) }
     }
 
-    private fun enqueueCallback(call: Call<MultiMediaResponse>) {
-        call.enqueue(object: Callback<MultiMediaResponse> {
+    private fun enqueueCallback(call: Call<HybridResponse>) {
+        call.enqueue(object: Callback<HybridResponse> {
 
-            override fun onResponse(call: Call<MultiMediaResponse>,
-                                    response: Response<MultiMediaResponse>) {
+            override fun onResponse(call: Call<HybridResponse>,
+                                    response: Response<HybridResponse>) {
 
                 response.body()?.let {
                     val listWithoutPeopleEntries = it.filterPeopleEntriesFromResponse()
@@ -72,7 +75,7 @@ object FindMultiMediaRepository {
                 }
             }
 
-            override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
+            override fun onFailure(call: Call<HybridResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list")
             }
         })

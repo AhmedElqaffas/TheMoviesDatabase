@@ -6,12 +6,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.example.moviesretrofit.R
+import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.Person
+import com.example.moviesretrofit.dataClasses.Series
 import com.example.moviesretrofit.recyclersAdapters.CastRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_cast.*
 

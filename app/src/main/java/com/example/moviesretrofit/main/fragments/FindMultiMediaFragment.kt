@@ -41,19 +41,20 @@ class FindMultiMediaFragment : Fragment(),
         return inflated
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         initializeRecyclerViewAdapter()
-        makeMoviesRequest()
         setSearchBarChangeListener()
     }
+
+
 
     private fun initializeRecyclerViewAdapter(){
         multiMediaRecycler.adapter = multiMediaRecyclerAdapter
     }
 
-    private fun makeMoviesRequest(){
+    private fun makeRequest(){
         val foundMediaLiveData = findMediaViewModel.findMediaByName(page, searchBar.text.toString(), searchTextChanged)
         createDataObserverIfNotExists(foundMediaLiveData)
     }
@@ -104,14 +105,14 @@ class FindMultiMediaFragment : Fragment(),
     private fun resetSearchData(){
         searchTextChanged = true
         page = 1
-        makeMoviesRequest()
+        makeRequest()
     }
 
     private fun getNextPageMovies(){
         if(page < totalPages) {
             page++
             searchTextChanged = false
-            makeMoviesRequest()
+            makeRequest()
         }
     }
 
