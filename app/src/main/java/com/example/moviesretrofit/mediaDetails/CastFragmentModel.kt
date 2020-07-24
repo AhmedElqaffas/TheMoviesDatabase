@@ -31,13 +31,8 @@ object CastFragmentModel {
             sendCachedData()
         }
         else{
-            updateCurrentId(id)
             sendNetworkData(id, multimediaType)
         }
-    }
-
-    private fun updateCurrentId(id: Int){
-        currentId = id
     }
 
     private fun sendCachedData(){
@@ -52,19 +47,19 @@ object CastFragmentModel {
     }
 
     private fun makeMovieRequest(id: Int){
-        multiMediaAPI.getMovieCast(id, key).apply { enqueueCallback(this) }
+        multiMediaAPI.getMovieCast(id, key).apply { enqueueCallback(this, id) }
     }
 
     private fun makeSeriesRequest(id: Int){
-        multiMediaAPI.getSeriesCast(id, key).apply { enqueueCallback(this) }
+        multiMediaAPI.getSeriesCast(id, key).apply { enqueueCallback(this, id) }
     }
 
-    private fun enqueueCallback(call: Call<CreditsResponse>){
+    private fun enqueueCallback(call: Call<CreditsResponse>, id: Int){
         call.enqueue(object: Callback<CreditsResponse>{
             override fun onResponse(call: Call<CreditsResponse>, response: Response<CreditsResponse>) {
                 response.body()?.let {
                     creditsLiveData.postValue(it.appendCastAndCrewLists())
-                    updateRepository(it)
+                    updateRepository(it, id)
                 }
             }
 
@@ -75,8 +70,13 @@ object CastFragmentModel {
         })
     }
 
-    private fun updateRepository(response: CreditsResponse){
+    private fun updateRepository(response: CreditsResponse, id: Int){
+        updateCurrentId(id)
         updateCachedCredits(response)
+    }
+
+    private fun updateCurrentId(id: Int){
+        currentId = id
     }
 
     private fun updateCachedCredits(response: CreditsResponse){

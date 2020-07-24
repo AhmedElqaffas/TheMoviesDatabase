@@ -1,5 +1,6 @@
 package com.example.moviesretrofit.dataClasses
 
+import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
@@ -11,3 +12,4 @@ data class MultiMedia(@SerializedName("name", alternate = ["title"]) val title: 
                       @SerializedName("vote_average") val rating: Float,
                       @SerializedName("media_type") val mediaType: String,
                       val overview: String): Serializable
+
