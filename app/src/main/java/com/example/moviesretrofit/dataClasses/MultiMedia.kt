@@ -11,5 +11,11 @@ data class MultiMedia(@SerializedName("name", alternate = ["title"]) val title: 
                       @SerializedName("backdrop_path") val cover: String,
                       @SerializedName("vote_average") val rating: Float,
                       @SerializedName("media_type") val mediaType: String,
-                      val overview: String): Serializable
+                      val overview: String): Serializable{
+
+    object Constants{
+        const val POPULAR = 0
+        const val RATED = 1
+    }
+}
 

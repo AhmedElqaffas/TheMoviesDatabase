@@ -3,10 +3,10 @@ package com.example.moviesretrofit.dataRepositories
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviesretrofit.dataClasses.MovieResponse
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
+import com.example.moviesretrofit.dataClasses.PopularMovieResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,11 +53,11 @@ object PopularMoviesRepository{
             MultiMediaResponse(currentPage, popularMovies, popularMoviesTotalPages)
     }
 
-    private fun enqueueCallback(call: Call<MovieResponse>) {
-        call.enqueue(object: Callback<MovieResponse> {
+    private fun enqueueCallback(call: Call<PopularMovieResponse>) {
+        call.enqueue(object: Callback<PopularMovieResponse> {
 
-            override fun onResponse(call: Call<MovieResponse>,
-                                    response: Response<MovieResponse>
+            override fun onResponse(call: Call<PopularMovieResponse>,
+                                    response: Response<PopularMovieResponse>
             ) {
                 response.body()?.let {
                     popularMoviesResponseLiveData.postValue(
@@ -67,7 +67,7 @@ object PopularMoviesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+            override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list")
             }
         })

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
-import com.example.moviesretrofit.dataClasses.SeriesResponse
+import com.example.moviesretrofit.dataClasses.PopularSeriesResponse
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -53,11 +53,11 @@ object PopularSeriesRepository{
             MultiMediaResponse(currentPage, popularSeries, popularSeriesTotalPages)
     }
 
-    private fun enqueueCallback(call: Call<SeriesResponse>) {
-        call.enqueue(object: Callback<SeriesResponse> {
+    private fun enqueueCallback(call: Call<PopularSeriesResponse>) {
+        call.enqueue(object: Callback<PopularSeriesResponse> {
 
-            override fun onResponse(call: Call<SeriesResponse>,
-                                    response: Response<SeriesResponse>
+            override fun onResponse(call: Call<PopularSeriesResponse>,
+                                    response: Response<PopularSeriesResponse>
             ) {
                 response.body()?.let {
                     popularSeriesResponseLiveData.postValue(
@@ -67,7 +67,7 @@ object PopularSeriesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<SeriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<PopularSeriesResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list")
             }
         })
