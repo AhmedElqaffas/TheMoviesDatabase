@@ -33,7 +33,7 @@ class MultiMediaRecyclerFragment : Fragment(),
 
     private lateinit var inflated: View
 
-    companion object {
+    /*companion object {
 
         const val MOVIE = 1
         const val SERIES = 2
@@ -45,7 +45,7 @@ class MultiMediaRecyclerFragment : Fragment(),
                 putInt("Media Type", mediaType)
             }
         }
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         inflated = inflater.inflate(R.layout.fragment_media_recycler, container, false)
@@ -65,17 +65,11 @@ class MultiMediaRecyclerFragment : Fragment(),
 
 
     private fun makeRequest(){
-        if( arguments?.getInt("Sort Type") == 1){
-            if(arguments?.getInt("Media Type") == MOVIE)
-                makePopularMoviesRequest()
-            else
-                makePopularSeriesRequest()
-        }
-        else{
-            if(arguments?.getInt("Media Type") == MOVIE)
-               makeRatedMoviesRequest()
-            else
-                makeRatedSeriesRequest()
+        when(this.tag) {
+            "popularMovies" -> makePopularMoviesRequest()
+            "ratedMovies" -> makeRatedMoviesRequest()
+            "popularSeries" -> makePopularSeriesRequest()
+            "ratedSeries" -> makeRatedSeriesRequest()
         }
     }
 
@@ -137,11 +131,6 @@ class MultiMediaRecyclerFragment : Fragment(),
     override fun onItemClicked(multiMedia: MultiMedia) {
         val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
-        if(arguments?.getInt("Media Type") == MOVIE)
-            intent.putExtra("Media Type", MOVIE)
-        else
-            intent.putExtra("Media Type", SERIES)
-        //val intent = Intent(activity, testActivity::class.java)
         startActivity(intent)
     }
 }

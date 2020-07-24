@@ -26,18 +26,16 @@ class CastFragment : Fragment(){
         const val MOVIE = 1
         const val SERIES = 2
 
-        fun newInstance(multiMedia: MultiMedia, mediaType: Int) = CastFragment()
+        fun newInstance(multiMedia: MultiMedia) = CastFragment()
             .apply {
             arguments = Bundle().apply {
                 putSerializable("media", multiMedia)
-                putInt("media type", mediaType)
             }
         }
     }
 
 
     private lateinit var multiMedia: MultiMedia
-    private var multiMediaType: Int? = 0
     private val mediaDetailsViewModel: MediaDetailsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -47,12 +45,11 @@ class CastFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         multiMedia = arguments?.getSerializable("media") as MultiMedia
-        multiMediaType = arguments?.getInt("media type")
         makeCastRequest()
     }
 
     private fun makeCastRequest(){
-        mediaDetailsViewModel.getMultimediaCredits(multiMedia.id, multiMediaType!!)
+        mediaDetailsViewModel.getMultimediaCredits(multiMedia)
             .observe(viewLifecycleOwner, Observer{
                 it?.let {
                     setRecyclerAdapterList(it)

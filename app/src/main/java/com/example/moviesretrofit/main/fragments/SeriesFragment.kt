@@ -25,24 +25,14 @@ class SeriesFragment : Fragment() {
     }
 
     private fun setPopularSeriesFragment() {
-        val popularMoviesFragmentInstance =
-            MultiMediaRecyclerFragment.newInstance(
-                1,
-                MultiMediaRecyclerFragment.SERIES
-            )
         childFragmentManager.beginTransaction().replace(
-            R.id.popularSeriesContainer, popularMoviesFragmentInstance,
-            "popular series").commit()
+            R.id.popularSeriesContainer, MultiMediaRecyclerFragment(),
+            "popularSeries").commit()
     }
 
     private fun setTopRatedSeries(){
-        val topRatedMoviesFragmentInstance =
-            MultiMediaRecyclerFragment.newInstance(
-                2,
-                MultiMediaRecyclerFragment.SERIES
-            )
-        childFragmentManager.beginTransaction().replace(
-            R.id.topRatedSeriesContainer, topRatedMoviesFragmentInstance,
-            "top rated series").commit()
+childFragmentManager.beginTransaction().replace(
+            R.id.topRatedSeriesContainer, MultiMediaRecyclerFragment(),
+            "ratedSeries").commit()
     }
 }

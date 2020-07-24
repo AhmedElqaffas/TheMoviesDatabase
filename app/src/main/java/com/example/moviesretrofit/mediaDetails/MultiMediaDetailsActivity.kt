@@ -18,7 +18,7 @@ import kotlin.math.roundToInt
 class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private lateinit var multiMedia: MultiMedia
-    private var multiMediaType: Int = 0
+    //private var multiMediaType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +31,7 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private fun getClickedMovie(){
         multiMedia = intent.getSerializableExtra("media") as MultiMedia
-        multiMediaType = intent.getIntExtra("Media Type",1)
+        //multiMediaType = intent.getIntExtra("Media Type",1)
     }
 
     private fun setMovieDetails(){
@@ -105,8 +105,7 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
     private fun showCastFragment(){
         val castFragmentInstance =
             CastFragment.newInstance(
-                multiMedia,
-                multiMediaType
+                multiMedia
             )
         supportFragmentManager.beginTransaction().replace(
             R.id.castFragmentFrame,

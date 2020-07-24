@@ -3,8 +3,7 @@ package com.example.moviesretrofit.mediaDetails
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviesretrofit.dataClasses.CreditsResponse
-import com.example.moviesretrofit.dataClasses.Person
+import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
@@ -20,18 +19,18 @@ object CastFragmentModel {
     private val creditsLiveData: MutableLiveData<List<Person>> = MutableLiveData()
     private var currentId = 0
 
-    fun getMultimediaCredits(id: Int, multimediaType: Int): LiveData<List<Person>>{
+    fun getMultimediaCredits(multimedia: MultiMedia): LiveData<List<Person>>{
         creditsLiveData.value = null
-        returnCachedOrNetworkData(id, multimediaType)
+        returnCachedOrNetworkData(multimedia)
         return creditsLiveData
     }
 
-    private fun returnCachedOrNetworkData(id: Int, multimediaType: Int){
-        if(id == currentId){
+    private fun returnCachedOrNetworkData(multimedia: MultiMedia){
+        if(multimedia.id == currentId){
             sendCachedData()
         }
         else{
-            sendNetworkData(id, multimediaType)
+            sendNetworkData(multimedia)
         }
     }
 
@@ -39,11 +38,11 @@ object CastFragmentModel {
         creditsLiveData.postValue(creditsList)
     }
 
-    private fun sendNetworkData(id: Int, multimediaType: Int){
-        if(multimediaType == CastFragment.MOVIE)
-            makeMovieRequest(id)
-        else if (multimediaType == CastFragment.SERIES)
-            makeSeriesRequest(id)
+    private fun sendNetworkData(multimedia: MultiMedia){
+        if(multimedia.mediaType == "movie")
+            makeMovieRequest(multimedia.id)
+        else if (multimedia.mediaType == "tv")
+            makeSeriesRequest(multimedia.id)
     }
 
     private fun makeMovieRequest(id: Int){
