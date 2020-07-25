@@ -1,12 +1,15 @@
 package com.example.moviesretrofit.dataRepositories
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.dataClasses.PopularMovieResponse
+import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,12 +20,17 @@ object PopularMoviesRepository{
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
 
     private var multiMediaAPI: MultiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
+    private lateinit var dataBase: AppDatabase
 
     private val popularMovies = mutableListOf<MultiMedia>()
     private var currentPage = 1
     private var popularMoviesTotalPages = 0
 
     private val popularMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+
+    fun createDatabase(context: Context) {
+        dataBase = AppDatabase.getDatabase(context)
+    }
 
     fun makePopularMoviesRequest(page: Int): LiveData<MultiMediaResponse> {
         if(page == 1) {
@@ -37,10 +45,23 @@ object PopularMoviesRepository{
     }
 
     private fun sendCachedOrNetworkData(){
-        if (popularMovies.isEmpty())
-            returnNetworkData(1)
-        else
+        if(popularMovies.isNotEmpty())
             returnCachedData()
+        else if(getPopularMoviesFromDatabase().isNotEmpty())
+            returnDatabaseData()
+        else(popularMovies.isEmpty())
+            returnNetworkData(1)
+    }
+
+    private fun getPopularMoviesFromDatabase(): List<Movie> {
+        return dataBase.getMultimediaDao().getPopularMovies()
+    }
+
+    private fun returnDatabaseData(){
+        popularMoviesResponseLiveData.value = MultiMediaResponse(currentPage,
+            getPopularMoviesFromDatabase(), popularMoviesTotalPages)
+
+        popularMovies.addAll(getPopularMoviesFromDatabase())
     }
 
     private fun returnNetworkData(page: Int){
@@ -64,6 +85,7 @@ object PopularMoviesRepository{
                         MultiMediaResponse(it.page, it.results, it.totalPages)
                     )
                     updateRepository(it)
+                    updateDatabase(it.results)
                 }
             }
 
@@ -89,5 +111,9 @@ object PopularMoviesRepository{
 
     private fun saveTotalNumberOfPages(totalPages: Int){
         popularMoviesTotalPages = totalPages
+    }
+
+    private fun updateDatabase(movies: List<Movie>){
+      //  dataBase.getMultimediaDao().insertMovies(movies)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.moviesretrofit.main
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.moviesretrofit.dataRepositories.PopularMoviesRepository
@@ -9,7 +11,12 @@ import com.example.moviesretrofit.dataRepositories.RatedSeriesRepository
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 
 
-class MainViewModel: ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
+
+    init {
+        PopularMoviesRepository.createDatabase(application)
+    }
+
     fun getPopularMovies(page: Int): LiveData<MultiMediaResponse>{
         return PopularMoviesRepository.makePopularMoviesRequest(page)
     }
