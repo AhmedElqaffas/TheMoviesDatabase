@@ -1,5 +1,6 @@
 package com.example.moviesretrofit.dataRepositories
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +8,8 @@ import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.dataClasses.RatedSeriesResponse
+import com.example.moviesretrofit.dataClasses.Series
+import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
@@ -17,12 +20,17 @@ object RatedSeriesRepository{
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
 
     private var multiMediaAPI: MultiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
+    private lateinit var database: AppDatabase
 
     private var ratedSeries = mutableListOf<MultiMedia>()
     private var currentPage = 1
     private var ratedSeriesTotalPages = 0
 
     private val ratedSeriesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+
+    fun createDatabase(context: Context) {
+        database = AppDatabase.getDatabase(context)
+    }
 
     fun makeRatedSeriesRequest(page: Int): LiveData<MultiMediaResponse>{
         if(page == 1) {
@@ -64,13 +72,30 @@ object RatedSeriesRepository{
                         MultiMediaResponse(it.page, it.results, it.totalPages)
                     )
                     updateRepository(it)
+                    updateDatabase(it.results)
                 }
             }
 
             override fun onFailure(call: Call<RatedSeriesResponse>, t: Throwable) {
-                Log.e("Movies error", "Couldn't get movies list")
+                Log.e("Series error", "Couldn't get series list from API")
+                if(getRatedSeriesFromDatabase().isNotEmpty() && ratedSeries.isEmpty())
+                    returnDatabaseData()
             }
         })
+    }
+
+    private fun getRatedSeriesFromDatabase(): List<Series> {
+        return database.getMultimediaDao().getTopRatedSeries()
+    }
+
+    private fun returnDatabaseData(){
+        val databaseData = getRatedSeriesFromDatabase()
+        ratedSeriesResponseLiveData.postValue(
+            MultiMediaResponse(
+                currentPage, databaseData, ratedSeriesTotalPages)
+        )
+
+        appendResultItemsToList(databaseData)
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -90,6 +115,10 @@ object RatedSeriesRepository{
 
     private fun saveTotalNumberOfPages(totalPages: Int){
         ratedSeriesTotalPages = totalPages
+    }
+
+    private fun updateDatabase(series: List<Series>){
+        database.getMultimediaDao().insertSeries(series)
     }
 
 }

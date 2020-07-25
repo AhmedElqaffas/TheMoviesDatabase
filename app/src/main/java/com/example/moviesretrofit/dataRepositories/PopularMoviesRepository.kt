@@ -20,7 +20,7 @@ object PopularMoviesRepository{
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
 
     private var multiMediaAPI: MultiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
-    private lateinit var dataBase: AppDatabase
+    private lateinit var database: AppDatabase
 
     private val popularMovies = mutableListOf<MultiMedia>()
     private var currentPage = 1
@@ -29,7 +29,7 @@ object PopularMoviesRepository{
     private val popularMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
 
     fun createDatabase(context: Context) {
-        dataBase = AppDatabase.getDatabase(context)
+        database = AppDatabase.getDatabase(context)
     }
 
     fun makePopularMoviesRequest(page: Int): LiveData<MultiMediaResponse> {
@@ -47,21 +47,9 @@ object PopularMoviesRepository{
     private fun sendCachedOrNetworkData(){
         if(popularMovies.isNotEmpty())
             returnCachedData()
-        else if(getPopularMoviesFromDatabase().isNotEmpty())
-            returnDatabaseData()
+
         else(popularMovies.isEmpty())
             returnNetworkData(1)
-    }
-
-    private fun getPopularMoviesFromDatabase(): List<Movie> {
-        return dataBase.getMultimediaDao().getPopularMovies()
-    }
-
-    private fun returnDatabaseData(){
-        popularMoviesResponseLiveData.value = MultiMediaResponse(currentPage,
-            getPopularMoviesFromDatabase(), popularMoviesTotalPages)
-
-        popularMovies.addAll(getPopularMoviesFromDatabase())
     }
 
     private fun returnNetworkData(page: Int){
@@ -90,9 +78,23 @@ object PopularMoviesRepository{
             }
 
             override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
-                Log.e("Movies error", "Couldn't get movies list")
+                Log.e("Movies error", "Couldn't get movies list from api")
+                if(getPopularMoviesFromDatabase().isNotEmpty() && popularMovies.isEmpty())
+                    returnDatabaseData()
             }
         })
+    }
+
+    private fun getPopularMoviesFromDatabase(): List<Movie> {
+        return database.getMultimediaDao().getPopularMovies()
+    }
+
+    private fun returnDatabaseData(){
+        val databaseData = getPopularMoviesFromDatabase()
+        popularMoviesResponseLiveData.postValue(MultiMediaResponse(currentPage,
+            databaseData, popularMoviesTotalPages))
+
+        appendResultItemsToList(databaseData)
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -114,6 +116,6 @@ object PopularMoviesRepository{
     }
 
     private fun updateDatabase(movies: List<Movie>){
-      //  dataBase.getMultimediaDao().insertMovies(movies)
+        database.getMultimediaDao().insertMovies(movies)
     }
 }
