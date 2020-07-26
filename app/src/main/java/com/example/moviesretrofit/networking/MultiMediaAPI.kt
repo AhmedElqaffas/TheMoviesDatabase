@@ -25,7 +25,7 @@ interface MultiMediaAPI {
 
     @GET("/3/movie/{movie_id}/credits")
     fun getMovieCast(@Path("movie_id") id: Int,
-                     @Query("api_key") key: String): Call<CreditsResponse>
+                     @Query("api_key") key: String): Call<MoviesCredits>
 
     @GET("/3/tv/popular")
     fun getPopularSeries(@Query("api_key") key: String,
@@ -37,5 +37,5 @@ interface MultiMediaAPI {
 
     @GET("/3/tv/{tv_id}/credits")
     fun getSeriesCast(@Path("tv_id") id: Int,
-                     @Query("api_key") key: String): Call<CreditsResponse>
+                     @Query("api_key") key: String): Call<SeriesCredits>
 }

@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.moviesretrofit.dataClasses.Movie
-import com.example.moviesretrofit.dataClasses.Series
+import com.example.moviesretrofit.dataClasses.*
 
-@Database(entities = [Movie::class, Series::class], version = 1, exportSchema = false)
+@Database(entities = [Movie::class, Series::class,
+    CreditsMultimediaLinking.CreditsAndMoviesForeignKeyTable::class,
+    CreditsMultimediaLinking.CreditsAndSeriesForeignKeyTable::class,
+    Person::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase(){
 
     abstract fun getMultimediaDao(): MultimediaDao
+    abstract fun getCreditsDao(): CreditsDao
 
     companion object {
         @Volatile

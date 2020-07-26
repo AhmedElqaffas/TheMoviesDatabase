@@ -28,6 +28,10 @@ object RatedMoviesRepository{
 
     private val ratedMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
 
+    fun createDatabase(context: Context) {
+        database = AppDatabase.getDatabase(context)
+    }
+
     fun makeRatedMoviesRequest(page: Int): LiveData<MultiMediaResponse>{
         if(page == 1) {
             sendCachedOrNetworkData()
@@ -45,10 +49,6 @@ object RatedMoviesRepository{
             returnNetworkData(1)
         else
             returnCachedData()
-    }
-
-    fun createDatabase(context: Context) {
-        database = AppDatabase.getDatabase(context)
     }
 
     private fun returnNetworkData(page: Int){

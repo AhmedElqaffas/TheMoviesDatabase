@@ -20,7 +20,7 @@ class CastRecyclerAdapter(private val castCrewList: List<Person>):
             setName(person.name)
         }
 
-        private fun setImage(path: String){
+        private fun setImage(path: String?){
             Picasso.get()
                 .load("https://image.tmdb.org/t/p/w200$path")
                 .fit()

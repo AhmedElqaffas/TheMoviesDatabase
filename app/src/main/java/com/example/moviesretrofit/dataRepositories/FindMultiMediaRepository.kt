@@ -68,6 +68,9 @@ object FindMultiMediaRepository {
 
                 response.body()?.let {
                     val listWithoutPeopleEntries = it.filterPeopleEntriesFromResponse()
+                    for(entry in listWithoutPeopleEntries.results){
+                        println(entry.title)
+                    }
                     foundMediaResponseLiveData.postValue(
                         listWithoutPeopleEntries
                     )
@@ -76,7 +79,8 @@ object FindMultiMediaRepository {
             }
 
             override fun onFailure(call: Call<HybridResponse>, t: Throwable) {
-                Log.e("Movies error", "Couldn't get movies list")
+                Log.e("Find shows error", "Couldn't get found shows")
+                Log.e("find shows error", t.message)
             }
         })
     }
