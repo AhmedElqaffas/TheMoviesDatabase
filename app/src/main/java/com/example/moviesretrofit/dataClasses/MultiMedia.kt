@@ -1,7 +1,6 @@
 package com.example.moviesretrofit.dataClasses
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.example.moviesretrofit.database.AppDatabase
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import java.io.Serializable
@@ -22,5 +21,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     }
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
+    open fun getCreditsFromDatabase(database: AppDatabase): List<Person> {return listOf()}
+    open fun saveCreditsInDatabase(database: AppDatabase, creditsList: List<Person>){}
 }
 

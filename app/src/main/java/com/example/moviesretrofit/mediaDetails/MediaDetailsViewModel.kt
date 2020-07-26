@@ -3,7 +3,6 @@ package com.example.moviesretrofit.mediaDetails
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.moviesretrofit.dataClasses.CreditsResponse
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.Person
 

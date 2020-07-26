@@ -6,8 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.database.AppDatabase
-import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -17,7 +15,7 @@ object CastFragmentModel {
 
     private lateinit var database: AppDatabase
 
-    private lateinit var creditsList: List<Person>
+    private var creditsList: List<Person> = listOf()
     private val creditsLiveData: MutableLiveData<List<Person>> = MutableLiveData()
     private var currentId = 0
 
@@ -62,58 +60,50 @@ object CastFragmentModel {
 
     private fun sendNetworkData(multimedia: MultiMedia){
         multimedia.makeCreditsRequest().apply {
-            enqueueCallback(this!! , multimedia.id)
+            enqueueCallback(this!! , multimedia)
         }
     }
 
-    private fun makeMovieRequest(id: Int){
-
-    }
-
-    private fun makeSeriesRequest(id: Int){
-
-    }
-
-    private fun enqueueCallback(call: Call<CreditsResponse>, id: Int){
+    private fun enqueueCallback(call: Call<CreditsResponse>, multimedia: MultiMedia){
         call.enqueue(object: Callback<CreditsResponse>{
             override fun onResponse(call: Call<CreditsResponse>, response: Response<CreditsResponse>) {
                 response.body()?.let {
-                    creditsLiveData.postValue(it.appendCastAndCrewLists())
-                    updateRepository(it, id)
-                    updateDatabase(it)
+                    val creditsList = it.appendCastAndCrewLists()
+                    creditsLiveData.postValue(creditsList)
+                    updateRepository(creditsList, multimedia.id)
+                    updateDatabase(creditsList,multimedia)
                 }
             }
 
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
                 Log.i("CastFragmentModel", "Couldn't load cast")
-              //  if(creditsList.isEmpty())
-                //    returnDatabaseData(id, type)
+                if(creditsList.isEmpty())
+                    returnDatabaseData(multimedia)
             }
 
         })
     }
 
-    private fun returnDatabaseData(id: Int, mediaType: String){
-       /* creditsLiveData.postValue(database.getCreditsDao().getCredits(id, mediaType)
-            .appendCastAndCrewLists())
-        */
+    private fun returnDatabaseData(multimedia: MultiMedia){
+        creditsLiveData.postValue(multimedia.getCreditsFromDatabase(database))
+
     }
 
-    private fun updateRepository(response: CreditsResponse, id: Int){
+    private fun updateRepository(creditsList: List<Person>, id: Int){
         updateCurrentId(id)
-        updateCachedCredits(response)
+        updateCachedCredits(creditsList)
     }
 
     private fun updateCurrentId(id: Int){
         currentId = id
     }
 
-    private fun updateCachedCredits(response: CreditsResponse){
-        creditsList = response.appendCastAndCrewLists()
+    private fun updateCachedCredits(creditsList: List<Person>){
+        this.creditsList = creditsList
     }
 
-    private fun updateDatabase(credits: CreditsResponse) {
-        database.getCreditsDao().insertCredits(credits.appendCastAndCrewLists())
+    private fun updateDatabase(creditsList: List<Person>, multimedia: MultiMedia) {
+        multimedia.saveCreditsInDatabase(database, creditsList)
     }
 
 }

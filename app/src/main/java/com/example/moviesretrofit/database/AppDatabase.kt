@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import com.example.moviesretrofit.dataClasses.*
 
 @Database(entities = [Movie::class, Series::class,
-    CreditsMultimediaLinking.CreditsAndMoviesForeignKeyTable::class,
-    CreditsMultimediaLinking.CreditsAndSeriesForeignKeyTable::class,
+    CreditsAndMoviesForeignKeyTable::class,
+    CreditsAndSeriesForeignKeyTable::class,
     Person::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase(){
 

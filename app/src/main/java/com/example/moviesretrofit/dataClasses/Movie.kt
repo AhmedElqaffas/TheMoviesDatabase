@@ -1,6 +1,8 @@
 package com.example.moviesretrofit.dataClasses
 
 import androidx.room.Entity
+import com.example.moviesretrofit.database.AppDatabase
+import com.example.moviesretrofit.mediaDetails.CreditsDatabaseHandler
 import com.example.moviesretrofit.mediaDetails.MultimediaRetrofitRequester
 import retrofit2.Call
 
@@ -24,4 +26,29 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie", "",0f) {
     override fun makeCreditsRequest(): Call<CreditsResponse> {
         return MultimediaRetrofitRequester.makeMovieCreditsRequest(this) as Call<CreditsResponse>
     }
+
+    override fun saveCreditsInDatabase(database: AppDatabase, creditsList: List<Person>) {
+        saveInCreditsTable(database, creditsList)
+        makeSureMovieIsStored(database)
+        saveMovieAndCreditsForeignKeys(database, creditsList)
+    }
+
+    private fun saveInCreditsTable(database: AppDatabase, creditsList: List<Person>){
+        database.getCreditsDao().insertCredits(creditsList)
+    }
+
+    private fun makeSureMovieIsStored(database: AppDatabase){
+        database.getMultimediaDao().insertSingleMovie(this)
+    }
+
+    private fun saveMovieAndCreditsForeignKeys(database: AppDatabase, creditsList: List<Person>) {
+        val creditsDao = database.getCreditsDao()
+        for(person in creditsList)
+            creditsDao.linkMovieAndCredits(CreditsAndMoviesForeignKeyTable(id, person.name))
+    }
+
+    override fun getCreditsFromDatabase(database: AppDatabase): List<Person> {
+        return CreditsDatabaseHandler.getMovieCredits(database, this.id)
+    }
+
 }

@@ -5,13 +5,15 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.moviesretrofit.dataClasses.Movie
-import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.Series
 
 @Dao
 interface MultimediaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMovies(moviesList: List<Movie>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSingleMovie(movies: Movie)
 
     @Query("SELECT * FROM movies ORDER BY rating DESC")
     fun getTopRatedMovies(): List<Movie>
@@ -22,6 +24,9 @@ interface MultimediaDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSeries(seriesList: List<Series>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertSingleSeries(series: Series)
 
     @Query("SELECT * FROM series ORDER BY rating DESC")
     fun getTopRatedSeries(): List<Series>
