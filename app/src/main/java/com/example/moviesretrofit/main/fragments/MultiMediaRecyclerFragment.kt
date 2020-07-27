@@ -14,14 +14,10 @@ import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.MainViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
 
 class MultiMediaRecyclerFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction{
-
-    private var page = 1
-    private var totalPages = 0
 
     private var multiMediaRecyclerAdapter =
         MultiMediaRecyclerAdapter(
@@ -33,19 +29,6 @@ class MultiMediaRecyclerFragment : Fragment(),
 
     private lateinit var inflated: View
 
-    /*companion object {
-
-        const val MOVIE = 1
-        const val SERIES = 2
-
-        fun newInstance(getMoviesBasedOn: Int, mediaType: Int) = MultiMediaRecyclerFragment()
-            .apply {
-            arguments = Bundle().apply {
-                putInt("Sort Type", getMoviesBasedOn)
-                putInt("Media Type", mediaType)
-            }
-        }
-    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         inflated = inflater.inflate(R.layout.fragment_media_recycler, container, false)
@@ -56,7 +39,7 @@ class MultiMediaRecyclerFragment : Fragment(),
         super.onActivityCreated(savedInstanceState)
 
         initializeRecyclerViewAdapter()
-        makeRequest()
+        makeRequest(true)
     }
 
     private fun initializeRecyclerViewAdapter(){
@@ -64,51 +47,45 @@ class MultiMediaRecyclerFragment : Fragment(),
     }
 
 
-    private fun makeRequest(){
+    private fun makeRequest(firstRequest: Boolean){
         when(this.tag) {
-            "popularMovies" -> makePopularMoviesRequest()
-            "ratedMovies" -> makeRatedMoviesRequest()
-            "popularSeries" -> makePopularSeriesRequest()
-            "ratedSeries" -> makeRatedSeriesRequest()
+            "popularMovies" -> makePopularMoviesRequest(firstRequest)
+            "ratedMovies" -> makeRatedMoviesRequest(firstRequest)
+            "popularSeries" -> makePopularSeriesRequest(firstRequest)
+            "ratedSeries" -> makeRatedSeriesRequest(firstRequest)
         }
     }
 
-    private fun makePopularMoviesRequest() {
-        val popularMoviesLiveData = mainViewModel.getPopularMovies(page)
+    private fun makePopularMoviesRequest(firstRequest: Boolean) {
+        val popularMoviesLiveData = mainViewModel.getPopularMovies(firstRequest)
         createDataObserverIfNotExists(popularMoviesLiveData)
     }
 
-    private fun makeRatedMoviesRequest() {
-        val ratedMoviesLiveData = mainViewModel.getRatedMovies(page)
+    private fun makeRatedMoviesRequest(firstRequest: Boolean) {
+        val ratedMoviesLiveData = mainViewModel.getRatedMovies(firstRequest)
         createDataObserverIfNotExists(ratedMoviesLiveData)
     }
 
-    private fun makePopularSeriesRequest() {
-        val popularSeriesLiveData = mainViewModel.getPopularSeries(page)
+    private fun makePopularSeriesRequest(firstRequest: Boolean) {
+        val popularSeriesLiveData = mainViewModel.getPopularSeries(firstRequest)
         createDataObserverIfNotExists(popularSeriesLiveData)
     }
 
-    private fun makeRatedSeriesRequest() {
-        val ratedSeriesLiveData = mainViewModel.getRatedSeries(page)
+    private fun makeRatedSeriesRequest(firstRequest: Boolean) {
+        val ratedSeriesLiveData = mainViewModel.getRatedSeries(firstRequest)
         createDataObserverIfNotExists(ratedSeriesLiveData)
     }
 
-    private fun createDataObserverIfNotExists(liveData: LiveData<MultiMediaResponse>){
+    private fun createDataObserverIfNotExists(liveData: LiveData<List<MultiMedia>>){
         if(!liveData.hasActiveObservers()){
             liveData.observe(viewLifecycleOwner, Observer {
-                extractObservedItems(it)
+                addNewPageItemsToRecyclerView(it)
                 hideShimmerEffect()
             })
         }
     }
 
-    private fun extractObservedItems(response: MultiMediaResponse){
-        addNewPageItemsToRecyclerView(response.results.toMutableList())
-        page = response.page
-        totalPages = response.totalPages
-    }
-
-    private fun addNewPageItemsToRecyclerView(mediaList: MutableList<MultiMedia>) {
+    private fun addNewPageItemsToRecyclerView(mediaList: List<MultiMedia>) {
         multiMediaRecyclerAdapter.appendToList(mediaList)
     }
 
@@ -122,10 +99,7 @@ class MultiMediaRecyclerFragment : Fragment(),
     }
 
     private fun getNextPageMovies(){
-        if(page < totalPages){
-            page++
-            makeRequest()
-        }
+            makeRequest(false)
     }
 
     override fun onItemClicked(multiMedia: MultiMedia) {

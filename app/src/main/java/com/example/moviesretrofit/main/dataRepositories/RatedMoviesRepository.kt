@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.dataRepositories
+package com.example.moviesretrofit.main.dataRepositories
 
 import android.content.Context
 import android.util.Log
@@ -26,29 +26,30 @@ object RatedMoviesRepository{
     private var currentPage = 1
     private var ratedMoviesTotalPages = 0
 
-    private val ratedMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+    private val ratedMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makeRatedMoviesRequest(page: Int): LiveData<MultiMediaResponse>{
-        if(page == 1) {
+    fun makeRatedMoviesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+        if(firstRequest) {
             sendCachedOrNetworkData()
         }
 
-        else{
-            returnNetworkData(page)
+        else if(currentPage < ratedMoviesTotalPages){
+            returnNetworkData(currentPage + 1)
         }
 
         return ratedMoviesResponseLiveData
     }
 
     private fun sendCachedOrNetworkData(){
-        if (ratedMovies.isEmpty())
-            returnNetworkData(1)
-        else
+        if(ratedMovies.isNotEmpty())
             returnCachedData()
+
+        else if (ratedMovies.isEmpty())
+            returnNetworkData(1)
     }
 
     private fun returnNetworkData(page: Int){
@@ -57,8 +58,7 @@ object RatedMoviesRepository{
     }
 
     private fun returnCachedData(){
-        ratedMoviesResponseLiveData.value =
-            MultiMediaResponse(currentPage, ratedMovies, ratedMoviesTotalPages)
+        ratedMoviesResponseLiveData.value = ratedMovies
     }
 
     private fun enqueueCallback(call: Call<RatedMovieResponse>) {
@@ -68,9 +68,7 @@ object RatedMoviesRepository{
                                     response: Response<RatedMovieResponse>
             ) {
                 response.body()?.let {
-                    ratedMoviesResponseLiveData.postValue(
-                        MultiMediaResponse(it.page, it.results, it.totalPages)
-                    )
+                    ratedMoviesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
                 }
@@ -90,8 +88,7 @@ object RatedMoviesRepository{
 
     private fun returnDatabaseData(){
         val databaseData = getRatedMoviesFromDatabase()
-        ratedMoviesResponseLiveData.postValue(MultiMediaResponse(currentPage,
-            databaseData, ratedMoviesTotalPages))
+        ratedMoviesResponseLiveData.postValue(ratedMovies)
 
         appendResultItemsToList(databaseData)
     }

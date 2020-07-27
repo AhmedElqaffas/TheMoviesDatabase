@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.dataRepositories
+package com.example.moviesretrofit.main.dataRepositories
 
 import android.content.Context
 import android.util.Log
@@ -23,20 +23,20 @@ object PopularSeriesRepository{
     private var currentPage = 1
     private var popularSeriesTotalPages = 0
 
-    private val popularSeriesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+    private val popularSeriesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makePopularSeriesRequest(page: Int): LiveData<MultiMediaResponse> {
-        if(page == 1) {
+    fun makePopularSeriesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+        if(firstRequest) {
             sendCachedOrNetworkData()
         }
 
-        else{
-            returnNetworkData(page)
+        else if(currentPage < popularSeriesTotalPages){
+            returnNetworkData(currentPage + 1)
         }
 
         return popularSeriesResponseLiveData
@@ -55,8 +55,7 @@ object PopularSeriesRepository{
     }
 
     private fun returnCachedData() {
-        popularSeriesResponseLiveData.value =
-            MultiMediaResponse(currentPage, popularSeries, popularSeriesTotalPages)
+        popularSeriesResponseLiveData.value = popularSeries
     }
 
     private fun enqueueCallback(call: Call<PopularSeriesResponse>) {
@@ -66,9 +65,7 @@ object PopularSeriesRepository{
                                     response: Response<PopularSeriesResponse>
             ) {
                 response.body()?.let {
-                    popularSeriesResponseLiveData.postValue(
-                        MultiMediaResponse(it.page, it.results, it.totalPages)
-                    )
+                    popularSeriesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
                 }
@@ -88,9 +85,7 @@ object PopularSeriesRepository{
 
     private fun returnDatabaseData(){
         val databaseData = getPopularSeriesFromDatabase()
-        popularSeriesResponseLiveData.postValue(
-            MultiMediaResponse(currentPage, databaseData, popularSeriesTotalPages)
-        )
+        popularSeriesResponseLiveData.postValue(popularSeries)
 
         appendResultItemsToList(databaseData)
     }

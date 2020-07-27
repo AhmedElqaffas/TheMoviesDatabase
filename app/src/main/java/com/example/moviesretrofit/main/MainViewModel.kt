@@ -3,10 +3,11 @@ package com.example.moviesretrofit.main
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import com.example.moviesretrofit.dataRepositories.PopularMoviesRepository
-import com.example.moviesretrofit.dataRepositories.PopularSeriesRepository
-import com.example.moviesretrofit.dataRepositories.RatedMoviesRepository
-import com.example.moviesretrofit.dataRepositories.RatedSeriesRepository
+import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.main.dataRepositories.PopularMoviesRepository
+import com.example.moviesretrofit.main.dataRepositories.PopularSeriesRepository
+import com.example.moviesretrofit.main.dataRepositories.RatedMoviesRepository
+import com.example.moviesretrofit.main.dataRepositories.RatedSeriesRepository
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 
 
@@ -19,19 +20,19 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         RatedSeriesRepository.createDatabase(application)
     }
 
-    fun getPopularMovies(page: Int): LiveData<MultiMediaResponse>{
-        return PopularMoviesRepository.makePopularMoviesRequest(page)
+    fun getPopularMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{
+        return PopularMoviesRepository.makePopularMoviesRequest(firstRequest)
     }
 
-    fun getRatedMovies(page: Int): LiveData<MultiMediaResponse>{
-        return RatedMoviesRepository.makeRatedMoviesRequest(page)
+    fun getRatedMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{
+        return RatedMoviesRepository.makeRatedMoviesRequest(firstRequest)
     }
 
-    fun getPopularSeries(page: Int): LiveData<MultiMediaResponse>{
-        return PopularSeriesRepository.makePopularSeriesRequest(page)
+    fun getPopularSeries(firstRequest: Boolean): LiveData<List<MultiMedia>>{
+        return PopularSeriesRepository.makePopularSeriesRequest(firstRequest)
     }
 
-    fun getRatedSeries(page: Int): LiveData<MultiMediaResponse>{
-        return RatedSeriesRepository.makeRatedSeriesRequest(page)
+    fun getRatedSeries(firstRequest: Boolean): LiveData<List<MultiMedia>>{
+        return RatedSeriesRepository.makeRatedSeriesRequest(firstRequest)
     }
 }

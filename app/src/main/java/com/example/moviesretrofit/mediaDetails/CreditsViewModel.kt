@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.Person
 
-class MediaDetailsViewModel(application: Application) : AndroidViewModel(application) {
+class CreditsViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         CastFragmentModel.createDatabase(application)

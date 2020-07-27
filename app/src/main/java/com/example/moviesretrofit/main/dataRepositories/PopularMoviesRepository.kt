@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.dataRepositories
+package com.example.moviesretrofit.main.dataRepositories
 
 import android.content.Context
 import android.util.Log
@@ -26,19 +26,19 @@ object PopularMoviesRepository{
     private var currentPage = 1
     private var popularMoviesTotalPages = 0
 
-    private val popularMoviesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+    private val popularMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makePopularMoviesRequest(page: Int): LiveData<MultiMediaResponse> {
-        if(page == 1) {
+    fun makePopularMoviesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+        if(firstRequest) {
             sendCachedOrNetworkData()
         }
 
-        else{
-            returnNetworkData(page)
+        else if(currentPage < popularMoviesTotalPages){
+            returnNetworkData(currentPage + 1)
         }
 
         return popularMoviesResponseLiveData
@@ -48,7 +48,7 @@ object PopularMoviesRepository{
         if(popularMovies.isNotEmpty())
             returnCachedData()
 
-        else(popularMovies.isEmpty())
+        else if (popularMovies.isEmpty())
             returnNetworkData(1)
     }
 
@@ -58,8 +58,7 @@ object PopularMoviesRepository{
     }
 
     private fun returnCachedData(){
-        popularMoviesResponseLiveData.value =
-            MultiMediaResponse(currentPage, popularMovies, popularMoviesTotalPages)
+        popularMoviesResponseLiveData.value = popularMovies
     }
 
     private fun enqueueCallback(call: Call<PopularMovieResponse>) {
@@ -69,9 +68,7 @@ object PopularMoviesRepository{
                                     response: Response<PopularMovieResponse>
             ) {
                 response.body()?.let {
-                    popularMoviesResponseLiveData.postValue(
-                        MultiMediaResponse(it.page, it.results, it.totalPages)
-                    )
+                    popularMoviesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
                 }
@@ -91,9 +88,7 @@ object PopularMoviesRepository{
 
     private fun returnDatabaseData(){
         val databaseData = getPopularMoviesFromDatabase()
-        popularMoviesResponseLiveData.postValue(MultiMediaResponse(currentPage,
-            databaseData, popularMoviesTotalPages))
-
+        popularMoviesResponseLiveData.postValue(databaseData)
         appendResultItemsToList(databaseData)
     }
 

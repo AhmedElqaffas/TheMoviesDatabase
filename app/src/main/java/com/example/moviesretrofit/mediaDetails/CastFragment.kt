@@ -28,7 +28,7 @@ class CastFragment : Fragment(){
 
 
     private lateinit var multiMedia: MultiMedia
-    private val mediaDetailsViewModel: MediaDetailsViewModel by viewModels()
+    private val creditsViewModel: CreditsViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_cast, container, false)
@@ -41,7 +41,7 @@ class CastFragment : Fragment(){
     }
 
     private fun makeCastRequest(){
-        mediaDetailsViewModel.getMultimediaCredits(multiMedia)
+        creditsViewModel.getMultimediaCredits(multiMedia)
             .observe(viewLifecycleOwner, Observer{
                 it?.let {
                     setRecyclerAdapterList(it)

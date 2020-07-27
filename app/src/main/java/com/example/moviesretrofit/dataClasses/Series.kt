@@ -3,7 +3,7 @@ package com.example.moviesretrofit.dataClasses
 import androidx.room.Entity
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.mediaDetails.CreditsDatabaseHandler
-import com.example.moviesretrofit.mediaDetails.MultimediaRetrofitRequester
+import com.example.moviesretrofit.mediaDetails.CreditsRetrofitRequester
 import retrofit2.Call
 
 @Entity(tableName = "series", primaryKeys = ["id"])
@@ -24,7 +24,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv", "",0f) {
 
 
     override fun makeCreditsRequest(): Call<CreditsResponse> {
-        return MultimediaRetrofitRequester.makeSeriesCreditsRequest(this) as Call<CreditsResponse>
+        return CreditsRetrofitRequester.makeSeriesCreditsRequest(this) as Call<CreditsResponse>
     }
 
     override fun saveCreditsInDatabase(database: AppDatabase, creditsList: List<Person>) {

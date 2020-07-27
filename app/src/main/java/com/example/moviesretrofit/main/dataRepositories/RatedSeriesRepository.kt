@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.dataRepositories
+package com.example.moviesretrofit.main.dataRepositories
 
 import android.content.Context
 import android.util.Log
@@ -26,19 +26,19 @@ object RatedSeriesRepository{
     private var currentPage = 1
     private var ratedSeriesTotalPages = 0
 
-    private val ratedSeriesResponseLiveData: MutableLiveData<MultiMediaResponse> = MutableLiveData()
+    private val ratedSeriesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makeRatedSeriesRequest(page: Int): LiveData<MultiMediaResponse>{
-        if(page == 1) {
+    fun makeRatedSeriesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+        if(firstRequest) {
             sendCachedOrNetworkData()
         }
 
-        else{
-            returnNetworkData(page)
+        else if(currentPage < ratedSeriesTotalPages){
+            returnNetworkData(currentPage + 1)
         }
 
         return ratedSeriesResponseLiveData
@@ -57,8 +57,7 @@ object RatedSeriesRepository{
     }
 
     private fun returnCachedData(){
-        ratedSeriesResponseLiveData.value =
-            MultiMediaResponse(currentPage, ratedSeries, ratedSeriesTotalPages)
+        ratedSeriesResponseLiveData.value = ratedSeries
     }
 
     private fun enqueueCallback(call: Call<RatedSeriesResponse>) {
@@ -68,9 +67,7 @@ object RatedSeriesRepository{
                                     response: Response<RatedSeriesResponse>
             ) {
                 response.body()?.let {
-                    ratedSeriesResponseLiveData.postValue(
-                        MultiMediaResponse(it.page, it.results, it.totalPages)
-                    )
+                    ratedSeriesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
                 }
@@ -90,10 +87,7 @@ object RatedSeriesRepository{
 
     private fun returnDatabaseData(){
         val databaseData = getRatedSeriesFromDatabase()
-        ratedSeriesResponseLiveData.postValue(
-            MultiMediaResponse(
-                currentPage, databaseData, ratedSeriesTotalPages)
-        )
+        ratedSeriesResponseLiveData.postValue(ratedSeries)
 
         appendResultItemsToList(databaseData)
     }

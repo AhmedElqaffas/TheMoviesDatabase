@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.dataRepositories
+package com.example.moviesretrofit.main.dataRepositories
 
 import android.util.Log
 import androidx.lifecycle.LiveData
