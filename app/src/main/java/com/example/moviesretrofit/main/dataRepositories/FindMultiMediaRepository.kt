@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.HybridResponse
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
 import retrofit2.Call
@@ -21,16 +20,18 @@ object FindMultiMediaRepository {
     private var currentPage = 1
     private var foundMediaTotalPages = 0
     private var foundMedia = mutableListOf<MultiMedia>()
-    private val foundMediaResponseLiveData: MutableLiveData<MultiMediaResponse> =
+    private val foundMediaResponseLiveData: MutableLiveData<List<MultiMedia>> =
         MutableLiveData()
+    private var lastSearchText = ""
 
-    fun findMediaByName(page: Int, name: String, searchTextChanged: Boolean): LiveData<MultiMediaResponse> {
-        if(page == 1) {
-            sendCachedOrNetworkData(name, searchTextChanged)
+    fun findMediaByName(name: String, searchTextChanged: Boolean): LiveData<List<MultiMedia>> {
+        if(searchTextChanged) {
+            currentPage = 1
+            sendCachedOrNetworkData(name)
         }
 
         else{
-            returnNetworkData(page, name)
+            getNextPageContentIfExists(name)
         }
         return foundMediaResponseLiveData
     }
@@ -40,24 +41,28 @@ object FindMultiMediaRepository {
      * new result page by page. When making a new request, the page will be reset to 1, but we don't
      * want the repository to pass the old contents again, it should remake the api request.
      */
-    private fun sendCachedOrNetworkData(name: String, searchTextChanged: Boolean){
-        if (foundMedia.isEmpty() || searchTextChanged)
-            returnNetworkData(1, name)
+    private fun sendCachedOrNetworkData(name: String){
+        if (foundMedia.isEmpty() || name != lastSearchText) {
+            lastSearchText = name
+            returnNetworkData(name, 1)
+        }
         else
             returnCachedData()
     }
 
     private fun returnCachedData(){
-        for(value in foundMedia){
-            println(value.title)
-        }
-        foundMediaResponseLiveData.value =
-            MultiMediaResponse(currentPage, foundMedia,foundMediaTotalPages)
+        foundMediaResponseLiveData.value = foundMedia
     }
 
-    private fun returnNetworkData(page: Int, name: String){
-        multiMediaAPI.findMediaByName(key, page, name)
-            .apply { enqueueCallback(this) }
+    private fun getNextPageContentIfExists(name: String){
+        if(currentPage < foundMediaTotalPages) {
+            returnNetworkData(name, currentPage + 1)
+        }
+    }
+
+    private fun returnNetworkData(name: String, page: Int){
+            multiMediaAPI.findMediaByName(key, page, name)
+                .apply { enqueueCallback(this) }
     }
 
     private fun enqueueCallback(call: Call<HybridResponse>) {
@@ -68,26 +73,21 @@ object FindMultiMediaRepository {
 
                 response.body()?.let {
                     val listWithoutPeopleEntries = it.filterPeopleEntriesFromResponse()
-                    for(entry in listWithoutPeopleEntries.results){
-                        println(entry.title)
-                    }
-                    foundMediaResponseLiveData.postValue(
-                        listWithoutPeopleEntries
-                    )
-                    updateRepository(listWithoutPeopleEntries)
+                    foundMediaResponseLiveData.postValue(listWithoutPeopleEntries)
+                    updateRepository(it)
                 }
             }
 
             override fun onFailure(call: Call<HybridResponse>, t: Throwable) {
                 Log.e("Find shows error", "Couldn't get found shows")
-                Log.e("find shows error", t.message)
+                Log.e("find shows error", "${t.message}")
             }
         })
     }
 
-    private fun updateRepository(response: MultiMediaResponse){
+    private fun updateRepository(response: HybridResponse){
         updateCurrentPage(response.page)
-        appendResultItemsToList(response.results)
+        appendResultItemsToList(response.filterPeopleEntriesFromResponse())
         saveTotalNumberOfPages(response.totalPages)
     }
 

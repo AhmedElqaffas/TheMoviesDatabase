@@ -18,7 +18,6 @@ import kotlin.math.roundToInt
 class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private lateinit var multiMedia: MultiMedia
-    //private var multiMediaType: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,5 +1,7 @@
 package com.example.moviesretrofit.recyclersAdapters
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import com.example.moviesretrofit.R
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_media.view.*
+import kotlin.math.roundToInt
 
 
 class MultiMediaRecyclerAdapter(private val recyclerType: Int,
@@ -31,6 +34,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
 
         fun bindMovieData(multiMedia: MultiMedia){
             setItemImage(multiMedia)
+            customizeBrowsingItems(multiMedia)
         }
 
         private fun setClickListener(){
@@ -45,6 +49,28 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
                 .fit()
                 .placeholder(R.drawable.loading_movie_image)
                 .into(poster)
+        }
+
+        private fun customizeBrowsingItems(multiMedia: MultiMedia){
+            if(recyclerType == Type.BROWSE)
+                setMediaRating(multiMedia)
+        }
+
+        private fun setMediaRating(multiMedia: MultiMedia){
+            itemView.movieRating.text = multiMedia.rating.toString()
+            setProgressBarBasedOnRating((multiMedia.rating * 10f).roundToInt())
+        }
+
+        private fun setProgressBarBasedOnRating(rating: Int) {
+            itemView.ratingProgressBar.progress = rating
+            when(rating){
+                in 0 until 60 ->
+                    itemView.ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
+                in 60 until 75 ->
+                    itemView.ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF9800"))
+                else ->
+                    itemView.ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#00FF00"))
+            }
         }
 
     }

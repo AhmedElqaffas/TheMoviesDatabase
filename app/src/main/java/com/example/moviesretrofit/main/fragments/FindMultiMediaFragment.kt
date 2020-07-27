@@ -16,13 +16,9 @@ import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.FindMultiMediaViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import kotlinx.android.synthetic.main.fragment_find_movie.*
 class FindMultiMediaFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
-
-    private var page = 1
-    private var totalPages = 0
 
     private var multiMediaRecyclerAdapter =
         MultiMediaRecyclerAdapter(
@@ -55,22 +51,16 @@ class FindMultiMediaFragment : Fragment(),
     }
 
     private fun makeRequest(){
-        val foundMediaLiveData = findMediaViewModel.findMediaByName(page, searchBar.text.toString(), searchTextChanged)
+        val foundMediaLiveData = findMediaViewModel.findMediaByName(searchBar.text.toString(), searchTextChanged)
         createDataObserverIfNotExists(foundMediaLiveData)
     }
 
-    private fun createDataObserverIfNotExists(liveData: LiveData<MultiMediaResponse>){
+    private fun createDataObserverIfNotExists(liveData: LiveData<List<MultiMedia>>){
         if(!liveData.hasActiveObservers()){
             liveData.observe(viewLifecycleOwner, Observer {
-                extractObservedItems(it)
+                overwriteOrAppendToRecycler(it)
             })
         }
-    }
-
-    private fun extractObservedItems(response: MultiMediaResponse){
-        overwriteOrAppendToRecycler(response.results)
-        page = response.page
-        totalPages = response.totalPages
     }
 
     private fun overwriteOrAppendToRecycler(mediaList: List<MultiMedia>){
@@ -104,16 +94,12 @@ class FindMultiMediaFragment : Fragment(),
 
     private fun resetSearchData(){
         searchTextChanged = true
-        page = 1
         makeRequest()
     }
 
     private fun getNextPageMovies(){
-        if(page < totalPages) {
-            page++
-            searchTextChanged = false
-            makeRequest()
-        }
+        searchTextChanged = false
+        makeRequest()
     }
 
     override fun onEndOfMultiMediaPage() {
