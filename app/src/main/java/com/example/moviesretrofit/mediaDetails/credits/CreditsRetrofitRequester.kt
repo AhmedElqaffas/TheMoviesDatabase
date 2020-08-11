@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.mediaDetails
+package com.example.moviesretrofit.mediaDetails.credits
 
 import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.networking.MultiMediaAPI

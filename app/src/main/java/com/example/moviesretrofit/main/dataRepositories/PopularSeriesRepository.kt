@@ -8,6 +8,9 @@ import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -73,21 +76,22 @@ object PopularSeriesRepository{
 
             override fun onFailure(call: Call<PopularSeriesResponse>, t: Throwable) {
                 Log.e("Series error", "Couldn't get series list")
-                if(getPopularSeriesFromDatabase().isNotEmpty() && popularSeries.isEmpty())
-                    returnDatabaseData()
+               if(popularSeries.isEmpty())
+                    getPopularSeriesFromDatabase()
             }
         })
     }
 
-    private fun getPopularSeriesFromDatabase(): List<Series> {
-        return database.getMultimediaDao().getPopularSeries()
-    }
-
-    private fun returnDatabaseData(){
-        val databaseData = getPopularSeriesFromDatabase()
-        popularSeriesResponseLiveData.postValue(popularSeries)
-
-        appendResultItemsToList(databaseData)
+    private fun getPopularSeriesFromDatabase(){
+        var databaseData: List<Series> = listOf()
+        CoroutineScope(Dispatchers.IO).launch {
+            databaseData = database.getMultimediaDao().getPopularSeries()
+        }.invokeOnCompletion {
+            if(databaseData.isNotEmpty()){
+                popularSeriesResponseLiveData.postValue(databaseData)
+                appendResultItemsToList(databaseData)
+            }
+        }
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -109,6 +113,9 @@ object PopularSeriesRepository{
     }
 
     private fun updateDatabase(series: List<Series>){
-        database.getMultimediaDao().insertSeries(series)
+        CoroutineScope(Dispatchers.IO).launch {
+            database.getMultimediaDao().insertSeries(series)
+        }
+
     }
 }

@@ -11,10 +11,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.moviesretrofit.mediaDetails.MultiMediaDetailsActivity
+import com.example.moviesretrofit.mediaDetails.MultimediaDetailsActivity
 import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
-import com.example.moviesretrofit.main.FindMultiMediaViewModel
+import com.example.moviesretrofit.main.FindMultimediaViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import kotlinx.android.synthetic.main.fragment_find_movie.*
 class FindMultiMediaFragment : Fragment(),
@@ -29,7 +29,7 @@ class FindMultiMediaFragment : Fragment(),
     private lateinit var inflated: View
     private var searchTextChanged = true
 
-    private val findMediaViewModel: FindMultiMediaViewModel by viewModels()
+    private val findMediaViewModel: FindMultimediaViewModel by viewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,7 +108,7 @@ class FindMultiMediaFragment : Fragment(),
 
 
     override fun onItemClicked(multiMedia: MultiMedia) {
-        val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
+        val intent = Intent(activity, MultimediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         startActivity(intent)
     }

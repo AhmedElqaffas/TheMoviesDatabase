@@ -11,6 +11,9 @@ import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.dataClasses.RatedMovieResponse
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,21 +79,22 @@ object RatedMoviesRepository{
 
             override fun onFailure(call: Call<RatedMovieResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list from API")
-                if(getRatedMoviesFromDatabase().isNotEmpty() && ratedMovies.isEmpty())
-                    returnDatabaseData()
+                if(ratedMovies.isEmpty())
+                    getRatedMoviesFromDatabase()
             }
         })
     }
 
-    private fun getRatedMoviesFromDatabase(): List<Movie> {
-        return database.getMultimediaDao().getTopRatedMovies()
-    }
-
-    private fun returnDatabaseData(){
-        val databaseData = getRatedMoviesFromDatabase()
-        ratedMoviesResponseLiveData.postValue(ratedMovies)
-
-        appendResultItemsToList(databaseData)
+    private fun getRatedMoviesFromDatabase(){
+        var databaseData: List<Movie> = listOf()
+        CoroutineScope(IO).launch {
+            databaseData = database.getMultimediaDao().getTopRatedMovies()
+        }.invokeOnCompletion {
+            if(databaseData.isNotEmpty()){
+                ratedMoviesResponseLiveData.postValue(databaseData)
+                appendResultItemsToList(databaseData)
+            }
+        }
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -112,6 +116,9 @@ object RatedMoviesRepository{
     }
 
     private fun updateDatabase(movies: List<Movie>){
-       database.getMultimediaDao().insertMovies(movies)
+        CoroutineScope(IO).launch {
+            database.getMultimediaDao().insertMovies(movies)
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.mediaDetails
+package com.example.moviesretrofit.mediaDetails.credits
 
 import android.content.Context
 import android.util.Log
@@ -6,12 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.database.AppDatabase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 
-object CastFragmentModel {
+object CreditsRepository {
 
     private lateinit var database: AppDatabase
 
@@ -25,9 +28,14 @@ object CastFragmentModel {
     }
 
     fun getMultimediaCredits(multimedia: MultiMedia): LiveData<List<Person>>{
-        val castedMultimedia = castMultimedia(multimedia)
+        val castedMultimedia =
+            castMultimedia(
+                multimedia
+            )
         creditsLiveData.value = null
-        returnCachedOrNetworkData(castedMultimedia)
+        returnCachedOrNetworkData(
+            castedMultimedia
+        )
         return creditsLiveData
     }
 
@@ -50,17 +58,21 @@ object CastFragmentModel {
             sendCachedData()
         }
         else{
-            sendNetworkData(multimedia)
+            sendNetworkData(
+                multimedia
+            )
         }
     }
 
     private fun sendCachedData(){
-        creditsLiveData.postValue(creditsList)
+        creditsLiveData.postValue(
+            creditsList
+        )
     }
 
     private fun sendNetworkData(multimedia: MultiMedia){
         multimedia.makeCreditsRequest().apply {
-            enqueueCallback(this!! , multimedia)
+            enqueueCallback(this!!, multimedia)
         }
     }
 
@@ -70,22 +82,36 @@ object CastFragmentModel {
                 response.body()?.let {
                     val creditsList = it.appendCastAndCrewLists()
                     creditsLiveData.postValue(creditsList)
-                    updateRepository(creditsList, multimedia.id)
-                    updateDatabase(creditsList,multimedia)
+                    updateRepository(
+                        creditsList,
+                        multimedia.id
+                    )
+                    updateDatabase(
+                        creditsList,
+                        multimedia
+                    )
                 }
             }
 
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
                 Log.i("CastFragmentModel", "Couldn't load cast")
                 if(creditsList.isEmpty() || multimedia.id != currentId)
-                    returnDatabaseData(multimedia)
+                    returnDatabaseData(
+                        multimedia
+                    )
             }
 
         })
     }
 
     private fun returnDatabaseData(multimedia: MultiMedia){
-        creditsLiveData.postValue(multimedia.getCreditsFromDatabase(database))
+        var databaseData: List<Person> = listOf()
+        CoroutineScope(IO).launch {
+            databaseData = multimedia.getCreditsFromDatabase(database)
+        }.invokeOnCompletion {
+            creditsLiveData.postValue(databaseData)
+        }
+
 
     }
 
@@ -99,11 +125,14 @@ object CastFragmentModel {
     }
 
     private fun updateCachedCredits(creditsList: List<Person>){
-        this.creditsList = creditsList
+        CreditsRepository.creditsList = creditsList
     }
 
     private fun updateDatabase(creditsList: List<Person>, multimedia: MultiMedia) {
-        multimedia.saveCreditsInDatabase(database, creditsList)
+        CoroutineScope(IO).launch {
+            multimedia.saveCreditsInDatabase(database, creditsList)
+        }
+
     }
 
 }

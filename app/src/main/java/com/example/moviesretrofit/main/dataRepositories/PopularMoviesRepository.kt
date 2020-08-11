@@ -11,6 +11,9 @@ import com.example.moviesretrofit.dataClasses.MultiMediaResponse
 import com.example.moviesretrofit.dataClasses.PopularMovieResponse
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +29,7 @@ object PopularMoviesRepository{
     private var currentPage = 1
     private var popularMoviesTotalPages = 0
 
-    private val popularMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
+    private var popularMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
@@ -76,20 +79,22 @@ object PopularMoviesRepository{
 
             override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list from api")
-                if(getPopularMoviesFromDatabase().isNotEmpty() && popularMovies.isEmpty())
-                    returnDatabaseData()
+                if(popularMovies.isEmpty())
+                    getPopularMoviesFromDatabase()
             }
         })
     }
 
-    private fun getPopularMoviesFromDatabase(): List<Movie> {
-        return database.getMultimediaDao().getPopularMovies()
-    }
-
-    private fun returnDatabaseData(){
-        val databaseData = getPopularMoviesFromDatabase()
-        popularMoviesResponseLiveData.postValue(databaseData)
-        appendResultItemsToList(databaseData)
+    private fun getPopularMoviesFromDatabase(){
+        var databaseData: List<Movie> = listOf()
+        CoroutineScope(IO).launch {
+            databaseData = database.getMultimediaDao().getPopularMovies()
+        }.invokeOnCompletion {
+            if(databaseData.isNotEmpty()){
+                popularMoviesResponseLiveData.postValue(databaseData)
+                appendResultItemsToList(databaseData)
+            }
+        }
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -111,6 +116,9 @@ object PopularMoviesRepository{
     }
 
     private fun updateDatabase(movies: List<Movie>){
-        database.getMultimediaDao().insertMovies(movies)
+        CoroutineScope(IO).launch {
+            database.getMultimediaDao().insertMovies(movies)
+        }
+
     }
 }

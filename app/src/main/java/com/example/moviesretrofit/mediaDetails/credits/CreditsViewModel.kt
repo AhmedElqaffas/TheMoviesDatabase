@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.mediaDetails
+package com.example.moviesretrofit.mediaDetails.credits
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -9,10 +9,11 @@ import com.example.moviesretrofit.dataClasses.Person
 class CreditsViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
-        CastFragmentModel.createDatabase(application)
+        CreditsRepository.createDatabase(application)
     }
 
     fun getMultimediaCredits(multimedia: MultiMedia): LiveData<List<Person>>{
-        return CastFragmentModel.getMultimediaCredits(multimedia)
+        return CreditsRepository.getMultimediaCredits(multimedia)
     }
+
 }

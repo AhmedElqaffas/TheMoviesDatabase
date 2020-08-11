@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import com.example.moviesretrofit.mediaDetails.MultiMediaDetailsActivity
+import com.example.moviesretrofit.mediaDetails.MultimediaDetailsActivity
 import com.example.moviesretrofit.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.MainViewModel
@@ -103,7 +103,7 @@ class MultiMediaRecyclerFragment : Fragment(),
     }
 
     override fun onItemClicked(multiMedia: MultiMedia) {
-        val intent = Intent(activity, MultiMediaDetailsActivity::class.java)
+        val intent = Intent(activity, MultimediaDetailsActivity::class.java)
         intent.putExtra("media", multiMedia)
         startActivity(intent)
     }

@@ -1,4 +1,4 @@
-package com.example.moviesretrofit.mediaDetails
+package com.example.moviesretrofit.mediaDetails.credits
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,11 +14,11 @@ import com.example.moviesretrofit.recyclersAdapters.CastRecyclerAdapter
 import kotlinx.android.synthetic.main.fragment_cast.*
 
 
-class CastFragment : Fragment(){
+class CreditsFragment : Fragment(){
 
     companion object {
 
-        fun newInstance(multiMedia: MultiMedia) = CastFragment()
+        fun newInstance(multiMedia: MultiMedia) = CreditsFragment()
             .apply {
             arguments = Bundle().apply {
                 putSerializable("media", multiMedia)

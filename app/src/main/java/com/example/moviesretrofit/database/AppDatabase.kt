@@ -26,7 +26,7 @@ abstract class AppDatabase: RoomDatabase(){
             synchronized(this) {
                 INSTANCE = Room.databaseBuilder(
                     context.applicationContext, AppDatabase::class.java, "tmdb"
-                ).allowMainThreadQueries().build()
+                ).build()
                 return INSTANCE!!
             }
         }

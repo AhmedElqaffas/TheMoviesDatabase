@@ -1,23 +1,24 @@
 package com.example.moviesretrofit.mediaDetails
 
-import android.content.res.ColorStateList
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.activity.viewModels
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.helpers.ImageZooming
 import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.mediaDetails.credits.CreditsFragment
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
-class MultiMediaDetailsActivity : AppCompatActivity() {
+class MultimediaDetailsActivity : AppCompatActivity() {
 
     private lateinit var multiMedia: MultiMedia
+    private val multimediaDetailsViewModel: MultimediaDetailsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,14 +79,7 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private fun setProgressBarBasedOnRating(rating: Int) {
         ratingProgressBar.progress = rating
-        when(rating){
-            in 0 until 60 ->
-                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF0000"))
-            in 60 until 75 ->
-                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#FF9800"))
-            else ->
-                ratingProgressBar.progressTintList = ColorStateList.valueOf(Color.parseColor("#00FF00"))
-        }
+        ratingProgressBar.progressTintList = multimediaDetailsViewModel.determineProgressBarColor(rating)
     }
 
     private fun setMediaName(){
@@ -103,7 +97,7 @@ class MultiMediaDetailsActivity : AppCompatActivity() {
 
     private fun showCastFragment(){
         val castFragmentInstance =
-            CastFragment.newInstance(
+            CreditsFragment.newInstance(
                 multiMedia
             )
         supportFragmentManager.beginTransaction().replace(

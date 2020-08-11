@@ -4,13 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.dataClasses.*
 import com.example.moviesretrofit.networking.MultiMediaAPI
-import com.example.moviesretrofit.dataClasses.MultiMediaResponse
-import com.example.moviesretrofit.dataClasses.RatedSeriesResponse
-import com.example.moviesretrofit.dataClasses.Series
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,21 +75,22 @@ object RatedSeriesRepository{
 
             override fun onFailure(call: Call<RatedSeriesResponse>, t: Throwable) {
                 Log.e("Series error", "Couldn't get series list from API")
-                if(getRatedSeriesFromDatabase().isNotEmpty() && ratedSeries.isEmpty())
-                    returnDatabaseData()
+                if(ratedSeries.isEmpty())
+                        getRatedSeriesFromDatabase()
             }
         })
     }
 
-    private fun getRatedSeriesFromDatabase(): List<Series> {
-        return database.getMultimediaDao().getTopRatedSeries()
-    }
-
-    private fun returnDatabaseData(){
-        val databaseData = getRatedSeriesFromDatabase()
-        ratedSeriesResponseLiveData.postValue(ratedSeries)
-
-        appendResultItemsToList(databaseData)
+    private fun getRatedSeriesFromDatabase(){
+        var databaseData: List<Series> = listOf()
+        CoroutineScope(IO).launch {
+            databaseData = database.getMultimediaDao().getTopRatedSeries()
+        }.invokeOnCompletion {
+            if(databaseData.isNotEmpty()){
+                ratedSeriesResponseLiveData.postValue(databaseData)
+                appendResultItemsToList(databaseData)
+            }
+        }
     }
 
     private fun updateRepository(response: MultiMediaResponse){
@@ -112,7 +113,10 @@ object RatedSeriesRepository{
     }
 
     private fun updateDatabase(series: List<Series>){
-        database.getMultimediaDao().insertSeries(series)
+        CoroutineScope(IO).launch {
+            database.getMultimediaDao().insertSeries(series)
+        }
+
     }
 
 }

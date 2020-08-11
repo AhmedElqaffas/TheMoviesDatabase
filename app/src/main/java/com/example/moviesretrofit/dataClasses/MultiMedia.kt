@@ -21,7 +21,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     }
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
-    open fun getCreditsFromDatabase(database: AppDatabase): List<Person> {return listOf()}
-    open fun saveCreditsInDatabase(database: AppDatabase, creditsList: List<Person>){}
+    open suspend fun getCreditsFromDatabase(database: AppDatabase): List<Person> {return listOf()}
+    open suspend fun saveCreditsInDatabase(database: AppDatabase, creditsList: List<Person>){}
 }
 
