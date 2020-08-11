@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MoviesRetrofit</string>
+    <string name="cast_and_crew">Cast&amp;Crew</string>
+    <string name="overview">Overview</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top Rated</string>
 </resources>

@@ -10,17 +10,16 @@ object RetrofitClient {
 
     fun getRetrofitClient(): Retrofit{
 
-        if(retrofitClient == null){
+        return if(retrofitClient == null){
             retrofitClient = Retrofit
                 .Builder()
                 .baseUrl("https://api.themoviedb.org")
                 .addConverterFactory(GsonConverterFactory.create()) // ba2olo eny hasta5dem GsonConverter 3ashan a7awel el JSON l class
                 .client(OkHttpClient.Builder().build()) // 7aga sabta
                 .build()
-            return retrofitClient!!
-        }
-        else{
-            return retrofitClient!!
+            retrofitClient!!
+        } else{
+            retrofitClient!!
         }
     }
 }
