@@ -6,12 +6,6 @@ open class MultiMediaResponse(@Transient open val page: Int,
 
 
     fun filterPeopleEntriesFromResponse(): List<MultiMedia>{
-        val entriesList = mutableListOf<MultiMedia>()
-        for(entry in results){
-            if(entry.mediaType != "person"){
-                entriesList.add(entry)
-            }
-        }
-        return entriesList
+        return results.filter { it.mediaType != "person" }
     }
 }
