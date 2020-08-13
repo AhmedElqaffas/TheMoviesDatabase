@@ -7,6 +7,7 @@ import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.lifecycle.observe
 import com.example.moviesretrofit.R
+import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.helpers.ImageZooming
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.mediaDetails.credits.CreditsFragment
@@ -25,7 +26,7 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
-        getClickedMovie()
+        getClickedMultimedia()
         setMovieDetails()
         showCastFragmentIfNoSavedInstance(savedInstanceState)
         getMultimediaDetails()
@@ -33,9 +34,8 @@ class MultimediaDetailsActivity : AppCompatActivity() {
 
     }
 
-    private fun getClickedMovie(){
+    private fun getClickedMultimedia(){
         multiMedia = intent.getSerializableExtra("media") as MultiMedia
-        //multiMediaType = intent.getIntExtra("Media Type",1)
     }
 
     private fun setMovieDetails(){

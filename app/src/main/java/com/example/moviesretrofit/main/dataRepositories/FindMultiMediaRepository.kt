@@ -73,7 +73,7 @@ object FindMultiMediaRepository {
 
                 response.body()?.let {
                     val listWithoutPeopleEntries = it.filterPeopleEntriesFromResponse()
-                    foundMediaResponseLiveData.postValue(it.results)
+                    foundMediaResponseLiveData.postValue(listWithoutPeopleEntries)
                     updateRepository(it)
                 }
             }

@@ -6,6 +6,6 @@ open class MultiMediaResponse(@Transient open val page: Int,
 
 
     fun filterPeopleEntriesFromResponse(): List<MultiMedia>{
-        return results.filter { it.mediaType != "person" }
+        return results.filter { it.mediaType == "movie" || it.mediaType == "tv" }
     }
 }

@@ -42,4 +42,8 @@ interface MultiMediaAPI {
     @GET("/3/movie/{movie_id}")
     fun makeMovieDetailsRequest(@Path("movie_id") id: Int,
                                 @Query("api_key") key: String): Call<Movie>
+
+    @GET("/3/tv/{tv_id}")
+    fun makeSeriesDetailsRequest(@Path("tv_id") id: Int,
+                                @Query("api_key") key: String): Call<Series>
 }

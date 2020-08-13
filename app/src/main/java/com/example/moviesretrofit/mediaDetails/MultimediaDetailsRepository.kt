@@ -6,7 +6,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.database.AppDatabase
-import com.example.moviesretrofit.mediaDetails.credits.CreditsRepository
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -66,8 +65,6 @@ object MultimediaDetailsRepository {
             override fun onResponse(call: Call<MultiMedia>, response: Response<MultiMedia>) {
                 response.body()?.let {
                     multimedia.copyObtainedDetails(it)
-                    println(multimedia.title)
-                    println(multimedia.budget)
                     multimediaLiveData.postValue(multimedia)
                     updateRepository(multimedia)
                     updateDatabase(multimedia)
@@ -76,6 +73,7 @@ object MultimediaDetailsRepository {
 
             override fun onFailure(call: Call<MultiMedia>, t: Throwable) {
                 Log.i("MultimediaDetails", "Couldn't load details")
+                Log.i("MultimediaDetails", t.message)
                 returnDatabaseData(multimedia)
             }
 

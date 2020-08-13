@@ -33,6 +33,9 @@ interface MultimediaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSingleSeries(series: Series)
 
+    @Query("SELECT * FROM series WHERE series.id = :id")
+    suspend fun getSingleSeries(id: Int): Series
+
     @Query("SELECT * FROM series ORDER BY rating DESC")
     suspend fun getTopRatedSeries(): List<Series>
 

@@ -15,9 +15,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
                       @SerializedName("media_type") open var mediaType: String,
                       @SerializedName("release_date", alternate = ["first_air_date"]) open var releaseDate: String,
                       open var overview: String?,
-                      open var popularity: Float,
-                      open var budget: Int? = null,
-                      open var revenue: Int? = null): Serializable{
+                      open var popularity: Float): Serializable{
 
     object Constants{
         const val POPULAR = 0
