@@ -4,4 +4,8 @@
     <string name="overview">Overview</string>
     <string name="popular">Popular</string>
     <string name="top_rated">Top Rated</string>
+    <string name="show_more_info">Show More Information</string>
+    <string name="add_to_favorites">Add to Favorites</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

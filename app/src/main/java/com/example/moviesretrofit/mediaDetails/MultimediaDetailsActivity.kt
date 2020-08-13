@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.viewModels
+import androidx.lifecycle.observe
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.helpers.ImageZooming
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.mediaDetails.credits.CreditsFragment
+import com.example.moviesretrofit.mediaDetails.infoDialogFragment.InfoDialogFragment
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
@@ -26,6 +28,8 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         getClickedMovie()
         setMovieDetails()
         showCastFragmentIfNoSavedInstance(savedInstanceState)
+        getMultimediaDetails()
+        setInfoButtonClickListener()
 
     }
 
@@ -96,14 +100,29 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     }
 
     private fun showCastFragment(){
-        val castFragmentInstance =
-            CreditsFragment.newInstance(
-                multiMedia
-            )
+        val castFragmentInstance = CreditsFragment.newInstance(multiMedia)
         supportFragmentManager.beginTransaction().replace(
             R.id.castFragmentFrame,
             castFragmentInstance,"cast fragment")
             .commit()
+    }
+
+    private fun getMultimediaDetails(){
+        multimediaDetailsViewModel.getMultimediaDetails(multiMedia).observe(this){
+            println("Observed...............")
+            multiMedia = it
+        }
+    }
+
+    private fun setInfoButtonClickListener(){
+        moreInfoButton.setOnClickListener {
+            showMoreInfoDialogFragment()
+        }
+    }
+
+    private fun showMoreInfoDialogFragment(){
+        val infoDialogFragment = InfoDialogFragment.newInstance(multiMedia)
+        infoDialogFragment.show(supportFragmentManager, "informationDialog")
     }
 
     fun zoomImage(view: View){

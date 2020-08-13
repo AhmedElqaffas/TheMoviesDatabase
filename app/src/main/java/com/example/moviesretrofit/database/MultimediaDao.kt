@@ -14,6 +14,9 @@ interface MultimediaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMovies(moviesList: List<Movie>)
 
+    @Query("SELECT * FROM movies WHERE movies.id = :id")
+    suspend fun getSingleMovie(id: Int): Movie
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSingleMovie(movies: Movie)
 

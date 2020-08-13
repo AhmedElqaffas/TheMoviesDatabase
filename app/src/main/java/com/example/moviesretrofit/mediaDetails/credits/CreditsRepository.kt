@@ -28,14 +28,9 @@ object CreditsRepository {
     }
 
     fun getMultimediaCredits(multimedia: MultiMedia): LiveData<List<Person>>{
-        val castedMultimedia =
-            castMultimedia(
-                multimedia
-            )
+        val castedMultimedia = castMultimedia(multimedia)
         creditsLiveData.value = null
-        returnCachedOrNetworkData(
-            castedMultimedia
-        )
+        returnCachedOrNetworkData(castedMultimedia)
         return creditsLiveData
     }
 
@@ -43,11 +38,12 @@ object CreditsRepository {
         return when (multimedia.mediaType) {
             "movie" -> Movie(multimedia.title, multimedia.id,
                 multimedia.totalVotes, multimedia.poster, multimedia.cover, multimedia.rating,
-                multimedia.mediaType, multimedia.overview, multimedia.popularity)
+                multimedia.releaseDate ,multimedia.mediaType, multimedia.overview, multimedia.popularity,
+                multimedia.budget, multimedia.revenue)
 
             "tv" -> Series(multimedia.title, multimedia.id,
                 multimedia.totalVotes, multimedia.poster, multimedia.cover, multimedia.rating,
-                multimedia.mediaType, multimedia.overview, multimedia.popularity)
+                multimedia.releaseDate, multimedia.mediaType, multimedia.overview, multimedia.popularity)
 
             else -> throw Exception("Couldn't cast multimedia in cast repo")
         }
@@ -65,9 +61,7 @@ object CreditsRepository {
     }
 
     private fun sendCachedData(){
-        creditsLiveData.postValue(
-            creditsList
-        )
+        creditsLiveData.postValue(creditsList)
     }
 
     private fun sendNetworkData(multimedia: MultiMedia){
@@ -111,8 +105,6 @@ object CreditsRepository {
         }.invokeOnCompletion {
             creditsLiveData.postValue(databaseData)
         }
-
-
     }
 
     private fun updateRepository(creditsList: List<Person>, id: Int){

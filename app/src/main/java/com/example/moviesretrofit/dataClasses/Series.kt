@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 
 @Entity(tableName = "series", primaryKeys = ["id"])
-class Series() : MultiMedia("",0,0,"","",0f, "tv", "",0f) {
+class Series() : MultiMedia("",0,0,"","",0f, "tv",
+    "", "",0f) {
 
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
-                rating: Float, mediaType: String, overview: String?, popularity: Float): this(){
+                rating: Float, releaseDate: String, mediaType: String,
+                overview: String?, popularity: Float): this(){
         this.title = title
         this.id = id
         this.totalVotes = totalVotes
@@ -21,6 +23,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv", "",0f) {
         this.cover = cover
         this.rating = rating
         this.mediaType = mediaType
+        this.releaseDate = releaseDate
         this.overview = overview
         this.popularity = popularity
     }

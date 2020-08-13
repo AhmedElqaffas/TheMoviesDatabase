@@ -10,13 +10,6 @@ import com.example.moviesretrofit.main.fragments.MoviesFragment
 import com.example.moviesretrofit.main.fragments.SeriesFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-
-/**
- * THIS MAY BE A LITTLE ADVANCED. A MORE SIMPLE EXAMPLE TO STUDY IS AT THIS PROJECT FIRST COMMIT
- * NAMED: "Initial app". REFER TO IT IF YOU HAVE DIFFICULTY STUDYING THIS EXAMPLE.
- * STAY STRONG, FUTURE ME.
- * SINCERELY, PAST YOU
- */
 class MainActivity : AppCompatActivity(){
 
 
