@@ -10,7 +10,10 @@ import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +31,9 @@ object PopularSeriesRepository{
 
     private val popularSeriesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
+    // mutex to synchronize the deletion of cached data and insertion of new data
+    // (deletion job must finish first)
+    private val mutex = Mutex()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
@@ -68,6 +74,9 @@ object PopularSeriesRepository{
                                     response: Response<PopularSeriesResponse>
             ) {
                 response.body()?.let {
+                    if(userConnectedToTheInternet(it.page)){
+                        deletePopularSeriesCachedData()
+                    }
                     popularSeriesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
@@ -84,12 +93,38 @@ object PopularSeriesRepository{
 
     private fun getPopularSeriesFromDatabase(){
         var databaseData: List<Series> = listOf()
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(IO).launch {
             databaseData = database.getMultimediaDao().getPopularSeries()
         }.invokeOnCompletion {
             if(databaseData.isNotEmpty()){
                 popularSeriesResponseLiveData.postValue(databaseData)
                 appendResultItemsToList(databaseData)
+            }
+        }
+    }
+
+    /**
+     * If the received response is page one, that means that the user currently has
+     * internet connection, then we can know delete the cache
+     * Only the response received from page one is used, because we don't want
+     * each page to delete the content of the previous pages
+     */
+    private fun userConnectedToTheInternet(page: Int): Boolean{
+        return page == 1
+    }
+    private fun deletePopularSeriesCachedData(){
+        deleteRepositoryData()
+        deleteDatabaseData()
+    }
+
+    private fun deleteRepositoryData(){
+        popularSeries.clear()
+    }
+
+    private fun deleteDatabaseData(){
+        CoroutineScope(IO).launch {
+            mutex.withLock {
+                database.getMultimediaDao().deleteCachedSeries()
             }
         }
     }
@@ -113,8 +148,10 @@ object PopularSeriesRepository{
     }
 
     private fun updateDatabase(series: List<Series>){
-        CoroutineScope(Dispatchers.IO).launch {
-            database.getMultimediaDao().insertSeries(series)
+        CoroutineScope(IO).launch {
+            mutex.withLock{
+                database.getMultimediaDao().insertSeries(series)
+            }
         }
 
     }

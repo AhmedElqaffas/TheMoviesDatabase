@@ -28,6 +28,7 @@ object RatedSeriesRepository{
 
     private val ratedSeriesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
+
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }

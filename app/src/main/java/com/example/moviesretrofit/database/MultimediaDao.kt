@@ -1,11 +1,6 @@
 package com.example.moviesretrofit.database
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.Series
 
@@ -26,6 +21,9 @@ interface MultimediaDao {
     @Query("SELECT * FROM movies ORDER BY popularity DESC")
     suspend fun getPopularMovies(): List<Movie>
 
+    @Query("DELETE FROM movies")
+    suspend fun deleteCachedMovies()
+
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSeries(seriesList: List<Series>)
@@ -41,4 +39,7 @@ interface MultimediaDao {
 
     @Query("SELECT * FROM series ORDER BY popularity DESC")
     suspend fun getPopularSeries(): List<Series>
+
+    @Query("DELETE FROM series")
+    suspend fun deleteCachedSeries()
 }

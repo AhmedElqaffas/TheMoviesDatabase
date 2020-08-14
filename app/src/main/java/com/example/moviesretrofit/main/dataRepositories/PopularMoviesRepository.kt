@@ -14,6 +14,8 @@ import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +32,10 @@ object PopularMoviesRepository{
     private var popularMoviesTotalPages = 0
 
     private var popularMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
+
+    // mutex to synchronize the deletion of cached data and insertion of new data
+    // (deletion job must finish first)
+    private val mutex = Mutex()
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
@@ -51,8 +57,9 @@ object PopularMoviesRepository{
         if(popularMovies.isNotEmpty())
             returnCachedData()
 
-        else if (popularMovies.isEmpty())
+        else if (popularMovies.isEmpty()) {
             returnNetworkData(1)
+        }
     }
 
     private fun returnNetworkData(page: Int){
@@ -71,6 +78,9 @@ object PopularMoviesRepository{
                                     response: Response<PopularMovieResponse>
             ) {
                 response.body()?.let {
+                    if(userConnectedToTheInternet(it.page)){
+                        deletePopularMoviesCachedData()
+                    }
                     popularMoviesResponseLiveData.postValue(it.results)
                     updateRepository(it)
                     updateDatabase(it.results)
@@ -97,6 +107,33 @@ object PopularMoviesRepository{
         }
     }
 
+    /**
+     * If the received response is page one, that means that the user currently has
+     * internet connection, then we can know delete the cache
+     * Only the response received from page one is used, because we don't want
+     * each page to delete the content of the previous pages
+     */
+    private fun userConnectedToTheInternet(page: Int): Boolean{
+        return page == 1
+    }
+    private fun deletePopularMoviesCachedData(){
+        deleteRepositoryData()
+        deleteDatabaseData()
+    }
+
+    private fun deleteRepositoryData(){
+        popularMovies.clear()
+    }
+
+    private fun deleteDatabaseData(){
+        CoroutineScope(IO).launch {
+            mutex.withLock {
+                database.getMultimediaDao().deleteCachedMovies()
+            }
+
+        }
+    }
+
     private fun updateRepository(response: MultiMediaResponse){
         updateCurrentPage(response.page)
         appendResultItemsToList(response.results)
@@ -117,8 +154,9 @@ object PopularMoviesRepository{
 
     private fun updateDatabase(movies: List<Movie>){
         CoroutineScope(IO).launch {
-            database.getMultimediaDao().insertMovies(movies)
+            mutex.withLock {
+                database.getMultimediaDao().insertMovies(movies)
+            }
         }
-
     }
 }
