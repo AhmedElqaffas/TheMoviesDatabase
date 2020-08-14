@@ -12,7 +12,6 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.Exception
 
 object CreditsRepository {
 
@@ -28,29 +27,9 @@ object CreditsRepository {
     }
 
     fun getMultimediaCredits(multimedia: MultiMedia): LiveData<List<Person>>{
-        val castedMultimedia =
-            castMultimedia(
-                multimedia
-            )
         creditsLiveData.value = null
-        returnCachedOrNetworkData(
-            castedMultimedia
-        )
+        returnCachedOrNetworkData(multimedia)
         return creditsLiveData
-    }
-
-    private fun castMultimedia(multimedia: MultiMedia): MultiMedia{
-        return when (multimedia.mediaType) {
-            "movie" -> Movie(multimedia.title, multimedia.id,
-                multimedia.totalVotes, multimedia.poster, multimedia.cover, multimedia.rating,
-                multimedia.mediaType, multimedia.overview, multimedia.popularity)
-
-            "tv" -> Series(multimedia.title, multimedia.id,
-                multimedia.totalVotes, multimedia.poster, multimedia.cover, multimedia.rating,
-                multimedia.mediaType, multimedia.overview, multimedia.popularity)
-
-            else -> throw Exception("Couldn't cast multimedia in cast repo")
-        }
     }
 
     private fun returnCachedOrNetworkData(multimedia: MultiMedia){
@@ -58,16 +37,12 @@ object CreditsRepository {
             sendCachedData()
         }
         else{
-            sendNetworkData(
-                multimedia
-            )
+            sendNetworkData(multimedia)
         }
     }
 
     private fun sendCachedData(){
-        creditsLiveData.postValue(
-            creditsList
-        )
+        creditsLiveData.postValue(creditsList)
     }
 
     private fun sendNetworkData(multimedia: MultiMedia){
@@ -82,14 +57,8 @@ object CreditsRepository {
                 response.body()?.let {
                     val creditsList = it.appendCastAndCrewLists()
                     creditsLiveData.postValue(creditsList)
-                    updateRepository(
-                        creditsList,
-                        multimedia.id
-                    )
-                    updateDatabase(
-                        creditsList,
-                        multimedia
-                    )
+                    updateRepository(creditsList, multimedia.id)
+                    updateDatabase(creditsList, multimedia)
                 }
             }
 
@@ -111,8 +80,6 @@ object CreditsRepository {
         }.invokeOnCompletion {
             creditsLiveData.postValue(databaseData)
         }
-
-
     }
 
     private fun updateRepository(creditsList: List<Person>, id: Int){
@@ -130,7 +97,12 @@ object CreditsRepository {
 
     private fun updateDatabase(creditsList: List<Person>, multimedia: MultiMedia) {
         CoroutineScope(IO).launch {
-            multimedia.saveCreditsInDatabase(database, creditsList)
+            try{
+                multimedia.saveCreditsInDatabase(database, creditsList)
+            }catch(e: Exception){
+                Log.e("DatabaseError","Couldn't save credits in database")
+            }
+
         }
 
     }

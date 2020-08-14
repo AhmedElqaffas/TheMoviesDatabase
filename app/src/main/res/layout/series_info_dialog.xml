@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mediaDetails.infoDialogFragment.InfoDialogFragment"
+    android:minWidth="300dp"
+    android:minHeight="300dp"
+    android:background="@drawable/info_fragment_bg">
+
+    <TextView
+        android:id="@+id/yearWordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:fontFamily="@font/courgette"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="50dp"
+        android:text="Air time:"
+        android:textColor="#000000"
+        android:textSize="25sp"/>
+    <TextView
+        android:id="@+id/airTimeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/yearWordTextView"
+        app:layout_constraintLeft_toRightOf="@id/yearWordTextView"
+        app:layout_constraintBottom_toBottomOf="@id/yearWordTextView"
+        android:layout_marginStart="30dp"
+        tools:text="2018"
+        android:textColor="#000000"
+        android:textSize="30sp"/>
+
+    <TextView
+        android:id="@+id/seasonsWordTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/yearWordTextView"
+        app:layout_constraintLeft_toLeftOf="@id/yearWordTextView"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/courgette"
+        android:text="Seasons:"
+        android:textColor="#000000"
+        android:textSize="22sp"/>
+    <TextView
+        android:id="@+id/seasonsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/seasonsWordTextView"
+        app:layout_constraintLeft_toRightOf="@id/seasonsWordTextView"
+        app:layout_constraintBottom_toBottomOf="@id/seasonsWordTextView"
+        android:layout_marginStart="30dp"
+        tools:text="4"
+        android:textColor="#000000"
+        android:textSize="28sp"
+        android:textAlignment="center" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

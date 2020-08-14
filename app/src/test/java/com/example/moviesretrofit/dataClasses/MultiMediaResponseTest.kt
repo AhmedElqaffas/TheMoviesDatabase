@@ -12,12 +12,12 @@ class MultiMediaResponseTest {
 
         // Arrange
         val dummyMultimediaList = mutableListOf(
-            MultiMedia("",0,0,"","",0f, "person","",0f),
-            MultiMedia("",0,0,"","",0f, "movie","",0f),
-            MultiMedia("",0,0,"","",0f, "movie","",0f),
-            MultiMedia("",0,0,"","",0f, "series","",0f),
-            MultiMedia("",0,0,"","",0f, "person","",0f),
-            Series("",0,0,"","",0f, "","",0f)
+            MultiMedia("",0,0,"","",0f, "person", "", "",0f),
+            MultiMedia("",0,0,"","",0f, "movie", "", "",0f),
+            MultiMedia("",0,0,"","",0f, "movie", "", "",0f),
+            MultiMedia("",0,0,"","",0f, "series", "","",0f),
+            MultiMedia("",0,0,"","",0f, "person", "","",0f),
+            Series("",0,0,"","",0f, "","","",0f,0,"",false)
         )
 
         val multiMediaResponse = MultiMediaResponse(0, dummyMultimediaList, 0)
