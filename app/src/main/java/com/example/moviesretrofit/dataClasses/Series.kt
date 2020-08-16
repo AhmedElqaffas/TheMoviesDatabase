@@ -10,7 +10,7 @@ import retrofit2.Call
 
 @Entity(tableName = "series", primaryKeys = ["id"])
 class Series() : MultiMedia("",0,0,"","",0f, "tv",
-    "", "",0f) {
+    "", "",0f, listOf()){
 
     @SerializedName("number_of_seasons")
     var numberOfSeasons: Int? = 0
@@ -22,7 +22,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, numberOfSeasons: Int?,
-                lastAirDate: String, inProduction: Boolean): this(){
+                lastAirDate: String, inProduction: Boolean, genres: List<Genre>?): this(){
         this.title = title
         this.id = id
         this.totalVotes = totalVotes
@@ -36,6 +36,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.numberOfSeasons = numberOfSeasons
         this.lastAirDate = lastAirDate
         this.inProduction = inProduction
+        this.genres = genres
     }
 
 
@@ -70,6 +71,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.numberOfSeasons = (receivedMedia as Series).numberOfSeasons
         this.inProduction = receivedMedia.inProduction
         this.lastAirDate = receivedMedia.lastAirDate
+        this.genres = receivedMedia.genres
     }
 
     override suspend fun saveInDatabase(database: AppDatabase){

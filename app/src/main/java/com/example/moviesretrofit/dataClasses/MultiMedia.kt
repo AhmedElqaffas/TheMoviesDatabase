@@ -1,6 +1,8 @@
 package com.example.moviesretrofit.dataClasses
 
+import androidx.room.TypeConverters
 import com.example.moviesretrofit.database.AppDatabase
+import com.example.moviesretrofit.database.GenreDatabaseConverter
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
@@ -15,12 +17,15 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
                       @SerializedName("media_type") open var mediaType: String,
                       @SerializedName("release_date", alternate = ["first_air_date"]) open var releaseDate: String,
                       open var overview: String?,
-                      open var popularity: Float): Serializable{
+                      open var popularity: Float,
+                      @TypeConverters(GenreDatabaseConverter::class) open var genres: List<Genre>?): Serializable{
 
     object Constants{
         const val POPULAR = 0
         const val RATED = 1
     }
+
+
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
     open fun makeDetailsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMedia>? {return null}

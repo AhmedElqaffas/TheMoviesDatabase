@@ -9,14 +9,15 @@ import retrofit2.Call
 
 @Entity(tableName = "movies", primaryKeys = ["id"])
 class Movie(): MultiMedia("",0,0,"","",0f, "movie",
-    "", "",0f) {
+    "", "",0f, listOf()) {
 
     var budget: Int? = 0
     var revenue: Long? = 0
 
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
-                overview: String?, popularity: Float, budget: Int?, revenue: Long?):
+                overview: String?, popularity: Float, budget: Int?, revenue: Long?,
+                genres: List<Genre>?):
             this() {
         this.title = title
         this.id = id
@@ -30,6 +31,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.popularity = popularity
         this.budget = budget
         this.revenue =revenue
+        this.genres = genres
     }
 
 
@@ -66,7 +68,9 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
 
     override fun copyObtainedDetails(receivedMedia: MultiMedia){
         this.budget = (receivedMedia as Movie).budget
-        this.revenue = (receivedMedia).revenue
+        this.revenue = receivedMedia.revenue
+        this.genres = receivedMedia.genres
+
     }
 
     override suspend fun getFromDatabase(database: AppDatabase): MultiMedia {

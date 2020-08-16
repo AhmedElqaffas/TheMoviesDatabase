@@ -1,15 +1,20 @@
 package com.example.moviesretrofit.mediaDetails
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.setPadding
 import androidx.lifecycle.observe
 import com.example.moviesretrofit.R
-import com.example.moviesretrofit.dataClasses.Movie
-import com.example.moviesretrofit.helpers.ImageZooming
+import com.example.moviesretrofit.dataClasses.Genre
 import com.example.moviesretrofit.dataClasses.MultiMedia
+import com.example.moviesretrofit.helpers.ImageZooming
 import com.example.moviesretrofit.mediaDetails.credits.CreditsFragment
 import com.example.moviesretrofit.mediaDetails.infoDialogFragment.InfoDialogFragment
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
@@ -17,6 +22,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import java.text.NumberFormat
 import kotlin.math.roundToInt
+
 
 class MultimediaDetailsActivity : AppCompatActivity() {
 
@@ -109,9 +115,43 @@ class MultimediaDetailsActivity : AppCompatActivity() {
 
     private fun getMultimediaDetails(){
         multimediaDetailsViewModel.getMultimediaDetails(multiMedia).observe(this){
-            println("Observed...............")
-            multiMedia = it
+            /* make sure the returning item is the one clicked now not the previously clicked item
+             That is available in the view model before getMultimediaDetails updates the live data*/
+            if(multiMedia.title == it.title){
+                multiMedia = it
+                showGenres()
+            }
+
         }
+    }
+
+    private fun showGenres(){
+        multiMedia.genres?.forEach{
+            val genreTextView = TextView(this)
+            setTextViewConstraints(genreTextView)
+            customizeTextViewLook(genreTextView, it)
+            genresContainer.addView(genreTextView)
+        }
+    }
+
+    private fun setTextViewConstraints(genreTextView: TextView){
+        val params = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        )
+
+        params.marginStart = dpToPx(5f).toInt()
+        genreTextView.layoutParams = params
+    }
+
+    private fun customizeTextViewLook(genreTextView: TextView, genre: Genre){
+        genreTextView.text = genre.name
+        genreTextView.textSize = 18f
+        genreTextView.setPadding(dpToPx(6f).toInt())
+        genreTextView.background = resources.getDrawable(R.drawable.genre_bg)
+        genreTextView.setCompoundDrawablesWithIntrinsicBounds(genre.getIcon(), 0, 0, 0)
     }
 
     private fun setInfoButtonClickListener(){
@@ -127,5 +167,9 @@ class MultimediaDetailsActivity : AppCompatActivity() {
 
     fun zoomImage(view: View){
         ImageZooming.zoomImage(view as ImageView, this)
+    }
+
+    private fun dpToPx(dp: Float): Float {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, this.resources.displayMetrics)
     }
 }

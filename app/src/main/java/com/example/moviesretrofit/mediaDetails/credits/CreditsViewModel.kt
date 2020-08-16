@@ -54,7 +54,8 @@ class CreditsViewModel(application: Application) : AndroidViewModel(application)
                 multimedia.overview,
                 multimedia.popularity,
                 budget,
-                revenue
+                revenue,
+                multimedia.genres
             )
 
             "tv" -> Series(
@@ -70,7 +71,8 @@ class CreditsViewModel(application: Application) : AndroidViewModel(application)
                 multimedia.popularity,
                 numberOfSeasons,
                 lastAirDate,
-                inProduction
+                inProduction,
+                multimedia.genres
             )
 
             else -> throw Exception("Couldn't cast multimedia in cast repo")

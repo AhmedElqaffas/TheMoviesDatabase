@@ -18,7 +18,6 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
         MultimediaDetailsRepository.createDatabase(application)
     }
 
-
     fun determineProgressBarColor(rating: Int): ColorStateList{
         return when(rating){
             in 0 until 60 ->
@@ -56,7 +55,6 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
             Log.i("multimediaCasting", "Couldn't cast multimedia to series")
         }
 
-        println(multimedia.mediaType)
         return when (multimedia.mediaType) {
             "movie" -> Movie(
                 multimedia.title,
@@ -70,7 +68,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 multimedia.overview,
                 multimedia.popularity,
                 budget,
-                revenue
+                revenue,
+                multimedia.genres
             )
 
             "tv" -> Series(
@@ -86,7 +85,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 multimedia.popularity,
                 numberOfSeasons,
                 lastAirDate,
-                inProduction
+                inProduction,
+                multimedia.genres
             )
 
             else -> throw Exception("Couldn't cast multimedia in MultimediaDetails viewModel")
