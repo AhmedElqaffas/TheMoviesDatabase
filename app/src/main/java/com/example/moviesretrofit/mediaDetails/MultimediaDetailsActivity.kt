@@ -1,9 +1,13 @@
 package com.example.moviesretrofit.mediaDetails
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationSet
+import android.view.animation.ScaleAnimation
+import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -36,6 +40,8 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         setMovieDetails()
         showCastFragmentIfNoSavedInstance(savedInstanceState)
         getMultimediaDetails()
+        hideOrShowGreenCheck()
+        setupFavoritesButton()
         setInfoButtonClickListener()
 
     }
@@ -152,6 +158,85 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         genreTextView.setPadding(dpToPx(6f).toInt())
         genreTextView.background = resources.getDrawable(R.drawable.genre_bg)
         genreTextView.setCompoundDrawablesWithIntrinsicBounds(genre.getIcon(), 0, 0, 0)
+    }
+
+    /**
+     * If the movie is in favorites, show a green check mark above the favorite button. Otherwise,
+     * hide it.
+     */
+    private fun hideOrShowGreenCheck(){
+        if(multiMedia.isFavorite)
+            checked.visibility = View.VISIBLE
+        else
+            checked.visibility = View.INVISIBLE
+    }
+
+    private fun setupFavoritesButton(){
+        favoriteButton.setOnClickListener {
+            addOrRemoveFromFavorites()
+        }
+    }
+
+    /**
+     * If the movie is already in favorites, and the user clicks this buttons, the green check mark
+     * on the button should disappear, and a broken heart animation should happen.
+     * Else, show a full heart animation and a green check mark
+     */
+    private fun addOrRemoveFromFavorites(){
+        if(!multiMedia.isFavorite){
+            checked.visibility = View.VISIBLE
+            showAddToFavoriteAnimation()
+        }
+        else{
+            checked.visibility = View.INVISIBLE
+            showRemovedFromFavoriteAnimation()
+        }
+    }
+
+    private fun showAddToFavoriteAnimation(){
+        fullHeartImage.visibility = View.VISIBLE
+        doHeartZoomAnimation()
+        fullHeartImage.visibility = View.INVISIBLE
+    }
+
+    private fun doHeartZoomAnimation(){
+        val animationSet = AnimationSet(true)
+        val zoomInAnimation = ScaleAnimation(0f, 10f, 0f, 10f, 35f, 10f)
+        zoomInAnimation.duration = 1000
+        animationSet.addAnimation(zoomInAnimation)
+        fullHeartImage.startAnimation(animationSet)
+    }
+
+    /**
+     * There are two hidden broken heart pieces. Show the pieces images, move the left heart piece
+     * to the left end of the screen, and move the right heart piece to the right end of the screen
+     */
+    private fun showRemovedFromFavoriteAnimation(){
+        leftBrokenHeart.visibility = View.VISIBLE
+        rightBrokenHeart.visibility = View.VISIBLE
+        doBrokenHeartAnimation()
+        leftBrokenHeart.visibility = View.INVISIBLE
+        rightBrokenHeart.visibility = View.INVISIBLE
+    }
+
+    private fun doBrokenHeartAnimation(){
+        // The screenWidth * 2 is a heuristic to make sure the views have completely vanished
+        val translationLeft = TranslateAnimation(0f,-getScreenWidth()*2, 0f,0f )
+        val translationRight = TranslateAnimation(0f,getScreenWidth()*2, 0f,0f )
+        translationLeft.duration = 800
+        translationRight.duration = 800
+        translationLeft.startOffset = 200
+        translationRight.startOffset = 200
+        leftBrokenHeart.startAnimation(translationLeft)
+        rightBrokenHeart.startAnimation(translationRight)
+    }
+
+    private fun getScreenWidth(): Float{
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+        val density = resources.displayMetrics.density
+        return outMetrics.widthPixels / density
     }
 
     private fun setInfoButtonClickListener(){

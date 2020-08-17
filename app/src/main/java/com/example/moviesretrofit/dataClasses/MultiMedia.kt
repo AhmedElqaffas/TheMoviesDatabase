@@ -25,6 +25,8 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
         const val RATED = 1
     }
 
+    var isFavorite: Boolean = false
+
 
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}

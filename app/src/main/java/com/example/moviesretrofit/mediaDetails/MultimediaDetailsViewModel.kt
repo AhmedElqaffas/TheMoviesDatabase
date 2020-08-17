@@ -69,7 +69,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 multimedia.popularity,
                 budget,
                 revenue,
-                multimedia.genres
+                multimedia.genres,
+                multimedia.isFavorite
             )
 
             "tv" -> Series(
@@ -86,7 +87,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 numberOfSeasons,
                 lastAirDate,
                 inProduction,
-                multimedia.genres
+                multimedia.genres,
+                multimedia.isFavorite
             )
 
             else -> throw Exception("Couldn't cast multimedia in MultimediaDetails viewModel")
