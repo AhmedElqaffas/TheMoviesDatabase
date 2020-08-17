@@ -25,7 +25,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
         const val RATED = 1
     }
 
-
+    var isFavorite: Boolean = false
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
     open fun makeDetailsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMedia>? {return null}
@@ -34,5 +34,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     open fun copyObtainedDetails(receivedMedia: MultiMedia){}
     open suspend fun saveInDatabase(database: AppDatabase){}
     open suspend fun getFromDatabase(database: AppDatabase): MultiMedia? {return null}
+    open suspend fun updateFavoriteField(database: AppDatabase){}
+    open suspend fun getExistingMovieIsFavorite(database: AppDatabase){}
 }
 

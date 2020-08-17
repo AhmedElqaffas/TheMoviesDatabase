@@ -17,7 +17,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, budget: Int?, revenue: Long?,
-                genres: List<Genre>?):
+                genres: List<Genre>?, isFavorite: Boolean):
             this() {
         this.title = title
         this.id = id
@@ -32,6 +32,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.budget = budget
         this.revenue =revenue
         this.genres = genres
+        this.isFavorite = isFavorite
     }
 
 
@@ -75,5 +76,18 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
 
     override suspend fun getFromDatabase(database: AppDatabase): MultiMedia {
         return database.getMultimediaDao().getSingleMovie(this.id)
+    }
+
+    override suspend fun updateFavoriteField(database: AppDatabase) {
+        database.getMultimediaDao().updateMovieFavoriteField(this.id, this.isFavorite)
+    }
+
+    override suspend fun getExistingMovieIsFavorite(database: AppDatabase) {
+        // If the database returns null because there is no entry for this movie, set isFavorite to false
+        try{
+            this.isFavorite = database.getMultimediaDao().getMovieIsFavorite(id)
+        }catch(e: Exception){
+            this.isFavorite = false
+        }
     }
 }

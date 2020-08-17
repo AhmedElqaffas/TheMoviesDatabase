@@ -34,6 +34,14 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
         return MultimediaDetailsRepository.getMultimediaDetails(castedMultimedia)
     }
 
+    /**
+     * Removes a multimedia from favorites if it is already in favorites
+     * or add it if it is not
+     */
+    fun toggleFavorites(multimedia: MultiMedia){
+        MultimediaDetailsRepository.toggleFavorites(castMultimedia(multimedia))
+    }
+
     private fun castMultimedia(multimedia: MultiMedia): MultiMedia {
         var budget: Int? = 0
         var revenue: Long? = 0
@@ -69,7 +77,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 multimedia.popularity,
                 budget,
                 revenue,
-                multimedia.genres
+                multimedia.genres,
+                multimedia.isFavorite
             )
 
             "tv" -> Series(
@@ -86,7 +95,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
                 numberOfSeasons,
                 lastAirDate,
                 inProduction,
-                multimedia.genres
+                multimedia.genres,
+                multimedia.isFavorite
             )
 
             else -> throw Exception("Couldn't cast multimedia in MultimediaDetails viewModel")
