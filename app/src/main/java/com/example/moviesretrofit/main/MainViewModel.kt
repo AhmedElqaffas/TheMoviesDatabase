@@ -3,21 +3,28 @@ package com.example.moviesretrofit.main
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
+import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.MultiMedia
-import com.example.moviesretrofit.main.dataRepositories.PopularMoviesRepository
-import com.example.moviesretrofit.main.dataRepositories.PopularSeriesRepository
-import com.example.moviesretrofit.main.dataRepositories.RatedMoviesRepository
-import com.example.moviesretrofit.main.dataRepositories.RatedSeriesRepository
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
-
+import com.example.moviesretrofit.main.dataRepositories.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
+        FavoritesRepository.createDatabase(application)
         PopularMoviesRepository.createDatabase(application)
         RatedMoviesRepository.createDatabase(application)
         PopularSeriesRepository.createDatabase(application)
         RatedSeriesRepository.createDatabase(application)
+    }
+
+    fun getFavoriteMovies(): LiveData<List<MultiMedia>>{
+        return FavoritesRepository.getFavoriteMovies()
+    }
+
+    fun getFavoriteSeries(): LiveData<List<MultiMedia>>{
+        return FavoritesRepository.getFavoriteSeries()
     }
 
     fun getPopularMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{

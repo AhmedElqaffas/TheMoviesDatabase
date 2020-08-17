@@ -1,7 +1,9 @@
 package com.example.moviesretrofit.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.moviesretrofit.dataClasses.Movie
+import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.dataClasses.Series
 
 @Dao
@@ -30,6 +32,9 @@ interface MultimediaDao {
     @Query("SELECT isFavorite FROM  movies WHERE id = :id")
     suspend fun getMovieIsFavorite(id: Int): Boolean
 
+    @Query("SELECT * FROM  movies WHERE isFavorite = 1")
+    fun getFavoriteMovies(): LiveData<List<MultiMedia>>
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSeries(seriesList: List<Series>)
@@ -54,4 +59,7 @@ interface MultimediaDao {
 
     @Query("SELECT isFavorite FROM series WHERE id = :id")
     suspend fun getSeriesIsFavorite(id: Int): Boolean
+
+    @Query("SELECT * FROM  series WHERE isFavorite = 1")
+    fun getFavoriteSeries(): LiveData<List<MultiMedia>>
 }

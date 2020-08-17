@@ -21,6 +21,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
     object Type{
         const val BROWSE = 1
         const val SEARCH = 2
+        const val FAVORITES = 3
     }
 
     private var multiMediaList = mutableListOf<MultiMedia>()
@@ -52,7 +53,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
         }
 
         private fun customizeBrowsingItems(multiMedia: MultiMedia){
-            if(recyclerType == Type.BROWSE)
+            if(recyclerType == Type.BROWSE || recyclerType == Type.FAVORITES)
                 setMediaRating(multiMedia)
         }
 
@@ -82,7 +83,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
 
     private fun determineInflatedLayout(parent: ViewGroup): View {
         return when(recyclerType){
-            Type.BROWSE ->
+            Type.BROWSE, Type.FAVORITES ->
                 LayoutInflater.from(parent.context).inflate(R.layout.item_media, parent, false)
             else ->
                 LayoutInflater.from(parent.context).inflate(R.layout.item_media_search, parent, false)
@@ -91,7 +92,7 @@ class MultiMediaRecyclerAdapter(private val recyclerType: Int,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindMovieData(multiMediaList[position])
-        if(reachedEndOfPage(position)){
+        if(reachedEndOfPage(position) && recyclerType != Type.FAVORITES){
             interactionListener.onEndOfMultiMediaPage()
         }
     }

@@ -15,15 +15,14 @@ import com.example.moviesretrofit.R
 import com.example.moviesretrofit.main.MainViewModel
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import kotlinx.android.synthetic.main.fragment_media_recycler.*
+import kotlinx.android.synthetic.main.fragment_movies.*
+import kotlinx.android.synthetic.main.fragment_series.*
 
 class MultiMediaRecyclerFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction{
 
-    private var multiMediaRecyclerAdapter =
-        MultiMediaRecyclerAdapter(
-            MultiMediaRecyclerAdapter.Type.BROWSE,
-            this
-        )
+    private lateinit var multiMediaRecyclerAdapter: MultiMediaRecyclerAdapter
+
 
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -43,17 +42,37 @@ class MultiMediaRecyclerFragment : Fragment(),
     }
 
     private fun initializeRecyclerViewAdapter(){
+        val recyclerType = when(tag){
+            "favoriteMovies", "favoriteSeries" -> MultiMediaRecyclerAdapter.Type.FAVORITES
+            else -> MultiMediaRecyclerAdapter.Type.BROWSE
+        }
+        multiMediaRecyclerAdapter = MultiMediaRecyclerAdapter(recyclerType, this)
         multiMediaRecycler.adapter = multiMediaRecyclerAdapter
     }
 
 
     private fun makeRequest(firstRequest: Boolean){
         when(this.tag) {
+            "favoriteMovies" -> makeFavoriteMoviesRequest()
             "popularMovies" -> makePopularMoviesRequest(firstRequest)
             "ratedMovies" -> makeRatedMoviesRequest(firstRequest)
+            "favoriteSeries" -> makeFavoriteSeriesRequest()
             "popularSeries" -> makePopularSeriesRequest(firstRequest)
             "ratedSeries" -> makeRatedSeriesRequest(firstRequest)
         }
+    }
+
+    private fun makeFavoriteMoviesRequest(){
+        mainViewModel.getFavoriteMovies().observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                showFavoritesSection()
+                multiMediaRecyclerAdapter.overwriteList(it)
+                hideShimmerEffect()
+            }
+            else{
+                hideFavoritesSection()
+            }
+        })
     }
 
     private fun makePopularMoviesRequest(firstRequest: Boolean) {
@@ -64,6 +83,42 @@ class MultiMediaRecyclerFragment : Fragment(),
     private fun makeRatedMoviesRequest(firstRequest: Boolean) {
         val ratedMoviesLiveData = mainViewModel.getRatedMovies(firstRequest)
         createDataObserverIfNotExists(ratedMoviesLiveData)
+    }
+
+
+    private fun makeFavoriteSeriesRequest(){
+        mainViewModel.getFavoriteSeries().observe(viewLifecycleOwner, Observer {
+            if(it.isNotEmpty()){
+                showFavoritesSection()
+                multiMediaRecyclerAdapter.overwriteList(it)
+                hideShimmerEffect()
+            }
+            else{
+                hideFavoritesSection()
+            }
+        })
+    }
+
+    private fun showFavoritesSection(){
+        if(tag == "favoriteMovies"){
+            parentFragment?.favoriteMoviesText?.visibility = View.VISIBLE
+            parentFragment?.favoriteMoviesContainer?.visibility = View.VISIBLE
+        }
+        else{
+            parentFragment?.favoriteSeriesText?.visibility = View.VISIBLE
+            parentFragment?.favoriteSeriesContainer?.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideFavoritesSection(){
+        if(tag == "favoriteMovies"){
+            parentFragment?.favoriteMoviesContainer?.visibility = View.GONE
+            parentFragment?.favoriteMoviesText?.visibility = View.GONE
+        }
+        else{
+            parentFragment?.favoriteSeriesContainer?.visibility = View.GONE
+            parentFragment?.favoriteSeriesText?.visibility = View.GONE
+        }
     }
 
     private fun makePopularSeriesRequest(firstRequest: Boolean) {

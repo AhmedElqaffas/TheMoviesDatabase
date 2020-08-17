@@ -1,13 +1,14 @@
 package com.example.moviesretrofit.dataClasses
 
 import androidx.room.Entity
+import androidx.room.Index
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.mediaDetails.credits.CreditsDatabaseHandler
 import com.example.moviesretrofit.mediaDetails.credits.CreditsRetrofitRequester
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import retrofit2.Call
 
-@Entity(tableName = "movies", primaryKeys = ["id"])
+@Entity(tableName = "movies", primaryKeys = ["id"], indices = [Index("id")])
 class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     "", "",0f, listOf()) {
 

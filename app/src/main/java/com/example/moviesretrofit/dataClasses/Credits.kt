@@ -19,13 +19,13 @@ open class CreditsResponse(var id: Int,
 
 class MoviesCredits: CreditsResponse(0, listOf(), listOf(), "movie")
 
-class SeriesCredits(): CreditsResponse(0, listOf(), listOf(), "series")
+class SeriesCredits : CreditsResponse(0, listOf(), listOf(), "series")
 
 @Entity(tableName = "persons", primaryKeys = ["name"])
 open class Person(var name: String,
                   @SerializedName("profile_path") var image: String?)
 
-class Cast() : Person("name", "image")
+class Cast : Person("name", "image")
 
 @Entity(tableName = "crew")
-class Crew() : Person("name", "image")
+class Crew : Person("name", "image")

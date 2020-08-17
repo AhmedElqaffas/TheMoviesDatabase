@@ -36,11 +36,34 @@
             android:textSize="40sp" />
 
         <TextView
-            android:id="@+id/popularMoviesText"
+            android:id="@+id/favoriteMoviesText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleText"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="20dp"
+            android:text="@string/favorite"
+            android:textSize="25sp"
+            android:textColor="#FFFFFF"
+            android:drawableStart="@drawable/ic_favorite"
+            android:drawablePadding="8dp"
+            android:textStyle="bold"/>
+
+        <FrameLayout
+            android:id="@+id/favoriteMoviesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesText"
+            android:layout_marginTop="20dp" />
+
+
+        <TextView
+            android:id="@+id/popularMoviesText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesContainer"
             android:layout_marginTop="50dp"
             android:layout_marginStart="20dp"
             android:text="@string/popular"

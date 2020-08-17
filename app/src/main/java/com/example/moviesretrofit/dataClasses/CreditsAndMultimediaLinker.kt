@@ -1,7 +1,9 @@
 package com.example.moviesretrofit.dataClasses
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 
 /**
  * These two classes are responsible for representing the foreign key table linking between credits
@@ -11,19 +13,18 @@ import androidx.room.ForeignKey
 @Entity(
     primaryKeys = ["media", "credits"], foreignKeys = [
         ForeignKey(
-            entity = Movie::class,
-            parentColumns = ["id"],
-            childColumns = ["media"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
             entity = Person::class,
             parentColumns = ["name"],
             childColumns = ["credits"],
             onDelete = ForeignKey.CASCADE
-        )]
-)
-class CreditsAndMoviesForeignKeyTable(var media: Int, var credits: String)
+        ),
+        ForeignKey(
+            entity = Movie::class,
+            parentColumns = ["id"],
+            childColumns = ["media"],
+            onDelete = ForeignKey.CASCADE
+        )])
+class CreditsAndMoviesForeignKeyTable(@ColumnInfo(index = true) var media: Int, @ColumnInfo(index = true) var credits: String)
 
 
 @Entity(
@@ -41,4 +42,4 @@ class CreditsAndMoviesForeignKeyTable(var media: Int, var credits: String)
             onDelete = ForeignKey.CASCADE
         )]
 )
-class CreditsAndSeriesForeignKeyTable(var media: Int, var credits: String)
+class CreditsAndSeriesForeignKeyTable(@ColumnInfo(index = true)  var media: Int, @ColumnInfo(index = true)  var credits: String)

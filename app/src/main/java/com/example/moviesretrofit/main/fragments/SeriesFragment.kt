@@ -20,8 +20,15 @@ class SeriesFragment : Fragment() {
     }
 
     private fun setSeriesFragments() {
+        setFavoriteSeriesFragment()
         setPopularSeriesFragment()
         setTopRatedSeries()
+    }
+
+    private fun setFavoriteSeriesFragment() {
+        childFragmentManager.beginTransaction().replace(
+            R.id.favoriteSeriesContainer, MultiMediaRecyclerFragment(),
+            "favoriteSeries").commit()
     }
 
     private fun setPopularSeriesFragment() {

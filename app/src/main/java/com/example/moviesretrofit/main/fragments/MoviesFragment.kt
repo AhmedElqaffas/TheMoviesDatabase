@@ -23,8 +23,15 @@ class MoviesFragment : Fragment(){
     }
 
     private fun setMoviesFragments() {
+        setFavoriteMoviesFragment()
         setPopularMoviesFragment()
         setTopRatedMovies()
+    }
+
+    private fun setFavoriteMoviesFragment(){
+        childFragmentManager.beginTransaction()
+            .replace(R.id.favoriteMoviesContainer, MultiMediaRecyclerFragment(),
+            "favoriteMovies").commit()
     }
 
     private fun setPopularMoviesFragment() {

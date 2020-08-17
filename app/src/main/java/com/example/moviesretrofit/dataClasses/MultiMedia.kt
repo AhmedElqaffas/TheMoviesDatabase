@@ -1,5 +1,6 @@
 package com.example.moviesretrofit.dataClasses
 
+import androidx.room.ColumnInfo
 import androidx.room.TypeConverters
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.database.GenreDatabaseConverter
