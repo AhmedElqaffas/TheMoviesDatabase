@@ -34,6 +34,14 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
         return MultimediaDetailsRepository.getMultimediaDetails(castedMultimedia)
     }
 
+    /**
+     * Removes a multimedia from favorites if it is already in favorites
+     * or add it if it is not
+     */
+    fun toggleFavorites(multimedia: MultiMedia){
+        MultimediaDetailsRepository.toggleFavorites(castMultimedia(multimedia))
+    }
+
     private fun castMultimedia(multimedia: MultiMedia): MultiMedia {
         var budget: Int? = 0
         var revenue: Long? = 0

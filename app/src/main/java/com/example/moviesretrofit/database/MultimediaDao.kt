@@ -6,7 +6,7 @@ import com.example.moviesretrofit.dataClasses.Series
 
 @Dao
 interface MultimediaDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertMovies(moviesList: List<Movie>)
 
     @Query("SELECT * FROM movies WHERE movies.id = :id")
@@ -21,11 +21,17 @@ interface MultimediaDao {
     @Query("SELECT * FROM movies ORDER BY popularity DESC")
     suspend fun getPopularMovies(): List<Movie>
 
-    @Query("DELETE FROM movies")
+    @Query("DELETE FROM movies WHERE isFavorite = 0")
     suspend fun deleteCachedMovies()
 
+    @Query("UPDATE movies Set isFavorite = :favorite WHERE id = :id")
+    suspend fun updateMovieFavoriteField(id: Int, favorite: Boolean)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query("SELECT isFavorite FROM  movies WHERE id = :id")
+    suspend fun getMovieIsFavorite(id: Int): Boolean
+
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertSeries(seriesList: List<Series>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -40,6 +46,12 @@ interface MultimediaDao {
     @Query("SELECT * FROM series ORDER BY popularity DESC")
     suspend fun getPopularSeries(): List<Series>
 
-    @Query("DELETE FROM series")
+    @Query("DELETE FROM series WHERE isFavorite = 0")
     suspend fun deleteCachedSeries()
+
+    @Query("UPDATE series Set isFavorite = :favorite WHERE id = :id")
+    suspend fun updateSeriesFavoriteField(id: Int, favorite: Boolean)
+
+    @Query("SELECT isFavorite FROM series WHERE id = :id")
+    suspend fun getSeriesIsFavorite(id: Int): Boolean
 }

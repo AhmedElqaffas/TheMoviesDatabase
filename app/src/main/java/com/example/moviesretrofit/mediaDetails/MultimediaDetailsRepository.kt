@@ -65,9 +65,9 @@ object MultimediaDetailsRepository {
             override fun onResponse(call: Call<MultiMedia>, response: Response<MultiMedia>) {
                 response.body()?.let {
                     multimedia.copyObtainedDetails(it)
-                    multimediaLiveData.postValue(multimedia)
-                    updateRepository(multimedia)
-                    updateDatabase(multimedia)
+                    //This movie may already be in database because it is in favorites
+                    // if that is the case, update the isFavorite of this multimedia and post it
+                    getExistingMovieIsFavorite(multimedia)
                 }
             }
 
@@ -85,7 +85,7 @@ object MultimediaDetailsRepository {
     }
 
     // Will replace the old entry with the new detailed entry
-    private fun updateDatabase(multimedia: MultiMedia){
+    private fun saveInDatabase(multimedia: MultiMedia){
         CoroutineScope(Dispatchers.IO).launch {
             multimedia.saveInDatabase(database)
         }
@@ -105,4 +105,26 @@ object MultimediaDetailsRepository {
         }
     }
 
+    fun toggleFavorites(multimedia: MultiMedia){
+        multimedia.isFavorite = !multimedia.isFavorite
+        updateRepository(multimedia)
+        toggleFavoritesInDatabase(multimedia)
+        multimediaLiveData.value = multimedia
+    }
+
+    private fun toggleFavoritesInDatabase(multimedia: MultiMedia){
+        CoroutineScope(Dispatchers.IO).launch {
+            multimedia.updateFavoriteField(database)
+        }
+    }
+
+    private fun getExistingMovieIsFavorite(multimedia: MultiMedia){
+        CoroutineScope(Dispatchers.IO).launch {
+            multimedia.getExistingMovieIsFavorite(database)
+        }.invokeOnCompletion {
+            multimediaLiveData.postValue(multimedia)
+            updateRepository(multimedia)
+            saveInDatabase(multimedia)
+        }
+    }
 }

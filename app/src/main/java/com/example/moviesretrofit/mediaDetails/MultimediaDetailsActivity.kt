@@ -40,7 +40,6 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         setMovieDetails()
         showCastFragmentIfNoSavedInstance(savedInstanceState)
         getMultimediaDetails()
-        hideOrShowGreenCheck()
         setupFavoritesButton()
         setInfoButtonClickListener()
 
@@ -126,12 +125,15 @@ class MultimediaDetailsActivity : AppCompatActivity() {
             if(multiMedia.title == it.title){
                 multiMedia = it
                 showGenres()
+                hideOrShowGreenCheck()
             }
 
         }
     }
 
     private fun showGenres(){
+        // Clear the linear layout, to avoid duplicating data each time the observer callback fires
+        genresContainer.removeAllViews()
         multiMedia.genres?.forEach{
             val genreTextView = TextView(this)
             setTextViewConstraints(genreTextView)
@@ -183,14 +185,15 @@ class MultimediaDetailsActivity : AppCompatActivity() {
      * Else, show a full heart animation and a green check mark
      */
     private fun addOrRemoveFromFavorites(){
-        if(!multiMedia.isFavorite){
-            checked.visibility = View.VISIBLE
-            showAddToFavoriteAnimation()
-        }
-        else{
-            checked.visibility = View.INVISIBLE
-            showRemovedFromFavoriteAnimation()
-        }
+            if(!multiMedia.isFavorite){
+                checked.visibility = View.VISIBLE
+                showAddToFavoriteAnimation()
+            }
+            else{
+                checked.visibility = View.INVISIBLE
+                showRemovedFromFavoriteAnimation()
+            }
+        multimediaDetailsViewModel.toggleFavorites(multiMedia)
     }
 
     private fun showAddToFavoriteAnimation(){
@@ -231,14 +234,6 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         rightBrokenHeart.startAnimation(translationRight)
     }
 
-    private fun getScreenWidth(): Float{
-        val display = windowManager.defaultDisplay
-        val outMetrics = DisplayMetrics()
-        display.getMetrics(outMetrics)
-        val density = resources.displayMetrics.density
-        return outMetrics.widthPixels / density
-    }
-
     private fun setInfoButtonClickListener(){
         moreInfoButton.setOnClickListener {
             showMoreInfoDialogFragment()
@@ -256,5 +251,13 @@ class MultimediaDetailsActivity : AppCompatActivity() {
 
     private fun dpToPx(dp: Float): Float {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, this.resources.displayMetrics)
+    }
+
+    private fun getScreenWidth(): Float{
+        val display = windowManager.defaultDisplay
+        val outMetrics = DisplayMetrics()
+        display.getMetrics(outMetrics)
+        val density = resources.displayMetrics.density
+        return outMetrics.widthPixels / density
     }
 }

@@ -82,4 +82,17 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
     override suspend fun getFromDatabase(database: AppDatabase): MultiMedia {
         return database.getMultimediaDao().getSingleSeries(this.id)
     }
+
+    override suspend fun updateFavoriteField(database: AppDatabase) {
+        database.getMultimediaDao().updateSeriesFavoriteField(this.id, this.isFavorite)
+    }
+
+    override suspend fun getExistingMovieIsFavorite(database: AppDatabase) {
+        // If the database returns null because there is no entry for this series, set isFavorite to false
+        try{
+            this.isFavorite = database.getMultimediaDao().getSeriesIsFavorite(id)
+        }catch(e: Exception){
+            this.isFavorite = false
+        }
+    }
 }
