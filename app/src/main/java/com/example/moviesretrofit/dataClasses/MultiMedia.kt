@@ -21,12 +21,9 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
                       open var popularity: Float,
                       @TypeConverters(GenreDatabaseConverter::class) open var genres: List<Genre>?): Serializable{
 
-    object Constants{
-        const val POPULAR = 0
-        const val RATED = 1
-    }
-
     var isFavorite: Boolean = false
+    // Indicates whether show details (from /3/movie/{movie_id} and /3/tv/{tv_id}) were obtained from API or not
+    var extraDetailsObtained = false
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
     open fun makeDetailsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMedia>? {return null}

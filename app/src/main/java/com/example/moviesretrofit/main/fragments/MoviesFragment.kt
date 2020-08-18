@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.moviesretrofit.R
+import kotlinx.android.synthetic.main.fragment_movies.*
 
 class MoviesFragment : Fragment(){
 
@@ -18,6 +19,7 @@ class MoviesFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setSwipeRefreshListener()
         if(savedInstanceState == null)
             setMoviesFragments()
     }
@@ -25,7 +27,7 @@ class MoviesFragment : Fragment(){
     private fun setMoviesFragments() {
         setFavoriteMoviesFragment()
         setPopularMoviesFragment()
-        setTopRatedMovies()
+        setTopRatedMoviesFragment()
     }
 
     private fun setFavoriteMoviesFragment(){
@@ -40,9 +42,19 @@ class MoviesFragment : Fragment(){
             "popularMovies").commit()
     }
 
-    private fun setTopRatedMovies(){
+    private fun setTopRatedMoviesFragment(){
         childFragmentManager.beginTransaction().replace(
             R.id.topRatedMoviesContainer, MultiMediaRecyclerFragment(),
             "ratedMovies").commit()
+    }
+
+    private fun setSwipeRefreshListener(){
+        swipeRefresh.setOnRefreshListener {
+            // Recreate the fragments to remake the requests
+            setPopularMoviesFragment()
+            setTopRatedMoviesFragment()
+            // End the refreshing
+            swipeRefresh.isRefreshing = false
+        }
     }
 }

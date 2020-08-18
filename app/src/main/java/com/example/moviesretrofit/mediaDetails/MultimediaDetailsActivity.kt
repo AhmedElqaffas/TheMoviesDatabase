@@ -25,6 +25,7 @@ import com.example.moviesretrofit.mediaDetails.similarShows.SimilarShowsFragment
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
+import kotlinx.android.synthetic.main.activity_movie_details.swipeRefresh
 import java.text.NumberFormat
 import kotlin.math.roundToInt
 
@@ -38,11 +39,12 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
         getClickedMultimedia()
-        setMovieDetails()
-        showCastFragmentIfNoSavedInstance(savedInstanceState)
-        getMultimediaDetails()
+        setMultimediaDetails()
+        createCreditsFragmentIfNoSavedInstance(savedInstanceState)
+        getExtraMultimediaDetails()
         setupFavoritesButton()
         setInfoButtonClickListener()
+        setSwipeRefreshListener()
 
     }
 
@@ -50,7 +52,7 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         multiMedia = intent.getSerializableExtra("media") as MultiMedia
     }
 
-    private fun setMovieDetails(){
+    private fun setMultimediaDetails(){
         showTopFragment()
         setMediaCover()
         setMediaPoster()
@@ -106,17 +108,21 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         movieOverview.text = multiMedia.overview
     }
 
-    private fun showCastFragmentIfNoSavedInstance(savedInstanceState: Bundle?){
+    private fun createCreditsFragmentIfNoSavedInstance(savedInstanceState: Bundle?){
         if(savedInstanceState == null){
-            val castFragmentInstance = CreditsFragment.newInstance(multiMedia)
-            supportFragmentManager.beginTransaction().replace(
-                R.id.creditsFragmentFrame,
-                castFragmentInstance,"cast fragment")
-                .commit()
+            createCreditsFragment()
         }
     }
 
-    private fun getMultimediaDetails(){
+    private fun createCreditsFragment(){
+        val castFragmentInstance = CreditsFragment.newInstance(multiMedia)
+        supportFragmentManager.beginTransaction().replace(
+            R.id.creditsFragmentFrame,
+            castFragmentInstance,"creditsFragment")
+            .commit()
+    }
+
+    private fun getExtraMultimediaDetails(){
         multimediaDetailsViewModel.getMultimediaDetails(multiMedia).observe(this){
             /* make sure the returning item is the one clicked now not the previously clicked item
              That is available in the view model before getMultimediaDetails updates the live data*/
@@ -182,7 +188,7 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         separatorBelowCredits.visibility = View.VISIBLE
         similarShowsFragmentFrame.visibility = View.VISIBLE
         similarShowsWord.visibility = View.VISIBLE
-        createSimilarShowsFragment()
+        createSimilarShowsFragmentIfNotExists()
     }
 
     private fun hideFavoriteShowDetails(){
@@ -196,14 +202,18 @@ class MultimediaDetailsActivity : AppCompatActivity() {
         similarShowsWord.visibility = View.GONE
     }
 
-    private fun createSimilarShowsFragment(){
+    private fun createSimilarShowsFragmentIfNotExists(){
         if(supportFragmentManager.findFragmentByTag("similarShows") == null){
-            val similarShowsFragmentInstance = SimilarShowsFragment.newInstance(multiMedia)
-            supportFragmentManager.beginTransaction().add(
-                R.id.similarShowsFragmentFrame,
-                similarShowsFragmentInstance, "similarShows")
-                .commit()
+            createSimilarShowsFragment()
         }
+    }
+
+    private fun createSimilarShowsFragment(){
+        val similarShowsFragmentInstance = SimilarShowsFragment.newInstance(multiMedia)
+        supportFragmentManager.beginTransaction().replace(
+            R.id.similarShowsFragmentFrame,
+            similarShowsFragmentInstance, "similarShows")
+            .commit()
     }
 
     private fun setupFavoritesButton(){
@@ -274,6 +284,19 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     private fun showMoreInfoDialogFragment(){
         val infoDialogFragment = InfoDialogFragment.newInstance(multiMedia)
         infoDialogFragment.show(supportFragmentManager, "informationDialog")
+    }
+
+    private fun setSwipeRefreshListener(){
+        swipeRefresh.setOnRefreshListener {
+            // Set the movie details
+            setMultimediaDetails()
+            multimediaDetailsViewModel.getMultimediaDetails(multiMedia)
+            // Create the fragments again to remake the requests
+            createSimilarShowsFragment()
+            createCreditsFragment()
+            // End the refreshing
+            swipeRefresh.isRefreshing = false
+        }
     }
 
     fun zoomImage(view: View){

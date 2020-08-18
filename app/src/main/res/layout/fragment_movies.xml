@@ -1,107 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:id="@+id/swipeRefresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scrollView">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.core.widget.NestedScrollView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#000000">
+        android:id="@+id/scrollView">
 
-        <View
-            android:id="@+id/titleBackground"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="@id/titleText"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@id/titleText"
-            app:layout_constraintBottom_toBottomOf="@id/titleText"
-            android:background="@drawable/bg_oval_title"/>
-
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginTop="10dp"
-            android:paddingHorizontal="15dp"
-            android:fontFamily="@font/courgette"
-            android:text="Movies"
-            android:textColor="#FFFFFF"
-            android:textSize="40sp" />
-
-        <TextView
-            android:id="@+id/favoriteMoviesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleText"
-            android:layout_marginTop="50dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/favorite"
-            android:textSize="25sp"
-            android:textColor="#FFFFFF"
-            android:drawableStart="@drawable/ic_favorite"
-            android:drawablePadding="8dp"
-            android:textStyle="bold"/>
-
-        <FrameLayout
-            android:id="@+id/favoriteMoviesContainer"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesText"
-            android:layout_marginTop="20dp" />
+            android:layout_height="match_parent"
+            android:background="#000000">
+
+            <View
+                android:id="@+id/titleBackground"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="@id/titleText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/titleText"
+                app:layout_constraintBottom_toBottomOf="@id/titleText"
+                android:background="@drawable/bg_oval_title"/>
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginTop="10dp"
+                android:paddingHorizontal="15dp"
+                android:fontFamily="@font/courgette"
+                android:text="Movies"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/favoriteMoviesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titleText"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/favorite"
+                android:textSize="25sp"
+                android:textColor="#FFFFFF"
+                android:drawableStart="@drawable/ic_favorite"
+                android:drawablePadding="8dp"
+                android:textStyle="bold"/>
+
+            <FrameLayout
+                android:id="@+id/favoriteMoviesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/favoriteMoviesText"
+                android:layout_marginTop="20dp" />
 
 
-        <TextView
-            android:id="@+id/popularMoviesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/favoriteMoviesContainer"
-            android:layout_marginTop="50dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/popular"
-            android:textSize="25sp"
-            android:textColor="#FFFFFF"
-            android:drawableStart="@drawable/ic_baseline_group_24"
-            android:drawablePadding="8dp"
-            android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/popularMoviesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/favoriteMoviesContainer"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/popular"
+                android:textSize="25sp"
+                android:textColor="#FFFFFF"
+                android:drawableStart="@drawable/ic_baseline_group_24"
+                android:drawablePadding="8dp"
+                android:textStyle="bold"/>
 
-        <FrameLayout
-            android:id="@+id/popularMoviesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/popularMoviesText"
-            android:layout_marginTop="20dp" />
+            <FrameLayout
+                android:id="@+id/popularMoviesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/popularMoviesText"
+                android:layout_marginTop="20dp" />
 
-        <TextView
-            android:id="@+id/topRatedMoviesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/popularMoviesContainer"
-            android:layout_marginTop="50dp"
-            android:layout_marginStart="20dp"
-            android:text="@string/top_rated"
-            android:textSize="25sp"
-            android:textColor="#FFFFFF"
-            android:drawableStart="@drawable/ic_baseline_star_24"
-            android:drawablePadding="8dp"
-            android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/topRatedMoviesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/popularMoviesContainer"
+                android:layout_marginTop="50dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/top_rated"
+                android:textSize="25sp"
+                android:textColor="#FFFFFF"
+                android:drawableStart="@drawable/ic_baseline_star_24"
+                android:drawablePadding="8dp"
+                android:textStyle="bold"/>
 
-        <FrameLayout
-            android:id="@+id/topRatedMoviesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/topRatedMoviesText"
-            android:layout_marginTop="20dp" />
+            <FrameLayout
+                android:id="@+id/topRatedMoviesContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/topRatedMoviesText"
+                android:layout_marginTop="20dp" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

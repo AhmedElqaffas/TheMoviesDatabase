@@ -43,7 +43,8 @@ object MultiMediaCaster {
                 budget,
                 revenue,
                 multimedia.genres,
-                multimedia.isFavorite
+                multimedia.isFavorite,
+                multimedia.extraDetailsObtained
             )
 
             "tv" -> Series(
@@ -61,7 +62,8 @@ object MultiMediaCaster {
                 lastAirDate,
                 inProduction,
                 multimedia.genres,
-                multimedia.isFavorite
+                multimedia.isFavorite,
+                multimedia.extraDetailsObtained
             )
 
             else -> throw Exception("Couldn't cast multimedia in MultimediaDetails viewModel")

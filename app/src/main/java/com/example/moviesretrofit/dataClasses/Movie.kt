@@ -18,7 +18,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, budget: Int?, revenue: Long?,
-                genres: List<Genre>?, isFavorite: Boolean):
+                genres: List<Genre>?, isFavorite: Boolean, extraDetailsObtained: Boolean):
             this() {
         this.title = title
         this.id = id
@@ -34,6 +34,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.revenue =revenue
         this.genres = genres
         this.isFavorite = isFavorite
+        this.extraDetailsObtained = extraDetailsObtained
     }
 
 
@@ -72,6 +73,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.budget = (receivedMedia as Movie).budget
         this.revenue = receivedMedia.revenue
         this.genres = receivedMedia.genres
+        this.extraDetailsObtained = receivedMedia.extraDetailsObtained
 
     }
 

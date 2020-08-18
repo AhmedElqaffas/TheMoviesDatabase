@@ -48,6 +48,7 @@ object MultimediaDetailsRepository {
 
     private fun isMultimediaCached(multimedia: MultiMedia): Boolean{
         return multimedia.id == cachedMultimedia?.id && multimedia.mediaType == cachedMultimedia?.mediaType
+                && multimedia.extraDetailsObtained
     }
 
     private fun sendCachedData(){
@@ -65,6 +66,8 @@ object MultimediaDetailsRepository {
             override fun onResponse(call: Call<MultiMedia>, response: Response<MultiMedia>) {
                 response.body()?.let {
                     multimedia.copyObtainedDetails(it)
+                    // ExtraDetails successfully obtained from API, set boolean to true
+                    multimedia.extraDetailsObtained = true
                     //This multimedia may already be in database because it is in favorites
                     // if that is the case, update the isFavorite of this multimedia and post it
                     getExistingMovieIsFavorite(multimedia)

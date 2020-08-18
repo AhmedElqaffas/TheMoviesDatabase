@@ -22,7 +22,8 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, numberOfSeasons: Int?,
-                lastAirDate: String, inProduction: Boolean, genres: List<Genre>?, isFavorite: Boolean): this(){
+                lastAirDate: String, inProduction: Boolean, genres: List<Genre>?, isFavorite: Boolean,
+                extraDetailsObtained: Boolean): this(){
         this.title = title
         this.id = id
         this.totalVotes = totalVotes
@@ -38,6 +39,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.inProduction = inProduction
         this.genres = genres
         this.isFavorite = isFavorite
+        this.extraDetailsObtained = extraDetailsObtained
     }
 
 
@@ -73,6 +75,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.inProduction = receivedMedia.inProduction
         this.lastAirDate = receivedMedia.lastAirDate
         this.genres = receivedMedia.genres
+        this.extraDetailsObtained = receivedMedia.extraDetailsObtained
     }
 
     override suspend fun saveInDatabase(database: AppDatabase){
