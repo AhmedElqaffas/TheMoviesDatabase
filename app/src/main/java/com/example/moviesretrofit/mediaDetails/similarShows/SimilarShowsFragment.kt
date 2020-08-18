@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.observe
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.dataClasses.MultiMedia
@@ -18,7 +19,6 @@ import kotlinx.android.synthetic.main.fragment_similar_shows.multiMediaShimmerCo
 class SimilarShowsFragment : Fragment(), MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
 
     companion object {
-
         fun newInstance(multiMedia: MultiMedia) = SimilarShowsFragment()
             .apply {
                 arguments = Bundle().apply {
@@ -27,6 +27,8 @@ class SimilarShowsFragment : Fragment(), MultiMediaRecyclerAdapter.MultiMediaRec
             }
     }
 
+    private lateinit var recyclerAdapter: MultiMediaRecyclerAdapter
+    private lateinit var showsLiveData: LiveData<List<MultiMedia>>
     private lateinit var multimedia: MultiMedia
     private val similarShowsViewModel: SimilarShowsViewModel by viewModels()
 
@@ -36,23 +38,32 @@ class SimilarShowsFragment : Fragment(), MultiMediaRecyclerAdapter.MultiMediaRec
         return inflater.inflate(R.layout.fragment_similar_shows, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         multimedia = arguments?.getSerializable("media") as MultiMedia
-
         getSimilarShows()
     }
 
+    /** When the user clicks on one of the items in "similar shows", we have to stop the observer
+     * from updating this paused activity, or else, it'll update the similar shows of this activity with
+     * the data of the other item similar shows
+     */
+    override fun onPause() {
+        super.onPause()
+        showsLiveData.removeObservers(viewLifecycleOwner)
+    }
+
     private fun getSimilarShows(){
-        similarShowsViewModel.getSimilarShows(multimedia).observe(viewLifecycleOwner){
+        showsLiveData = similarShowsViewModel.getSimilarShows(multimedia)
+        showsLiveData.observe(viewLifecycleOwner){
             addItemsToRecycler(it)
             hideShimmerEffect()
         }
     }
 
     private fun addItemsToRecycler(multimediaList: List<MultiMedia>){
-        val recyclerAdapter = MultiMediaRecyclerAdapter(MultiMediaRecyclerAdapter.Type.BROWSE, this)
+        recyclerAdapter = MultiMediaRecyclerAdapter(MultiMediaRecyclerAdapter.Type.BROWSE, this)
         multiMediaRecycler.adapter = recyclerAdapter
         recyclerAdapter.appendToList(multimediaList)
     }

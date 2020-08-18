@@ -61,11 +61,11 @@ object RatedSeriesRepository{
         ratedSeriesResponseLiveData.value = ratedSeries
     }
 
-    private fun enqueueCallback(call: Call<RatedSeriesResponse>) {
-        call.enqueue(object: Callback<RatedSeriesResponse> {
+    private fun enqueueCallback(call: Call<SeriesResponse>) {
+        call.enqueue(object: Callback<SeriesResponse> {
 
-            override fun onResponse(call: Call<RatedSeriesResponse>,
-                                    response: Response<RatedSeriesResponse>
+            override fun onResponse(call: Call<SeriesResponse>,
+                                    response: Response<SeriesResponse>
             ) {
                 response.body()?.let {
                     ratedSeriesResponseLiveData.postValue(it.results)
@@ -74,7 +74,7 @@ object RatedSeriesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<RatedSeriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<SeriesResponse>, t: Throwable) {
                 Log.e("Series error", "Couldn't get series list from API")
                 if(ratedSeries.isEmpty())
                         getRatedSeriesFromDatabase()

@@ -199,7 +199,7 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     private fun createSimilarShowsFragment(){
         if(supportFragmentManager.findFragmentByTag("similarShows") == null){
             val similarShowsFragmentInstance = SimilarShowsFragment.newInstance(multiMedia)
-            supportFragmentManager.beginTransaction().replace(
+            supportFragmentManager.beginTransaction().add(
                 R.id.similarShowsFragmentFrame,
                 similarShowsFragmentInstance, "similarShows")
                 .commit()
@@ -219,11 +219,9 @@ class MultimediaDetailsActivity : AppCompatActivity() {
      */
     private fun addOrRemoveFromFavorites(){
             if(!multiMedia.isFavorite){
-                addFavoriteShowDetails()
                 showAddToFavoriteAnimation()
             }
             else{
-                hideFavoriteShowDetails()
                 showRemovedFromFavoriteAnimation()
             }
         multimediaDetailsViewModel.toggleFavorites(multiMedia)

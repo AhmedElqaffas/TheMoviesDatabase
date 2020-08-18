@@ -120,7 +120,7 @@ object MultimediaDetailsRepository {
 
     private fun getExistingMovieIsFavorite(multimedia: MultiMedia){
         CoroutineScope(Dispatchers.IO).launch {
-            multimedia.getExistingMovieIsFavorite(database)
+            multimedia.getExistingShowIsFavorite(database)
         }.invokeOnCompletion {
             multimediaLiveData.postValue(multimedia)
             updateRepository(multimedia)

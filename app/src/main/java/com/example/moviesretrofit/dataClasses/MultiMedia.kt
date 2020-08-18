@@ -36,7 +36,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     open suspend fun saveInDatabase(database: AppDatabase){}
     open suspend fun getFromDatabase(database: AppDatabase): MultiMedia? {return null}
     open suspend fun updateFavoriteField(database: AppDatabase){}
-    open suspend fun getExistingMovieIsFavorite(database: AppDatabase){}
+    open suspend fun getExistingShowIsFavorite(database: AppDatabase){}
     open fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {return null}
 }
 

@@ -17,15 +17,17 @@ object SimilarShowsRepository{
 
     private var cachedList: List<MultiMedia> = listOf()
     private val similarShowsLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
+    private var currentId = 0
 
     fun getSimilarShows(multiMedia: MultiMedia): MutableLiveData<List<MultiMedia>>{
 
-        if(cachedList.isNotEmpty()){
+        if(cachedList.isNotEmpty() && currentId == multiMedia.id){
             similarShowsLiveData.value = cachedList
         }
 
         else{
             makeSimilarShowsRequest(multiMedia)
+            currentId = multiMedia.id
         }
 
         return similarShowsLiveData
@@ -42,6 +44,7 @@ object SimilarShowsRepository{
 
             override fun onResponse(call: Call<MultiMediaResponse>, response: Response<MultiMediaResponse>) {
                 similarShowsLiveData.postValue(response.body()?.results)
+                cachedList = response.body()?.results!!
             }
 
             override fun onFailure(call: Call<MultiMediaResponse>, t: Throwable) {
