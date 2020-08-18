@@ -83,12 +83,16 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         database.getMultimediaDao().updateMovieFavoriteField(this.id, this.isFavorite)
     }
 
-    override suspend fun getExistingMovieIsFavorite(database: AppDatabase) {
+    override suspend fun getExistingShowIsFavorite(database: AppDatabase) {
         // If the database returns null because there is no entry for this movie, set isFavorite to false
         try{
             this.isFavorite = database.getMultimediaDao().getMovieIsFavorite(id)
         }catch(e: Exception){
             this.isFavorite = false
         }
+    }
+
+    override fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {
+        return multiMediaAPI.getSimilarMovies(id, key) as Call<MultiMediaResponse>
     }
 }

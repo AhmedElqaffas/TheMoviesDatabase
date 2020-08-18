@@ -8,7 +8,7 @@ import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
-import com.example.moviesretrofit.dataClasses.PopularMovieResponse
+import com.example.moviesretrofit.dataClasses.MovieResponse
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -71,11 +71,11 @@ object PopularMoviesRepository{
         popularMoviesResponseLiveData.value = popularMovies
     }
 
-    private fun enqueueCallback(call: Call<PopularMovieResponse>) {
-        call.enqueue(object: Callback<PopularMovieResponse> {
+    private fun enqueueCallback(call: Call<MovieResponse>) {
+        call.enqueue(object: Callback<MovieResponse> {
 
-            override fun onResponse(call: Call<PopularMovieResponse>,
-                                    response: Response<PopularMovieResponse>
+            override fun onResponse(call: Call<MovieResponse>,
+                                    response: Response<MovieResponse>
             ) {
                 response.body()?.let {
                     if(userConnectedToTheInternet(it.page)){
@@ -87,7 +87,7 @@ object PopularMoviesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<PopularMovieResponse>, t: Throwable) {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list from api")
                 if(popularMovies.isEmpty())
                     getPopularMoviesFromDatabase()

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.example.moviesretrofit.R
 import com.example.moviesretrofit.dataClasses.MultiMedia
@@ -26,6 +27,8 @@ class CreditsFragment : Fragment(){
         }
     }
 
+    private lateinit var creditsLiveData: LiveData<List<Person>>
+
 
     private lateinit var multiMedia: MultiMedia
     private val creditsViewModel: CreditsViewModel by viewModels()
@@ -40,13 +43,22 @@ class CreditsFragment : Fragment(){
         makeCastRequest()
     }
 
+    /** When the user clicks on one of the items in "similar shows", we have to stop the observer
+     * from updating this paused activity, or else, it'll update the cast of this activity with
+     * the data of the other item credits
+     */
+    override fun onPause() {
+        super.onPause()
+        creditsLiveData.removeObservers(viewLifecycleOwner)
+    }
+
     private fun makeCastRequest(){
-        creditsViewModel.getMultimediaCredits(multiMedia)
-            .observe(viewLifecycleOwner, Observer{
-                it?.let {
-                    setRecyclerAdapterList(it)
-                }
-            })
+        creditsLiveData = creditsViewModel.getMultimediaCredits(multiMedia)
+        creditsLiveData.observe(viewLifecycleOwner, Observer{
+            it?.let {
+                setRecyclerAdapterList(it)
+            }
+        })
     }
 
     private fun setRecyclerAdapterList(cast: List<Person>){

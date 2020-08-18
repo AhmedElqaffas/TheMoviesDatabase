@@ -9,7 +9,6 @@ import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -67,11 +66,11 @@ object PopularSeriesRepository{
         popularSeriesResponseLiveData.value = popularSeries
     }
 
-    private fun enqueueCallback(call: Call<PopularSeriesResponse>) {
-        call.enqueue(object: Callback<PopularSeriesResponse> {
+    private fun enqueueCallback(call: Call<SeriesResponse>) {
+        call.enqueue(object: Callback<SeriesResponse> {
 
-            override fun onResponse(call: Call<PopularSeriesResponse>,
-                                    response: Response<PopularSeriesResponse>
+            override fun onResponse(call: Call<SeriesResponse>,
+                                    response: Response<SeriesResponse>
             ) {
                 response.body()?.let {
                     if(userConnectedToTheInternet(it.page)){
@@ -83,7 +82,7 @@ object PopularSeriesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<PopularSeriesResponse>, t: Throwable) {
+            override fun onFailure(call: Call<SeriesResponse>, t: Throwable) {
                 Log.e("Series error", "Couldn't get series list")
                if(popularSeries.isEmpty())
                     getPopularSeriesFromDatabase()

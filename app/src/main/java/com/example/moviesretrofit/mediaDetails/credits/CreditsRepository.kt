@@ -65,9 +65,7 @@ object CreditsRepository {
             override fun onFailure(call: Call<CreditsResponse>, t: Throwable) {
                 Log.i("CastFragmentModel", "Couldn't load cast")
                 if(creditsList.isEmpty() || multimedia.id != currentId)
-                    returnDatabaseData(
-                        multimedia
-                    )
+                    returnDatabaseData(multimedia)
             }
 
         })

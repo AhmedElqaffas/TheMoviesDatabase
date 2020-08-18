@@ -239,7 +239,7 @@
             android:elevation="2dp"/>
 
         <FrameLayout
-            android:id="@+id/castFragmentFrame"
+            android:id="@+id/creditsFragmentFrame"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="@id/CastWord"
@@ -249,6 +249,42 @@
             app:layout_constraintHorizontal_bias="0"
             android:layout_marginTop="15dp"/>
 
+        <View
+            android:id="@+id/separatorBelowCredits"
+            app:layout_constraintTop_toBottomOf="@id/creditsFragmentFrame"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintWidth_percent="0.95"
+            android:background="#FFFFFF"/>
+
+
+        <TextView
+            android:id="@+id/similarShowsWord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/separatorBelowCredits"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/similar_shows"
+            android:textColor="#A5A2A2"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:elevation="2dp"/>
+
+        <FrameLayout
+            android:id="@+id/similarShowsFragmentFrame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="@id/similarShowsWord"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/similarShowsWord"
+            app:layout_constraintWidth_percent="0.95"
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginTop="15dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -8,7 +8,7 @@ import com.example.moviesretrofit.dataClasses.Movie
 import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.networking.MultiMediaAPI
 import com.example.moviesretrofit.dataClasses.MultiMediaResponse
-import com.example.moviesretrofit.dataClasses.RatedMovieResponse
+import com.example.moviesretrofit.dataClasses.MovieResponse
 import com.example.moviesretrofit.database.AppDatabase
 import com.example.moviesretrofit.networking.RetrofitClient
 import kotlinx.coroutines.CoroutineScope
@@ -64,11 +64,11 @@ object RatedMoviesRepository{
         ratedMoviesResponseLiveData.value = ratedMovies
     }
 
-    private fun enqueueCallback(call: Call<RatedMovieResponse>) {
-        call.enqueue(object: Callback<RatedMovieResponse> {
+    private fun enqueueCallback(call: Call<MovieResponse>) {
+        call.enqueue(object: Callback<MovieResponse> {
 
-            override fun onResponse(call: Call<RatedMovieResponse>,
-                                    response: Response<RatedMovieResponse>
+            override fun onResponse(call: Call<MovieResponse>,
+                                    response: Response<MovieResponse>
             ) {
                 response.body()?.let {
                     ratedMoviesResponseLiveData.postValue(it.results)
@@ -77,7 +77,7 @@ object RatedMoviesRepository{
                 }
             }
 
-            override fun onFailure(call: Call<RatedMovieResponse>, t: Throwable) {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
                 Log.e("Movies error", "Couldn't get movies list from API")
                 if(ratedMovies.isEmpty())
                     getRatedMoviesFromDatabase()

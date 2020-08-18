@@ -10,11 +10,11 @@ interface MultiMediaAPI {
 
     @GET("/3/movie/popular")
     fun getPopularMovies(@Query("api_key") key: String,
-                         @Query("page") page: Int): Call<PopularMovieResponse>
+                         @Query("page") page: Int): Call<MovieResponse>
 
     @GET("/3/movie/top_rated")
     fun getHighRatedMovies(@Query("api_key") key: String,
-                           @Query("page") page: Int): Call<RatedMovieResponse>
+                           @Query("page") page: Int): Call<MovieResponse>
 
     @GET("/3/search/multi")
     fun findMediaByName(@Query("api_key") key: String,
@@ -29,11 +29,11 @@ interface MultiMediaAPI {
 
     @GET("/3/tv/popular")
     fun getPopularSeries(@Query("api_key") key: String,
-                         @Query("page") page: Int): Call<PopularSeriesResponse>
+                         @Query("page") page: Int): Call<SeriesResponse>
 
     @GET("/3/tv/top_rated")
     fun getHighRatedSeries(@Query("api_key") key: String,
-                           @Query("page") page: Int): Call<RatedSeriesResponse>
+                           @Query("page") page: Int): Call<SeriesResponse>
 
     @GET("/3/tv/{tv_id}/credits")
     fun getSeriesCast(@Path("tv_id") id: Int,
@@ -46,4 +46,12 @@ interface MultiMediaAPI {
     @GET("/3/tv/{tv_id}")
     fun makeSeriesDetailsRequest(@Path("tv_id") id: Int,
                                 @Query("api_key") key: String): Call<Series>
+
+    @GET("/3/movie/{movie_id}/similar")
+    fun getSimilarMovies(@Path("movie_id") id: Int,
+                                 @Query("api_key") key: String): Call<MovieResponse>
+
+    @GET("/3/tv/{tv_id}/similar")
+    fun getSimilarSeries(@Path("tv_id") id: Int,
+                         @Query("api_key") key: String): Call<SeriesResponse>
 }
