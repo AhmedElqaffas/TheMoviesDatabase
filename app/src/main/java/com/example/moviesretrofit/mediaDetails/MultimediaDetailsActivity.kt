@@ -21,6 +21,7 @@ import com.example.moviesretrofit.dataClasses.MultiMedia
 import com.example.moviesretrofit.helpers.ImageZooming
 import com.example.moviesretrofit.mediaDetails.credits.CreditsFragment
 import com.example.moviesretrofit.mediaDetails.infoDialogFragment.InfoDialogFragment
+import com.example.moviesretrofit.mediaDetails.similarShows.SimilarShowsFragment
 import com.example.moviesretrofit.oftenfragments.BackButtonFragment
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_details.*
@@ -106,16 +107,13 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     }
 
     private fun showCastFragmentIfNoSavedInstance(savedInstanceState: Bundle?){
-        if(savedInstanceState == null)
-            showCastFragment()
-    }
-
-    private fun showCastFragment(){
-        val castFragmentInstance = CreditsFragment.newInstance(multiMedia)
-        supportFragmentManager.beginTransaction().replace(
-            R.id.castFragmentFrame,
-            castFragmentInstance,"cast fragment")
-            .commit()
+        if(savedInstanceState == null){
+            val castFragmentInstance = CreditsFragment.newInstance(multiMedia)
+            supportFragmentManager.beginTransaction().replace(
+                R.id.creditsFragmentFrame,
+                castFragmentInstance,"cast fragment")
+                .commit()
+        }
     }
 
     private fun getMultimediaDetails(){
@@ -125,7 +123,7 @@ class MultimediaDetailsActivity : AppCompatActivity() {
             if(multiMedia.title == it.title){
                 multiMedia = it
                 showGenres()
-                hideOrShowGreenCheck()
+                manageFavorite()
             }
 
         }
@@ -163,14 +161,49 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * If the movie is in favorites, show a green check mark above the favorite button. Otherwise,
-     * hide it.
+     * If the movie is in favorites, show a green check mark above the favorite button, and get
+     * a list of similar shows. Otherwise hide the check and the similar shows section.
      */
-    private fun hideOrShowGreenCheck(){
-        if(multiMedia.isFavorite)
-            checked.visibility = View.VISIBLE
-        else
-            checked.visibility = View.INVISIBLE
+    private fun manageFavorite(){
+        if(multiMedia.isFavorite){
+            addFavoriteShowDetails()
+        }
+        else {
+            hideFavoriteShowDetails()
+        }
+    }
+
+    private fun addFavoriteShowDetails(){
+        checked.visibility = View.VISIBLE
+        showSimilarShows()
+    }
+
+    private fun showSimilarShows(){
+        separatorBelowCredits.visibility = View.VISIBLE
+        similarShowsFragmentFrame.visibility = View.VISIBLE
+        similarShowsWord.visibility = View.VISIBLE
+        createSimilarShowsFragment()
+    }
+
+    private fun hideFavoriteShowDetails(){
+        checked.visibility = View.INVISIBLE
+        hideSimilarShows()
+    }
+
+    private fun hideSimilarShows(){
+        separatorBelowCredits.visibility = View.GONE
+        similarShowsFragmentFrame.visibility = View.GONE
+        similarShowsWord.visibility = View.GONE
+    }
+
+    private fun createSimilarShowsFragment(){
+        if(supportFragmentManager.findFragmentByTag("similarShows") == null){
+            val similarShowsFragmentInstance = SimilarShowsFragment.newInstance(multiMedia)
+            supportFragmentManager.beginTransaction().replace(
+                R.id.similarShowsFragmentFrame,
+                similarShowsFragmentInstance, "similarShows")
+                .commit()
+        }
     }
 
     private fun setupFavoritesButton(){
@@ -186,11 +219,11 @@ class MultimediaDetailsActivity : AppCompatActivity() {
      */
     private fun addOrRemoveFromFavorites(){
             if(!multiMedia.isFavorite){
-                checked.visibility = View.VISIBLE
+                addFavoriteShowDetails()
                 showAddToFavoriteAnimation()
             }
             else{
-                checked.visibility = View.INVISIBLE
+                hideFavoriteShowDetails()
                 showRemovedFromFavoriteAnimation()
             }
         multimediaDetailsViewModel.toggleFavorites(multiMedia)

@@ -91,4 +91,8 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
             this.isFavorite = false
         }
     }
+
+    override fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {
+        return multiMediaAPI.getSimilarMovies(id, key) as Call<MultiMediaResponse>
+    }
 }

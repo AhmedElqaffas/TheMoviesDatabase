@@ -65,7 +65,7 @@ object MultimediaDetailsRepository {
             override fun onResponse(call: Call<MultiMedia>, response: Response<MultiMedia>) {
                 response.body()?.let {
                     multimedia.copyObtainedDetails(it)
-                    //This movie may already be in database because it is in favorites
+                    //This multimedia may already be in database because it is in favorites
                     // if that is the case, update the isFavorite of this multimedia and post it
                     getExistingMovieIsFavorite(multimedia)
                 }
