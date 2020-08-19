@@ -5,14 +5,14 @@
 
     <fragment
         android:id="@+id/movies"
-        android:name="com.example.moviesretrofit.main.fragments.MoviesFragment"
+        android:name="com.example.tmdb.main.fragments.MoviesFragment"
         android:label="MoviesFragment" />
     <fragment
         android:id="@+id/series"
-        android:name="com.example.moviesretrofit.main.fragments.SeriesFragment"
+        android:name="com.example.tmdb.main.fragments.SeriesFragment"
         android:label="SeriesFragment" />
     <fragment
         android:id="@+id/search"
-        android:name="com.example.moviesretrofit.main.fragments.FindMultiMediaFragment"
+        android:name="com.example.tmdb.main.fragments.FindMultiMediaFragment"
         android:label="FindMultiMediaFragment" />
 </navigation>

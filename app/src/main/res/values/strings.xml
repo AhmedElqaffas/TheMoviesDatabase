@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MoviesRetrofit</string>
+    <string name="app_name">TheMoviesDatabase</string>
     <string name="cast_and_crew">Cast&amp;Crew</string>
     <string name="overview">Overview</string>
     <string name="favorite">Your Favorites</string>
