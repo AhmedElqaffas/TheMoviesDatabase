@@ -8,4 +8,9 @@
     <string name="show_more_info">Show More Information</string>
     <string name="add_to_favorites">Add to Favorites</string>
     <string name="similar_shows">Similar Shows</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="no_account">Don\'t have an account? Sign up</string>
+    <string name="continue_anonymously">Continue Anonymously</string>
 </resources>
