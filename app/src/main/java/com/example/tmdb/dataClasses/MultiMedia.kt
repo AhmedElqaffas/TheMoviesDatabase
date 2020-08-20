@@ -1,9 +1,15 @@
 package com.example.tmdb.dataClasses
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.TypeConverters
 import com.example.tmdb.database.AppDatabase
 import com.example.tmdb.database.GenreDatabaseConverter
 import com.example.tmdb.networking.MultiMediaAPI
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import java.io.Serializable
@@ -36,5 +42,14 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     open suspend fun updateFavoriteInDatabase(database: AppDatabase){}
     open suspend fun getExistingShowFields(database: AppDatabase){}
     open fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {return null}
+    open suspend fun createOrRemoveFirestoreRecord(firestore: FirebaseFirestore,
+                                                   firebaseAuth: FirebaseAuth,
+                                                   firebaseCallback: FirebaseCallback){}
+
+
+    interface FirebaseCallback{
+        fun onFirebaseRequestEnded(success: Boolean, multiMedia: MultiMedia)
+    }
+
 }
 

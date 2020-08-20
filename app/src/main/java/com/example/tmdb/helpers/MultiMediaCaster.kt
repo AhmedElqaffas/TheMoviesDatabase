@@ -71,4 +71,38 @@ object MultiMediaCaster {
             else -> throw Exception("Couldn't cast multimedia in MultimediaDetails viewModel")
         }
     }
+
+     fun createMultimediaMap(multimedia: MultiMedia): HashMap<String, Any> {
+        val multimediaMap: HashMap<String, Any> = hashMapOf()
+        multimediaMap["title"] = multimedia.title
+        multimediaMap["mediaType"] = multimedia.mediaType
+        multimediaMap["id"] = multimedia.id
+        multimediaMap["totalVotes"] = multimedia.totalVotes
+        if(multimedia.poster.isNullOrEmpty()){
+            multimediaMap["poster"] = ""
+        }
+        else{
+            multimediaMap["poster"] = multimedia.poster!!
+        }
+
+        if(multimedia.cover.isNullOrEmpty()){
+            multimediaMap["cover"] = ""
+        }
+        else{
+            multimediaMap["cover"] = multimedia.cover!!
+        }
+
+        multimediaMap["rating"] = multimedia.rating
+        multimediaMap["releaseDate"] = multimedia.releaseDate
+        if(multimedia.overview.isNullOrEmpty()){
+            multimediaMap["overview"] = ""
+        }
+        else{
+            multimediaMap["overview"] = multimedia.overview!!
+        }
+
+        multimediaMap["popularity"] = multimedia.popularity
+
+        return multimediaMap
+    }
 }

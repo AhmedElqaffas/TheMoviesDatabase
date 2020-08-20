@@ -34,8 +34,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
      * Removes a multimedia from favorites if it is already in favorites
      * or add it if it is not
      */
-    fun toggleFavorites(multimedia: MultiMedia){
-        MultimediaDetailsRepository.toggleFavorites(MultiMediaCaster.castMultimedia(multimedia))
+    fun toggleFavorites(multimedia: MultiMedia): LiveData<Int>{
+        return MultimediaDetailsRepository.toggleFavorites(MultiMediaCaster.castMultimedia(multimedia))
     }
 
 }

@@ -51,6 +51,7 @@ class MoviesFragment : Fragment(){
     private fun setSwipeRefreshListener(){
         swipeRefresh.setOnRefreshListener {
             // Recreate the fragments to remake the requests
+            setFavoriteMoviesFragment()
             setPopularMoviesFragment()
             setTopRatedMoviesFragment()
             // End the refreshing

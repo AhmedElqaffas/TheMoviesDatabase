@@ -21,23 +21,33 @@ object FavoritesRepository {
     }
 
     fun getFavoriteMovies(userId: String): LiveData<List<MultiMedia>> {
-        return if(favoriteMoviesLiveData.value != null && this.userId == userId){
-            favoriteMoviesLiveData
-        } else{
+
+        if(!areDataCached()){
             this.userId = userId
-            runBlocking {
-                launch(IO){
-                    favoriteMoviesLiveData = database.getMultimediaDao().getFavoriteMovies(userId)
-                }
-            }
-            favoriteMoviesLiveData
+            return getDatabaseData(userId)
         }
+
+        return favoriteMoviesLiveData
     }
 
-    fun getFavoriteSeries(): LiveData<List<MultiMedia>> {
-        return if(favoriteSeriesLiveData.value != null){
+    private fun areDataCached(): Boolean {
+        return favoriteMoviesLiveData.value != null && this.userId == userId
+    }
+
+    private fun getDatabaseData(userId: String): LiveData<List<MultiMedia>>{
+        runBlocking {
+            launch(IO){
+                favoriteMoviesLiveData = database.getMultimediaDao().getFavoriteMovies(userId)
+            }
+        }
+        return favoriteMoviesLiveData
+    }
+
+    fun getFavoriteSeries(userId: String): LiveData<List<MultiMedia>> {
+        return if(favoriteSeriesLiveData.value != null && this.userId == userId){
             favoriteSeriesLiveData
         } else{
+            this.userId = userId
             runBlocking {
                 launch(IO){
                     favoriteSeriesLiveData = database.getMultimediaDao().getFavoriteSeries(userId)

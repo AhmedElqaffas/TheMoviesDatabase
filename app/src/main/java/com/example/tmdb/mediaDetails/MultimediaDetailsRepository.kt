@@ -4,28 +4,38 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.example.tmdb.dataClasses.MultiMedia
 import com.example.tmdb.database.AppDatabase
+import com.example.tmdb.main.dataRepositories.FavoritesRepository
 import com.example.tmdb.networking.MultiMediaAPI
 import com.example.tmdb.networking.RetrofitClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 
-object MultimediaDetailsRepository {
+object MultimediaDetailsRepository: MultiMedia.FirebaseCallback {
 
-    private lateinit var database: AppDatabase
+    const val FAILURE = 0
+    const val SUCCESS = 1
+    const val INCOMPLETE = 2
 
     private const val key = "097aa1909532e2d795f4f414cf4bc13f"
     private val multiMediaAPI = RetrofitClient.getRetrofitClient().create(MultiMediaAPI::class.java)
 
+    private lateinit var database: AppDatabase
+
     private val multimediaLiveData: MutableLiveData<MultiMedia> = MutableLiveData()
+    private val toggleFavoritesLiveData: MutableLiveData<Int> = MutableLiveData()
+
 
     private var cachedMultimedia: MultiMedia? = null
 
@@ -115,13 +125,41 @@ object MultimediaDetailsRepository {
         }
     }
 
-    fun toggleFavorites(multimedia: MultiMedia){
+    fun toggleFavorites(multimedia: MultiMedia): LiveData<Int>{
+        toggleFavoritesLiveData.value = INCOMPLETE
+
+        when {
+            firebaseAuth.currentUser != null -> {
+                toggleFavoritesInFirestore(multimedia)
+            }
+            firebaseAuth.currentUser == null -> {
+                commitFavoritesChangeLocally(multimedia)
+                toggleFavoritesLiveData.value = SUCCESS
+            }
+            else -> {
+                toggleFavoritesLiveData.value = FAILURE
+                return toggleFavoritesLiveData
+            }
+        }
+        return toggleFavoritesLiveData
+    }
+
+    /**
+     * When createOrRemoveFirestoreRecord result arrives, onFirebaseRequestEnded callback method
+     * will be called to resume committing changes locally (room and repo cache)
+     */
+    private fun toggleFavoritesInFirestore(multimedia: MultiMedia){
+        CoroutineScope(IO).launch {
+            multimedia.createOrRemoveFirestoreRecord(firestore, firebaseAuth, this@MultimediaDetailsRepository)
+        }
+    }
+
+    private fun commitFavoritesChangeLocally(multimedia: MultiMedia){
         multimedia.isFavorite = !multimedia.isFavorite
         setUserId(multimedia)
+        multimediaLiveData.value = multimedia
         updateRepository(multimedia)
         toggleFavoritesInDatabase(multimedia)
-        firebaseAuth.currentUser?.let { toggleFavoritesInFirestore(multimedia) }
-        multimediaLiveData.value = multimedia
     }
 
     private fun setUserId(multimedia: MultiMedia){
@@ -138,32 +176,6 @@ object MultimediaDetailsRepository {
         }
     }
 
-    private fun toggleFavoritesInFirestore(multimedia: MultiMedia){
-        CoroutineScope(IO).launch {
-            createOrRemoveFirestoreRecord(multimedia)
-        }
-    }
-
-    private fun createOrRemoveFirestoreRecord(multimedia: MultiMedia){
-        val documentReference = firestore.collection("favorites")
-            .document(firebaseAuth.currentUser!!.uid)
-
-        documentReference.get().addOnSuccessListener {
-            if(it.data?.get(multimedia.title) != null){
-                println(it.data?.get(multimedia.title))
-                it.data?.remove(multimedia.title)
-            }
-            else{
-                val multimediaMap: HashMap<String, Any> = hashMapOf()
-                multimediaMap[multimedia.title] = multimedia.mediaType
-                documentReference.set(multimediaMap)
-            }
-        }.addOnFailureListener {
-            println(it.message+"///////////////")
-            Log.i("MultimediaDetails", it.message)
-        }
-    }
-
     private fun getExistingFields(multimedia: MultiMedia){
         CoroutineScope(IO).launch {
             multimedia.getExistingShowFields(database)
@@ -174,7 +186,15 @@ object MultimediaDetailsRepository {
         }
     }
 
-    private fun getExistingMovieIsFavorite(multimedia: MultiMedia){
+    override fun onFirebaseRequestEnded(success: Boolean, multimedia: MultiMedia) {
+        // If firestore was updated successfully, then update room database and repo cache
+        if(success){
+            commitFavoritesChangeLocally(multimedia)
+            toggleFavoritesLiveData.postValue(SUCCESS)
+        }
+        else{
+            toggleFavoritesLiveData.postValue(FAILURE)
+        }
 
     }
 }

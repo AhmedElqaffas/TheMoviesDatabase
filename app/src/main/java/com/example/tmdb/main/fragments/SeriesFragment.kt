@@ -49,6 +49,7 @@ class SeriesFragment : Fragment() {
     private fun setSwipeRefreshListener(){
         swipeRefresh.setOnRefreshListener {
             // Recreate the fragments to remake the requests
+            setFavoriteSeriesFragment()
             setPopularSeriesFragment()
             setTopRatedSeriesFragment()
             // End the refreshing

@@ -11,6 +11,7 @@ import android.view.animation.TranslateAnimation
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.setPadding
@@ -223,18 +224,24 @@ class MultimediaDetailsActivity : AppCompatActivity() {
     }
 
     /**
-     * If the movie is already in favorites, and the user clicks this buttons, the green check mark
+     * If the user removed the multimedia from favorites, the green check mark
      * on the button should disappear, and a broken heart animation should happen.
      * Else, show a full heart animation and a green check mark
      */
     private fun addOrRemoveFromFavorites(){
-            if(!multiMedia.isFavorite){
-                showAddToFavoriteAnimation()
+        multimediaDetailsViewModel.toggleFavorites(multiMedia).observe(this){
+            if(it == MultimediaDetailsRepository.SUCCESS){
+                if(multiMedia.isFavorite){
+                    showAddToFavoriteAnimation()
+                }
+                else{
+                    showRemovedFromFavoriteAnimation()
+                }
             }
-            else{
-                showRemovedFromFavoriteAnimation()
+            else if(it == MultimediaDetailsRepository.FAILURE){
+                Toast.makeText(this, "Couldn't communicate with cloud server", Toast.LENGTH_SHORT).show()
             }
-        multimediaDetailsViewModel.toggleFavorites(multiMedia)
+        }
     }
 
     private fun showAddToFavoriteAnimation(){

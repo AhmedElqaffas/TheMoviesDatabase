@@ -21,7 +21,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getFavoriteSeries(): LiveData<List<MultiMedia>>{
-        return FavoritesRepository.getFavoriteSeries()
+        return FavoritesRepository.getFavoriteSeries(getCurrentUser()!!)
     }
 
     fun getPopularMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{

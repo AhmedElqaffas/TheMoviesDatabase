@@ -1,11 +1,24 @@
 package com.example.tmdb.dataClasses
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.Index
 import com.example.tmdb.database.AppDatabase
+import com.example.tmdb.helpers.MultiMediaCaster
+import com.example.tmdb.mediaDetails.MultimediaDetailsRepository
 import com.example.tmdb.mediaDetails.credits.CreditsDatabaseHandler
 import com.example.tmdb.mediaDetails.credits.CreditsRetrofitRequester
 import com.example.tmdb.networking.MultiMediaAPI
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 
 @Entity(tableName = "movies", primaryKeys = ["id"], indices = [Index("id")])
@@ -101,4 +114,57 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     override fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {
         return multiMediaAPI.getSimilarMovies(id, key) as Call<MultiMediaResponse>
     }
+
+    override suspend fun createOrRemoveFirestoreRecord(firestore: FirebaseFirestore,
+                                                       firebaseAuth: FirebaseAuth,
+                                                       firebaseCallback: FirebaseCallback){
+        
+        val documentReference = firestore.collection("movies_linker")
+            .document(firebaseAuth.currentUser!!.uid)
+
+        val documentSnapshot = documentReference.get()
+        documentSnapshot.addOnSuccessListener {
+            if(movieAlreadyInFavorites(it)){
+                deleteMovieRecord(documentReference)
+            }
+
+            else{
+                updateLinkerDocument(documentReference)
+                insertMovieDetailsInNewCollection(firestore)
+            }
+            firebaseCallback.onFirebaseRequestEnded(true, this)
+
+        }.addOnFailureListener {
+            firebaseCallback.onFirebaseRequestEnded(false, this)
+            Log.i("MultimediaDetails", it.message)
+
+        }
+    }
+
+    private fun movieAlreadyInFavorites(ds: DocumentSnapshot): Boolean{
+        return ds.data?.get(this.id.toString()) != null
+    }
+
+    private fun deleteMovieRecord(documentReference: DocumentReference){
+        deleteLinkerDocumentEntry(documentReference)
+    }
+
+    private fun deleteLinkerDocumentEntry(documentReference: DocumentReference){
+        documentReference.update(this.id.toString(), FieldValue.delete())
+    }
+
+    private fun updateLinkerDocument(documentReference: DocumentReference){
+        val multimediaMap: HashMap<String, Any> = hashMapOf()
+        multimediaMap[id.toString()] = mediaType
+        documentReference.update(multimediaMap)
+    }
+
+    private fun insertMovieDetailsInNewCollection(firestore: FirebaseFirestore){
+        val documentReference = firestore.collection("movies")
+            .document(this.id.toString())
+        // add the movie details
+        documentReference.set(MultiMediaCaster.createMultimediaMap(this))
+    }
+
+
 }
