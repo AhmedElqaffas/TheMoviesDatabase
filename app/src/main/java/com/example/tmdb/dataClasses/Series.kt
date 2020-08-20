@@ -23,7 +23,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, numberOfSeasons: Int?,
                 lastAirDate: String, inProduction: Boolean, genres: List<Genre>?, isFavorite: Boolean,
-                extraDetailsObtained: Boolean): this(){
+                extraDetailsObtained: Boolean, userId: String): this(){
         this.title = title
         this.id = id
         this.totalVotes = totalVotes
@@ -40,6 +40,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.genres = genres
         this.isFavorite = isFavorite
         this.extraDetailsObtained = extraDetailsObtained
+        this.userId = userId
     }
 
 
@@ -76,6 +77,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         this.lastAirDate = receivedMedia.lastAirDate
         this.genres = receivedMedia.genres
         this.extraDetailsObtained = receivedMedia.extraDetailsObtained
+        this.userId = receivedMedia.userId
     }
 
     override suspend fun saveInDatabase(database: AppDatabase){
@@ -86,14 +88,16 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
         return database.getMultimediaDao().getSingleSeries(this.id)
     }
 
-    override suspend fun updateFavoriteField(database: AppDatabase) {
-        database.getMultimediaDao().updateSeriesFavoriteField(this.id, this.isFavorite)
+    override suspend fun updateFavoriteInDatabase(database: AppDatabase) {
+        database.getMultimediaDao().updateSeriesFavorite(this.id, this.isFavorite, this.userId)
     }
 
-    override suspend fun getExistingShowIsFavorite(database: AppDatabase) {
+    override suspend fun getExistingShowFields(database: AppDatabase) {
         // If the database returns null because there is no entry for this series, set isFavorite to false
         try{
-            this.isFavorite = database.getMultimediaDao().getSeriesIsFavorite(id)
+            val existingSeries = database.getMultimediaDao().getSingleSeries(id)
+            this.isFavorite = existingSeries.isFavorite
+            this.userId = existingSeries.userId
         }catch(e: Exception){
             this.isFavorite = false
         }

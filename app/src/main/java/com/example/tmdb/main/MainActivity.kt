@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity(){
     private fun setNavigationComponentAdapter() {
         val navigationController: NavController = findNavController(R.id.fragmentsContainer)
         bottomNavigationView.setupWithNavController(navigationController)
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            // Do nothing to avoid recreating fragments
+        }
     }
 
 

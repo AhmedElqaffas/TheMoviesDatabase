@@ -23,17 +23,14 @@ interface MultimediaDao {
     @Query("SELECT * FROM movies ORDER BY popularity DESC")
     suspend fun getPopularMovies(): List<Movie>
 
-    @Query("DELETE FROM movies WHERE isFavorite = 0")
-    suspend fun deleteCachedMovies()
+    @Query("DELETE FROM movies WHERE isFavorite = 0 or userId != :userId")
+    suspend fun deleteCachedMovies(userId: String)
 
-    @Query("UPDATE movies Set isFavorite = :favorite WHERE id = :id")
-    suspend fun updateMovieFavoriteField(id: Int, favorite: Boolean)
+    @Query("UPDATE movies Set isFavorite = :favorite , userId = :userId WHERE id = :id")
+    suspend fun updateMovieFavorite(id: Int, favorite: Boolean, userId: String)
 
-    @Query("SELECT isFavorite FROM  movies WHERE id = :id")
-    suspend fun getMovieIsFavorite(id: Int): Boolean
-
-    @Query("SELECT * FROM  movies WHERE isFavorite = 1")
-    fun getFavoriteMovies(): LiveData<List<MultiMedia>>
+    @Query("SELECT * FROM  movies WHERE isFavorite = 1 and userId = :userId")
+    fun getFavoriteMovies(userId: String): LiveData<List<MultiMedia>>
 
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -51,15 +48,12 @@ interface MultimediaDao {
     @Query("SELECT * FROM series ORDER BY popularity DESC")
     suspend fun getPopularSeries(): List<Series>
 
-    @Query("DELETE FROM series WHERE isFavorite = 0")
-    suspend fun deleteCachedSeries()
+    @Query("DELETE FROM series WHERE isFavorite = 0 or userId != :userId")
+    suspend fun deleteCachedSeries(userId: String)
 
-    @Query("UPDATE series Set isFavorite = :favorite WHERE id = :id")
-    suspend fun updateSeriesFavoriteField(id: Int, favorite: Boolean)
+    @Query("UPDATE series Set isFavorite = :favorite , userId = :userId WHERE id = :id")
+    suspend fun updateSeriesFavorite(id: Int, favorite: Boolean, userId: String)
 
-    @Query("SELECT isFavorite FROM series WHERE id = :id")
-    suspend fun getSeriesIsFavorite(id: Int): Boolean
-
-    @Query("SELECT * FROM  series WHERE isFavorite = 1")
-    fun getFavoriteSeries(): LiveData<List<MultiMedia>>
+    @Query("SELECT * FROM  series WHERE isFavorite = 1 and userId = :userId")
+    fun getFavoriteSeries(userId: String): LiveData<List<MultiMedia>>
 }

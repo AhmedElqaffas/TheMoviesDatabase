@@ -16,6 +16,8 @@ import com.example.tmdb.recyclersAdapters.MultiMediaRecyclerAdapter
 import com.example.tmdb.R
 import com.example.tmdb.main.FindMultimediaViewModel
 import com.example.tmdb.dataClasses.MultiMedia
+import com.example.tmdb.login.LoginActivity
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_find_movie.*
 class FindMultiMediaFragment : Fragment(),
     MultiMediaRecyclerAdapter.MultiMediaRecyclerInteraction {
@@ -40,6 +42,9 @@ class FindMultiMediaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(activity, LoginActivity::class.java))
+        activity?.finish()
         initializeRecyclerViewAdapter()
         setSearchBarChangeListener()
     }

@@ -11,6 +11,7 @@ import com.example.tmdb.dataClasses.MultiMediaResponse
 import com.example.tmdb.dataClasses.MovieResponse
 import com.example.tmdb.database.AppDatabase
 import com.example.tmdb.networking.RetrofitClient
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -33,6 +34,8 @@ object PopularMoviesRepository{
 
     private var popularMoviesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
+    private lateinit var userId: String
+
     // mutex to synchronize the deletion of cached data and insertion of new data
     // (deletion job must finish first)
     private val mutex = Mutex()
@@ -41,7 +44,9 @@ object PopularMoviesRepository{
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makePopularMoviesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+    fun makePopularMoviesRequest(firstRequest: Boolean, userId: String): LiveData<List<MultiMedia>> {
+        this.userId = userId
+
         if(firstRequest) {
             sendCachedOrNetworkData()
         }
@@ -128,11 +133,12 @@ object PopularMoviesRepository{
     private fun deleteDatabaseData(){
         CoroutineScope(IO).launch {
             mutex.withLock {
-                database.getMultimediaDao().deleteCachedMovies()
+                database.getMultimediaDao().deleteCachedMovies(userId)
             }
 
         }
     }
+
 
     private fun updateRepository(response: MultiMediaResponse){
         updateCurrentPage(response.page)

@@ -14,18 +14,20 @@ object FavoritesRepository {
     private var favoriteMoviesLiveData: LiveData<List<MultiMedia>> = liveData{}
     private var favoriteSeriesLiveData: LiveData<List<MultiMedia>> = liveData{}
 
+    private lateinit var userId: String
 
     fun createDatabase(context: Context){
         database = AppDatabase.getDatabase(context)
     }
 
-    fun getFavoriteMovies(): LiveData<List<MultiMedia>> {
-        return if(favoriteMoviesLiveData.value != null){
+    fun getFavoriteMovies(userId: String): LiveData<List<MultiMedia>> {
+        return if(favoriteMoviesLiveData.value != null && this.userId == userId){
             favoriteMoviesLiveData
         } else{
+            this.userId = userId
             runBlocking {
                 launch(IO){
-                    favoriteMoviesLiveData = database.getMultimediaDao().getFavoriteMovies()
+                    favoriteMoviesLiveData = database.getMultimediaDao().getFavoriteMovies(userId)
                 }
             }
             favoriteMoviesLiveData
@@ -38,10 +40,11 @@ object FavoritesRepository {
         } else{
             runBlocking {
                 launch(IO){
-                    favoriteSeriesLiveData = database.getMultimediaDao().getFavoriteSeries()
+                    favoriteSeriesLiveData = database.getMultimediaDao().getFavoriteSeries(userId)
                 }
             }
             favoriteSeriesLiveData
         }
     }
+
 }

@@ -23,6 +23,8 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     var isFavorite: Boolean = false
     // Indicates whether show details (from /3/movie/{movie_id} and /3/tv/{tv_id}) were obtained from API or not
     var extraDetailsObtained = false
+    // The user that put this multimedia in favorites
+    var userId = ""
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
     open fun makeDetailsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMedia>? {return null}
@@ -31,8 +33,8 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     open fun copyObtainedDetails(receivedMedia: MultiMedia){}
     open suspend fun saveInDatabase(database: AppDatabase){}
     open suspend fun getFromDatabase(database: AppDatabase): MultiMedia? {return null}
-    open suspend fun updateFavoriteField(database: AppDatabase){}
-    open suspend fun getExistingShowIsFavorite(database: AppDatabase){}
+    open suspend fun updateFavoriteInDatabase(database: AppDatabase){}
+    open suspend fun getExistingShowFields(database: AppDatabase){}
     open fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {return null}
 }
 

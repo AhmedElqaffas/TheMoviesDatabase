@@ -18,7 +18,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, budget: Int?, revenue: Long?,
-                genres: List<Genre>?, isFavorite: Boolean, extraDetailsObtained: Boolean):
+                genres: List<Genre>?, isFavorite: Boolean, extraDetailsObtained: Boolean, userId: String):
             this() {
         this.title = title
         this.id = id
@@ -35,6 +35,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.genres = genres
         this.isFavorite = isFavorite
         this.extraDetailsObtained = extraDetailsObtained
+        this.userId = userId
     }
 
 
@@ -74,6 +75,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         this.revenue = receivedMedia.revenue
         this.genres = receivedMedia.genres
         this.extraDetailsObtained = receivedMedia.extraDetailsObtained
+        this.userId = receivedMedia.userId
 
     }
 
@@ -81,14 +83,16 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         return database.getMultimediaDao().getSingleMovie(this.id)
     }
 
-    override suspend fun updateFavoriteField(database: AppDatabase) {
-        database.getMultimediaDao().updateMovieFavoriteField(this.id, this.isFavorite)
+    override suspend fun updateFavoriteInDatabase(database: AppDatabase) {
+        database.getMultimediaDao().updateMovieFavorite(this.id, this.isFavorite, this.userId)
     }
 
-    override suspend fun getExistingShowIsFavorite(database: AppDatabase) {
+    override suspend fun getExistingShowFields(database: AppDatabase) {
         // If the database returns null because there is no entry for this movie, set isFavorite to false
         try{
-            this.isFavorite = database.getMultimediaDao().getMovieIsFavorite(id)
+            val existingMovie = database.getMultimediaDao().getSingleMovie(id)
+            this.isFavorite = existingMovie.isFavorite
+            this.userId = existingMovie.userId
         }catch(e: Exception){
             this.isFavorite = false
         }

@@ -34,11 +34,14 @@ object PopularSeriesRepository{
     // (deletion job must finish first)
     private val mutex = Mutex()
 
+    private lateinit var userId: String
+
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makePopularSeriesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+    fun makePopularSeriesRequest(firstRequest: Boolean, userId: String): LiveData<List<MultiMedia>> {
+        this.userId = userId
         if(firstRequest) {
             sendCachedOrNetworkData()
         }
@@ -123,7 +126,7 @@ object PopularSeriesRepository{
     private fun deleteDatabaseData(){
         CoroutineScope(IO).launch {
             mutex.withLock {
-                database.getMultimediaDao().deleteCachedSeries()
+                database.getMultimediaDao().deleteCachedSeries(userId)
             }
         }
     }
