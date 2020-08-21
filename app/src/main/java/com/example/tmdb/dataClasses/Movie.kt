@@ -5,20 +5,13 @@ import androidx.room.Entity
 import androidx.room.Index
 import com.example.tmdb.database.AppDatabase
 import com.example.tmdb.helpers.MultiMediaCaster
-import com.example.tmdb.mediaDetails.MultimediaDetailsRepository
 import com.example.tmdb.mediaDetails.credits.CreditsDatabaseHandler
 import com.example.tmdb.mediaDetails.credits.CreditsRetrofitRequester
 import com.example.tmdb.networking.MultiMediaAPI
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.Call
 
 @Entity(tableName = "movies", primaryKeys = ["id"], indices = [Index("id")])
@@ -116,11 +109,11 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     }
 
     override suspend fun createOrRemoveFirestoreRecord(firestore: FirebaseFirestore,
-                                                       firebaseAuth: FirebaseAuth,
+                                                       userId: String,
                                                        firebaseCallback: FirebaseCallback){
         
         val documentReference = firestore.collection("movies_linker")
-            .document(firebaseAuth.currentUser!!.uid)
+            .document(userId)
 
         val documentSnapshot = documentReference.get()
         documentSnapshot.addOnSuccessListener {
@@ -129,7 +122,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
             }
 
             else{
-                updateLinkerDocument(documentReference)
+                updateLinkerDocument(documentReference, it)
                 insertMovieDetailsInNewCollection(firestore)
             }
             firebaseCallback.onFirebaseRequestEnded(true, this)
@@ -153,10 +146,17 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
         documentReference.update(this.id.toString(), FieldValue.delete())
     }
 
-    private fun updateLinkerDocument(documentReference: DocumentReference){
+    private fun updateLinkerDocument(documentReference: DocumentReference,
+                                     documentSnapshot: DocumentSnapshot){
         val multimediaMap: HashMap<String, Any> = hashMapOf()
         multimediaMap[id.toString()] = mediaType
-        documentReference.update(multimediaMap)
+        if(documentSnapshot.exists()){
+            documentReference.update(multimediaMap)
+        }
+        else{
+            documentReference.set(multimediaMap)
+        }
+
     }
 
     private fun insertMovieDetailsInNewCollection(firestore: FirebaseFirestore){

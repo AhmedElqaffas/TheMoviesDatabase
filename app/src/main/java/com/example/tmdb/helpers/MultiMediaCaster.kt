@@ -103,6 +103,11 @@ object MultiMediaCaster {
 
         multimediaMap["popularity"] = multimedia.popularity
 
+         if(multimedia is Series){
+             multimediaMap["lastAirDate"] = multimedia.lastAirDate
+             multimediaMap["inProduction"] = multimedia.inProduction
+         }
+
         return multimediaMap
     }
 }

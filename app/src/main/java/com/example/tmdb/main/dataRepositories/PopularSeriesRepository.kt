@@ -41,9 +41,8 @@ object PopularSeriesRepository{
     }
 
     fun makePopularSeriesRequest(firstRequest: Boolean, userId: String): LiveData<List<MultiMedia>> {
-        this.userId = userId
         if(firstRequest) {
-            sendCachedOrNetworkData()
+            sendCachedOrNetworkData(userId)
         }
 
         else if(currentPage < popularSeriesTotalPages){
@@ -53,11 +52,16 @@ object PopularSeriesRepository{
         return popularSeriesResponseLiveData
     }
 
-    private fun sendCachedOrNetworkData(){
-        if (popularSeries.isEmpty())
-            returnNetworkData(1)
-        else
+    private fun sendCachedOrNetworkData(userId: String) {
+        if(popularSeries.isNotEmpty() && this.userId == userId){
             returnCachedData()
+        }
+
+        else{
+            this.userId = userId
+            returnNetworkData(1)
+        }
+
     }
 
     private fun returnNetworkData(page: Int){

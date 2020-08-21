@@ -17,11 +17,11 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getFavoriteMovies(): LiveData<List<MultiMedia>>{
-        return FavoritesRepository.getFavoriteMovies(getCurrentUser()!!)
+        return FavoritesRepository.getFavoriteShows(FavoritesRepository.MOVIE, getCurrentUser()!!)
     }
 
     fun getFavoriteSeries(): LiveData<List<MultiMedia>>{
-        return FavoritesRepository.getFavoriteSeries(getCurrentUser()!!)
+        return FavoritesRepository.getFavoriteShows(FavoritesRepository.SERIES, getCurrentUser()!!)
     }
 
     fun getPopularMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{
@@ -29,7 +29,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getRatedMovies(firstRequest: Boolean): LiveData<List<MultiMedia>>{
-        return RatedMoviesRepository.makeRatedMoviesRequest(firstRequest)
+        return RatedMoviesRepository.makeRatedMoviesRequest(firstRequest, getCurrentUser()!!)
     }
 
     fun getPopularSeries(firstRequest: Boolean): LiveData<List<MultiMedia>>{
@@ -37,7 +37,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun getRatedSeries(firstRequest: Boolean): LiveData<List<MultiMedia>>{
-        return RatedSeriesRepository.makeRatedSeriesRequest(firstRequest)
+        return RatedSeriesRepository.makeRatedSeriesRequest(firstRequest, getCurrentUser()!!)
     }
 
     private fun getCurrentUser(): String? = getApplication<Application>().

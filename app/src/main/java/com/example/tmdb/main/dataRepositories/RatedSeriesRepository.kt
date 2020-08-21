@@ -28,14 +28,16 @@ object RatedSeriesRepository{
 
     private val ratedSeriesResponseLiveData: MutableLiveData<List<MultiMedia>> = MutableLiveData()
 
+    private lateinit var userId: String
+
 
     fun createDatabase(context: Context) {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun makeRatedSeriesRequest(firstRequest: Boolean): LiveData<List<MultiMedia>> {
+    fun makeRatedSeriesRequest(firstRequest: Boolean, userId: String): LiveData<List<MultiMedia>> {
         if(firstRequest) {
-            sendCachedOrNetworkData()
+            sendCachedOrNetworkData(userId)
         }
 
         else if(currentPage < ratedSeriesTotalPages){
@@ -45,11 +47,16 @@ object RatedSeriesRepository{
         return ratedSeriesResponseLiveData
     }
 
-    private fun sendCachedOrNetworkData(){
-        if (ratedSeries.isEmpty())
-            returnNetworkData(1)
-        else
+    private fun sendCachedOrNetworkData(userId: String) {
+        if(ratedSeries.isNotEmpty() && this.userId == userId){
             returnCachedData()
+        }
+
+        else{
+            this.userId = userId
+            returnNetworkData(1)
+        }
+
     }
 
     private fun returnNetworkData(page: Int){

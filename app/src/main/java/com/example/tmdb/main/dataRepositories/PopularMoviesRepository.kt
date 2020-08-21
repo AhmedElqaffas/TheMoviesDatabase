@@ -11,7 +11,6 @@ import com.example.tmdb.dataClasses.MultiMediaResponse
 import com.example.tmdb.dataClasses.MovieResponse
 import com.example.tmdb.database.AppDatabase
 import com.example.tmdb.networking.RetrofitClient
-import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -45,10 +44,9 @@ object PopularMoviesRepository{
     }
 
     fun makePopularMoviesRequest(firstRequest: Boolean, userId: String): LiveData<List<MultiMedia>> {
-        this.userId = userId
 
         if(firstRequest) {
-            sendCachedOrNetworkData()
+            sendCachedOrNetworkData(userId)
         }
 
         else if(currentPage < popularMoviesTotalPages){
@@ -58,11 +56,13 @@ object PopularMoviesRepository{
         return popularMoviesResponseLiveData
     }
 
-    private fun sendCachedOrNetworkData(){
-        if(popularMovies.isNotEmpty())
+    private fun sendCachedOrNetworkData(userId: String) {
+        if(popularMovies.isNotEmpty() && this.userId == userId){
             returnCachedData()
+        }
 
-        else if (popularMovies.isEmpty()) {
+        else{
+            this.userId = userId
             returnNetworkData(1)
         }
     }

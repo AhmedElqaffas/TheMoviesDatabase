@@ -43,7 +43,7 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
     open suspend fun getExistingShowFields(database: AppDatabase){}
     open fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {return null}
     open suspend fun createOrRemoveFirestoreRecord(firestore: FirebaseFirestore,
-                                                   firebaseAuth: FirebaseAuth,
+                                                   userId: String,
                                                    firebaseCallback: FirebaseCallback){}
 
 

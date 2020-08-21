@@ -36,8 +36,8 @@ object MultimediaDetailsRepository: MultiMedia.FirebaseCallback {
     private val multimediaLiveData: MutableLiveData<MultiMedia> = MutableLiveData()
     private val toggleFavoritesLiveData: MutableLiveData<Int> = MutableLiveData()
 
-
     private var cachedMultimedia: MultiMedia? = null
+    private lateinit var userId: String
 
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
@@ -46,25 +46,26 @@ object MultimediaDetailsRepository: MultiMedia.FirebaseCallback {
         database = AppDatabase.getDatabase(context)
     }
 
-    fun getMultimediaDetails(multimedia: MultiMedia): LiveData<MultiMedia>{
+    fun getMultimediaDetails(multimedia: MultiMedia, userId: String): LiveData<MultiMedia>{
 
-        returnCacheOrNetworkData(multimedia)
+        returnCacheOrNetworkData(multimedia, userId)
 
         return multimediaLiveData
     }
 
-    private fun returnCacheOrNetworkData(multimedia: MultiMedia){
-        if(isMultimediaCached(multimedia)){
+    private fun returnCacheOrNetworkData(multimedia: MultiMedia, userId: String){
+        if(isMultimediaCached(multimedia, userId)){
             sendCachedData()
         }
         else{
+            this.userId = userId
             sendNetworkData(multimedia)
         }
     }
 
-    private fun isMultimediaCached(multimedia: MultiMedia): Boolean{
+    private fun isMultimediaCached(multimedia: MultiMedia, userId: String): Boolean{
         return multimedia.id == cachedMultimedia?.id && multimedia.mediaType == cachedMultimedia?.mediaType
-                && cachedMultimedia!!.extraDetailsObtained
+                && cachedMultimedia!!.extraDetailsObtained && this.userId == userId
     }
 
     private fun sendCachedData(){
@@ -129,10 +130,10 @@ object MultimediaDetailsRepository: MultiMedia.FirebaseCallback {
         toggleFavoritesLiveData.value = INCOMPLETE
 
         when {
-            firebaseAuth.currentUser != null -> {
+            userId != "local" -> {
                 toggleFavoritesInFirestore(multimedia)
             }
-            firebaseAuth.currentUser == null -> {
+            userId == "local" -> {
                 commitFavoritesChangeLocally(multimedia)
                 toggleFavoritesLiveData.value = SUCCESS
             }
@@ -150,24 +151,16 @@ object MultimediaDetailsRepository: MultiMedia.FirebaseCallback {
      */
     private fun toggleFavoritesInFirestore(multimedia: MultiMedia){
         CoroutineScope(IO).launch {
-            multimedia.createOrRemoveFirestoreRecord(firestore, firebaseAuth, this@MultimediaDetailsRepository)
+            multimedia.createOrRemoveFirestoreRecord(firestore, userId, this@MultimediaDetailsRepository)
         }
     }
 
     private fun commitFavoritesChangeLocally(multimedia: MultiMedia){
         multimedia.isFavorite = !multimedia.isFavorite
-        setUserId(multimedia)
+        multimedia.userId = userId
         multimediaLiveData.value = multimedia
         updateRepository(multimedia)
         toggleFavoritesInDatabase(multimedia)
-    }
-
-    private fun setUserId(multimedia: MultiMedia){
-        if(firebaseAuth.currentUser != null){
-            multimedia.userId = firebaseAuth.currentUser!!.uid
-        }else{
-            multimedia.userId = "local"
-        }
     }
 
     private fun toggleFavoritesInDatabase(multimedia: MultiMedia){

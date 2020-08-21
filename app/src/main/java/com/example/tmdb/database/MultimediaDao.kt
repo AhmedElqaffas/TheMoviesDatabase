@@ -23,7 +23,7 @@ interface MultimediaDao {
     @Query("SELECT * FROM movies ORDER BY popularity DESC")
     suspend fun getPopularMovies(): List<Movie>
 
-    @Query("DELETE FROM movies WHERE isFavorite = 0 or userId != :userId")
+    @Query("DELETE FROM movies WHERE isFavorite = 0 or movies.userId != :userId")
     suspend fun deleteCachedMovies(userId: String)
 
     @Query("UPDATE movies Set isFavorite = :favorite , userId = :userId WHERE id = :id")

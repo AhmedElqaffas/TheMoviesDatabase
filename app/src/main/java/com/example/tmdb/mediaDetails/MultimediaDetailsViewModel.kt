@@ -27,7 +27,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
     }
 
     fun getMultimediaDetails(multimedia: MultiMedia): LiveData<MultiMedia>{
-        return MultimediaDetailsRepository.getMultimediaDetails(MultiMediaCaster.castMultimedia(multimedia))
+        return MultimediaDetailsRepository.getMultimediaDetails(MultiMediaCaster.castMultimedia(multimedia),
+            getCurrentUser()!!)
     }
 
     /**
@@ -37,5 +38,8 @@ class MultimediaDetailsViewModel(application: Application): AndroidViewModel(app
     fun toggleFavorites(multimedia: MultiMedia): LiveData<Int>{
         return MultimediaDetailsRepository.toggleFavorites(MultiMediaCaster.castMultimedia(multimedia))
     }
+
+    private fun getCurrentUser(): String? = getApplication<Application>().
+    getSharedPreferences("user",0).getString("userId", "null")
 
 }

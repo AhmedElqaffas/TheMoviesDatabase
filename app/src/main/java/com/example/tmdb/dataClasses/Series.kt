@@ -1,10 +1,16 @@
 package com.example.tmdb.dataClasses
 
+import android.util.Log
 import androidx.room.Entity
 import com.example.tmdb.database.AppDatabase
+import com.example.tmdb.helpers.MultiMediaCaster
 import com.example.tmdb.mediaDetails.credits.CreditsDatabaseHandler
 import com.example.tmdb.mediaDetails.credits.CreditsRetrofitRequester
 import com.example.tmdb.networking.MultiMediaAPI
+import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 
@@ -105,5 +111,64 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
 
     override fun makeSimilarShowsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMediaResponse>? {
         return multiMediaAPI.getSimilarSeries(id, key) as Call<MultiMediaResponse>
+    }
+
+    override suspend fun createOrRemoveFirestoreRecord(firestore: FirebaseFirestore,
+                                                       userId: String,
+                                                       firebaseCallback: FirebaseCallback){
+
+        val documentReference = firestore.collection("series_linker")
+            .document(userId)
+
+        val documentSnapshot = documentReference.get()
+        documentSnapshot.addOnSuccessListener {
+            if(seriesAlreadyInFavorites(it)){
+                deleteSeriesRecord(documentReference)
+            }
+
+            else{
+                updateLinkerDocument(documentReference, it)
+                insertSeriesDetailsInNewCollection(firestore)
+            }
+            firebaseCallback.onFirebaseRequestEnded(true, this)
+
+        }.addOnFailureListener {
+            firebaseCallback.onFirebaseRequestEnded(false, this)
+            Log.i("Series", "${it.message}")
+
+        }
+    }
+
+    private fun seriesAlreadyInFavorites(ds: DocumentSnapshot): Boolean{
+        return ds.data?.get(this.id.toString()) != null
+    }
+
+    private fun deleteSeriesRecord(documentReference: DocumentReference){
+        deleteLinkerDocumentEntry(documentReference)
+    }
+
+    private fun deleteLinkerDocumentEntry(documentReference: DocumentReference){
+        documentReference.update(this.id.toString(), FieldValue.delete())
+    }
+
+    private fun updateLinkerDocument(documentReference: DocumentReference,
+                                     documentSnapshot: DocumentSnapshot
+    ){
+        val multimediaMap: HashMap<String, Any> = hashMapOf()
+        multimediaMap[id.toString()] = mediaType
+        if(documentSnapshot.exists()){
+            documentReference.update(multimediaMap)
+        }
+        else{
+            documentReference.set(multimediaMap)
+        }
+
+    }
+
+    private fun insertSeriesDetailsInNewCollection(firestore: FirebaseFirestore){
+        val documentReference = firestore.collection("series")
+            .document(this.id.toString())
+        // add the movie details
+        documentReference.set(MultiMediaCaster.createMultimediaMap(this))
     }
 }
