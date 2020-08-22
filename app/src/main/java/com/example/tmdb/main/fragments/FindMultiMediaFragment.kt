@@ -40,9 +40,6 @@ class FindMultiMediaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*FirebaseAuth.getInstance().signOut()
-        startActivity(Intent(activity, LoginActivity::class.java))
-        activity?.finish()*/
         initializeRecyclerViewAdapter()
         setSearchBarChangeListener()
     }

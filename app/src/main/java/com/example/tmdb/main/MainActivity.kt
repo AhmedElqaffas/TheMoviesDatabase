@@ -1,12 +1,16 @@
 package com.example.tmdb.main
 
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.tmdb.R
+import com.example.tmdb.login.LoginActivity
 import com.example.tmdb.main.fragments.FindMultiMediaFragment
 import com.example.tmdb.main.fragments.MoviesFragment
 import com.example.tmdb.main.fragments.SeriesFragment
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -42,20 +46,24 @@ class MainActivity : AppCompatActivity(){
 
     private fun setBottomNavigationListener(){
         bottomNavigationView.setOnNavigationItemSelectedListener {
-            val existingMoviesFragment = supportFragmentManager.findFragmentByTag("movies")
-            val existingSeriesFragment = supportFragmentManager.findFragmentByTag("series")
-            val existingSearchFragment = supportFragmentManager.findFragmentByTag("search")
+            moviesFragment = supportFragmentManager.findFragmentByTag("movies") as MoviesFragment
+            seriesFragment = supportFragmentManager.findFragmentByTag("series") as SeriesFragment
+            findMultimediaFragment = supportFragmentManager.findFragmentByTag("search") as FindMultiMediaFragment
             when(it.itemId){
 
                 R.id.movies -> {
-                    showFragment(existingMoviesFragment, listOf(existingSeriesFragment, existingSearchFragment))
+                    showFragment(moviesFragment, listOf(seriesFragment, findMultimediaFragment))
                 }
                 R.id.series ->{
-                    showFragment(existingSeriesFragment, listOf(existingMoviesFragment, existingSearchFragment))
+                    showFragment(seriesFragment, listOf(moviesFragment, findMultimediaFragment))
                 }
 
                 R.id.search ->{
-                    showFragment(existingSearchFragment, listOf(existingMoviesFragment, existingSeriesFragment))
+                    showFragment(findMultimediaFragment, listOf(moviesFragment, seriesFragment))
+                }
+
+                R.id.signOut -> {
+                    showSignOutDialog()
                 }
             }
             return@setOnNavigationItemSelectedListener true
@@ -77,4 +85,37 @@ class MainActivity : AppCompatActivity(){
             fragmentTransaction.commit()
     }
 
+    private fun showSignOutDialog(){
+        AlertDialog.Builder(this)
+            .setTitle("Sign out")
+            .setMessage("Are you sure you want to sign out?")
+            .setPositiveButton("yes") { _, _ ->
+                signOut()
+            }
+            .setNegativeButton("No"){dialog, _ ->
+                dialog.cancel()
+                returnToPreviouslyShownScreen()
+            }
+            .show()
+    }
+
+    private fun signOut(){
+        FirebaseAuth.getInstance().signOut()
+        startActivity(Intent(this, LoginActivity::class.java))
+        finish()
+    }
+
+    private fun returnToPreviouslyShownScreen(){
+        when {
+            moviesFragment.isVisible -> {
+                bottomNavigationView.selectedItemId = R.id.movies
+            }
+            seriesFragment.isVisible -> {
+                bottomNavigationView.selectedItemId = R.id.series
+            }
+            else -> {
+                bottomNavigationView.selectedItemId = R.id.search
+            }
+        }
+    }
 }

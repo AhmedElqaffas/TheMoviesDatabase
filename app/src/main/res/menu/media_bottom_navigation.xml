@@ -15,4 +15,9 @@
         android:icon="@drawable/ic_baseline_search_24"
         android:title="Find Show"/>
 
+    <item
+        android:id="@+id/signOut"
+        android:icon="@drawable/ic_logout"
+        android:title="Sign Out"/>
+
 </menu>
