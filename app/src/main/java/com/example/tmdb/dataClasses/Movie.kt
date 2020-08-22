@@ -24,7 +24,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     constructor(title: String, id: Int, totalVotes: Int, poster: String?, cover: String?,
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, budget: Int?, revenue: Long?,
-                genres: List<Genre>?, isFavorite: Boolean, extraDetailsObtained: Boolean, userId: String):
+                genres: List<Genre>?, isFavorite: Boolean, extraDetailsObtained: Boolean, userId: String?):
             this() {
         this.title = title
         this.id = id
@@ -90,7 +90,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
     }
 
     override suspend fun updateFavoriteInDatabase(database: AppDatabase) {
-        database.getMultimediaDao().updateMovieFavorite(this.id, this.isFavorite, this.userId)
+        database.getMultimediaDao().updateMovieFavorite(this.id, this.isFavorite, this.userId!!)
     }
 
     override suspend fun getExistingShowFields(database: AppDatabase) {
@@ -129,7 +129,7 @@ class Movie(): MultiMedia("",0,0,"","",0f, "movie",
 
         }.addOnFailureListener {
             firebaseCallback.onFirebaseRequestEnded(false, this)
-            Log.i("MultimediaDetails", it.message)
+            Log.i("MultimediaDetails", "${it.message}")
 
         }
     }

@@ -28,9 +28,9 @@ open class MultiMedia(@SerializedName("name", alternate = ["title"]) var title: 
 
     var isFavorite: Boolean = false
     // Indicates whether show details (from /3/movie/{movie_id} and /3/tv/{tv_id}) were obtained from API or not
-    var extraDetailsObtained = false
+    var extraDetailsObtained: Boolean = false
     // The user that put this multimedia in favorites
-    var userId = ""
+    var userId: String? = "-"
 
     open fun makeCreditsRequest(): Call<CreditsResponse>? {return null}
     open fun makeDetailsRequest(key: String, multiMediaAPI: MultiMediaAPI): Call<MultiMedia>? {return null}

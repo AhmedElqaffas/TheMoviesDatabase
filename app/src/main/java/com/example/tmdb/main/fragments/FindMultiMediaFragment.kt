@@ -28,23 +28,21 @@ class FindMultiMediaFragment : Fragment(),
             this
         )
 
-    private lateinit var inflated: View
     private var searchTextChanged = true
 
     private val findMediaViewModel: FindMultimediaViewModel by viewModels()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        inflated = inflater.inflate(R.layout.fragment_find_movie, container, false)
-        return inflated
+        return inflater.inflate(R.layout.fragment_find_movie, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        FirebaseAuth.getInstance().signOut()
+        /*FirebaseAuth.getInstance().signOut()
         startActivity(Intent(activity, LoginActivity::class.java))
-        activity?.finish()
+        activity?.finish()*/
         initializeRecyclerViewAdapter()
         setSearchBarChangeListener()
     }

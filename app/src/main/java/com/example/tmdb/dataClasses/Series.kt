@@ -29,7 +29,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
                 rating: Float, releaseDate: String, mediaType: String,
                 overview: String?, popularity: Float, numberOfSeasons: Int?,
                 lastAirDate: String, inProduction: Boolean, genres: List<Genre>?, isFavorite: Boolean,
-                extraDetailsObtained: Boolean, userId: String): this(){
+                extraDetailsObtained: Boolean, userId: String?): this(){
         this.title = title
         this.id = id
         this.totalVotes = totalVotes
@@ -95,7 +95,7 @@ class Series() : MultiMedia("",0,0,"","",0f, "tv",
     }
 
     override suspend fun updateFavoriteInDatabase(database: AppDatabase) {
-        database.getMultimediaDao().updateSeriesFavorite(this.id, this.isFavorite, this.userId)
+        database.getMultimediaDao().updateSeriesFavorite(this.id, this.isFavorite, this.userId!!)
     }
 
     override suspend fun getExistingShowFields(database: AppDatabase) {
