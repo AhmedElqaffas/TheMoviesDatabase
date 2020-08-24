@@ -4,6 +4,7 @@ An android application based on [TheMovieDatabase API](https://developers.themov
   * **View popular/top-rated movies and shows**
   * **Search for  movies and shows by name**
   * **View movie/show details**
+  * **Add movies and shows to favorites*
   
 ## Main Technical Components
 In this application, I have used
