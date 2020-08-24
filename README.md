@@ -1,4 +1,4 @@
-# TheMoviesDatabaseAPI
+# TheMoviesDatabase
 An android application based on [TheMovieDatabase API](https://developers.themoviedb.org/3). 
 **Users can** 
   * **View popular/top-rated movies and shows**
