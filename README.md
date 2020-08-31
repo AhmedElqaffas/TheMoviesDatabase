@@ -15,10 +15,10 @@ In this application, I have used
   * **Retrofit2 with Gson converter**
   * **Room persistence library**
   
-I have also used **JUnit** for testing some features in my application.
+I have also used **JUnit** for testing.
  <br></br>
 ## Application Preview
-The rest of this document, I will be demonstrating the different screens in this application.
+For the rest of this document, I will be demonstrating the different screens in this application.
 
 #### &nbsp;&nbsp;&nbsp;Logging In
 <p align="center"><img src="/screens/login.png" alt="alt text" width="250" height="400"></p>
@@ -54,7 +54,7 @@ The firebase authentication service validates the data provided when signing up.
 The user can also add the movie or series to favorites, the item will be added to a favorites list. There are two separate lists; one for movies, and the other is for series.
 <p align="center"><img src="/screens/favorite_animation.jpeg" alt="alt text" width="250" height="400"></p>
 <p align="center"><img src="/screens/favorites_list.jpeg" alt="alt text" width="250" height="400"></p>
-Notice that adding a movie to favorites shows a short animation of a full heart emerging from the movie/series poster. Similarly, removing an item form favorites shows a broken heart animation.
+Notice that adding a movie to favorites shows a short animation of a full heart emerging from the movie/series poster. Similarly, removing an item from favorites shows a broken heart animation.
 <p align="center"><img src="/screens/broken_1.jpeg" alt="alt text" width="250" height="400">
 <img src="/screens/broken_2.jpeg" alt="alt text" width="250" height="400"></p>
 <br></br>
