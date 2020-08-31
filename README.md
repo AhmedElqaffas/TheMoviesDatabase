@@ -9,6 +9,7 @@ An android application based on [TheMovieDatabase API](https://developers.themov
 ## Main Technical Components
 In this application, I have used
   * **Coroutines**
+  * **Firebase Authentication & Cloud Firestore**
   * **MVVM architecure using Jetpack Livedata**
   * **Recyclerview** 
   * **Retrofit2 with Gson converter**
