@@ -48,4 +48,13 @@ The firebase authentication service validates the data provided when signing up.
 
 #### &nbsp;&nbsp;&nbsp;Movie/Series Details
 &nbsp;&nbsp;&nbsp;By clicking on a movie or a tv show, users are redirected to a new screen that displays more details about that movie/show.
-<p align="center"><img src="/screens/movies.jpeg" alt="alt text" width="250" height="400"></p>
+<p align="center"><img src="/screens/details_1.jpeg" alt="alt text" width="250" height="400">
+<img src="/screens/details_2.jpeg" alt="alt text" width="250" height="400"></p>
+
+The user can also add the movie or series to favorites, the item will be added to a favorites list. There are two separate lists; one for movies, and the other is for series.
+<p align="center"><img src="/screens/favorite_animation.jpeg" alt="alt text" width="250" height="400"></p>
+<p align="center"><img src="/screens/favorites_list.jpeg" alt="alt text" width="250" height="400"></p>
+Notice that adding a movie to favorites shows a short animation of a full heart emerging from the movie/series poster. Similarly, removing an item form favorites shows a broken heart animation.
+<br></br>
+Adding a movie or series to favorites also gives the user a list of 'similar shows' that the user may be interested in.
+<p align="center"><img src="/screens/similar.jpeg" alt="alt text" width="250" height="400"></p>
