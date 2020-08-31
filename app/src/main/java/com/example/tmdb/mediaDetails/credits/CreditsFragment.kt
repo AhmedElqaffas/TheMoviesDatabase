@@ -55,13 +55,19 @@ class CreditsFragment : Fragment(){
     private fun makeCastRequest(){
         creditsLiveData = creditsViewModel.getMultimediaCredits(multiMedia)
         creditsLiveData.observe(viewLifecycleOwner, Observer{
-            it?.let {
+            if(!it.isNullOrEmpty()){
                 setRecyclerAdapterList(it)
+                hideShimmerEffect()
             }
         })
     }
 
     private fun setRecyclerAdapterList(cast: List<Person>){
         castRecycler?.adapter = CastRecyclerAdapter(cast)
+    }
+
+    private fun hideShimmerEffect(){
+        creditsShimmerContainer?.stopShimmer()
+        creditsShimmerContainer?.visibility = View.GONE
     }
 }

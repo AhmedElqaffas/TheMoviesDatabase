@@ -3,7 +3,9 @@ package com.example.tmdb.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.example.tmdb.R
 import com.example.tmdb.main.MainActivity
 import com.example.tmdb.register.RegisterActivity
@@ -32,6 +34,7 @@ class LoginActivity : AppCompatActivity() {
         setLoginButtonListener()
         setAnonymousTextListener()
         setRegisterTextListener()
+        setForgotPasswordListener()
     }
 
     private fun setCurrentUser(userId: String){
@@ -107,6 +110,36 @@ class LoginActivity : AppCompatActivity() {
         noAccountText.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun setForgotPasswordListener(){
+        forgotPassword.setOnClickListener {
+            displayPasswordResetAlertDialog()
+        }
+    }
+
+    private fun displayPasswordResetAlertDialog(){
+        val emailInputEditText = EditText(this)
+        AlertDialog.Builder(this)
+            .setTitle("Reset Password")
+            .setMessage("Enter your email address")
+            .setView(emailInputEditText)
+            .setPositiveButton("Send") { dialog, _ ->
+                sendResetPasswordEmail(emailInputEditText.text.toString())
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel"){dialog, _ ->
+                dialog.cancel()
+            }
+            .show()
+    }
+
+    private fun sendResetPasswordEmail(email: String){
+        firebase.sendPasswordResetEmail(email).addOnSuccessListener {
+            Toast.makeText(this, "Reset Link Sent To Your Email", Toast.LENGTH_SHORT).show()
+        }.addOnFailureListener {
+            Toast.makeText(this, "Couldn't Send An Email", Toast.LENGTH_SHORT).show()
         }
     }
 }

@@ -6,12 +6,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".mediaDetails.credits.CreditsFragment">
 
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/creditsShimmerContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shimmer_auto_start="true"
+        app:shimmer_base_color="@android:color/darker_gray"
+        app:shimmer_colored="true"
+        app:shimmer_base_alpha="0.2"
+        app:shimmer_width_ratio="4.5"
+        app:shimmer_height_ratio="1"
+        app:shimmer_dropoff="@android:integer/config_longAnimTime"
+        app:shimmer_duration="1000"
+        app:shimmer_repeat_delay="700"
+        app:shimmer_repeat_mode="reverse">
+
+        <include layout="@layout/item_cast"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/castRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="horizontal"
-        tools:listitem="@layout/item_media" />
+        tools:listitem="@layout/item_cast" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
