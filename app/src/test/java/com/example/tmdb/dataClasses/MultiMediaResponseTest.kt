@@ -15,9 +15,9 @@ class MultiMediaResponseTest {
             MultiMedia("",0,0,"","",0f, "person", "", "",0f, listOf()),
             MultiMedia("",0,0,"","",0f, "movie", "", "",0f, listOf()),
             MultiMedia("",0,0,"","",0f, "movie", "", "",0f, listOf()),
-            MultiMedia("",0,0,"","",0f, "series", "","",0f, listOf()),
+            MultiMedia("",0,0,"","",0f, "tv", "","",0f, listOf()),
             MultiMedia("",0,0,"","",0f, "person", "","",0f, listOf()),
-            Series("",0,0,"","",0f, "","","",0f,0,"",false, listOf<Genre>(), false)
+            Series("",0,0,"","",0f, "","tv","",0f,0,"",false, listOf<Genre>(), false, false, "")
         )
 
         val multiMediaResponse = MultiMediaResponse(0, dummyMultimediaList, 0)
