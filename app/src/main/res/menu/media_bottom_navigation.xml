@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/movies"
+        android:icon="@drawable/cinema"
+        android:title="Movies"/>
+
+    <item
+        android:id="@+id/series"
+        android:icon="@drawable/series"
+        android:title="Series"/>
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Find Show"/>
+
+    <item
+        android:id="@+id/signOut"
+        android:icon="@drawable/ic_logout"
+        android:title="Sign Out"/>
+
+</menu>

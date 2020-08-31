@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">MoviesRetrofit</string>
+    <string name="app_name">TheMoviesDatabase</string>
+    <string name="cast_and_crew">Cast&amp;Crew</string>
+    <string name="overview">Overview</string>
+    <string name="favorite">Your Favorites</string>
+    <string name="popular">Popular</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="show_more_info">Show More Information</string>
+    <string name="add_to_favorites">Add to Favorites</string>
+    <string name="similar_shows">Similar Shows</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="no_account">Don\'t have an account? Sign up</string>
+    <string name="continue_anonymously">Continue Anonymously</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
