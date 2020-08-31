@@ -55,6 +55,8 @@ The user can also add the movie or series to favorites, the item will be added t
 <p align="center"><img src="/screens/favorite_animation.jpeg" alt="alt text" width="250" height="400"></p>
 <p align="center"><img src="/screens/favorites_list.jpeg" alt="alt text" width="250" height="400"></p>
 Notice that adding a movie to favorites shows a short animation of a full heart emerging from the movie/series poster. Similarly, removing an item form favorites shows a broken heart animation.
+<p align="center"><img src="/screens/broken_1.jpeg" alt="alt text" width="250" height="400">
+<img src="/screens/broken_2.jpeg" alt="alt text" width="250" height="400"></p>
 <br></br>
 Adding a movie or series to favorites also gives the user a list of 'similar shows' that the user may be interested in.
 <p align="center"><img src="/screens/similar.jpeg" alt="alt text" width="250" height="400"></p>
